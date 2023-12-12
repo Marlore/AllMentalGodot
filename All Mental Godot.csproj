@@ -1,0 +1,11 @@
+<Project Sdk="Godot.NET.Sdk/4.1.1">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <RootNamespace>AllMentalGodot</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Assets\SceneScript\ProfilePanel\" />
+    <Folder Include="Assets\UI\" />
+  </ItemGroup>
+</Project>

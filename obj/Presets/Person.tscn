@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxj6q1cml77i8"]
+
+[ext_resource type="Script" path="res://Assets/UI/PersonButton.cs" id="1_najgt"]
+
+[node name="Person" type="Button"]
+text = "asd
+sad
+"
+script = ExtResource("1_najgt")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]
