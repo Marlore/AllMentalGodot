@@ -2,6 +2,7 @@
 using Engine.PlayerEngine;
 using Entity.Job;
 using Entity.Locations;
+using Entity.Log;
 using System;
 using System.Collections.Generic;
 
@@ -63,6 +64,7 @@ namespace Entity.Company
     public class Administration : Business
     {
         public override string Description => "Administration";
+        public List<Records> RecordsList = new List<Records>();
         public Administration(string adress, int room)
             : base(adress, room)
         {
@@ -329,6 +331,7 @@ namespace Entity.Company
     {
         public override string Description => "Hospital";
         public List<Guid> Patient = new List<Guid>();
+        public List<Records> RecordsList = new List<Records>();
         public Hospital(string adress, int room)
             : base(adress, room)
         {
@@ -354,6 +357,7 @@ namespace Entity.Company
     public class Police : Business
     {
         public override string Description => "Police Department";
+        public List<Records> RecordsList = new List<Records>();
         public List<Guid> Client = new List<Guid>();
         public Police(string adress, int room)
             : base(adress, room)

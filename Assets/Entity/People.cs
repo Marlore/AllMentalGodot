@@ -172,6 +172,13 @@ namespace Entity.People
             }
         }
         private bool onJob = false;
+        public void CallEmergency()
+        {
+            foreach(var person in PlayerInfo.CurrentCity.Locations[CurrentLocation].PeopleInside)
+            {
+
+            }
+        }
         public void Movement()
         {
             if(PlayerInfo.CurrentCity.CityTime.Hour == Job.StartHour)

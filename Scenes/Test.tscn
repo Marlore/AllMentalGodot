@@ -19,7 +19,7 @@ process_thread_group = 2
 process_thread_group_order = 0
 process_thread_messages = 0
 mode = 4
-position = Vector2i(0, 50)
+position = Vector2i(0, 36)
 size = Vector2i(1600, 900)
 script = ExtResource("2_em4lh")
 
@@ -63,10 +63,27 @@ layout_mode = 2
 text = "Contacts"
 vertical_alignment = 1
 
-[node name="AllInfo" type="VBoxContainer" parent="ProfileFull/Control/HBoxContainer"]
+[node name="Control" type="Control" parent="ProfileFull/Control/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="Name" type="Label" parent="ProfileFull/Control/HBoxContainer/AllInfo"]
+[node name="ItemList" type="ItemList" parent="ProfileFull/Control/HBoxContainer/VBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text_overrun_behavior = 1
+item_count = 2
+item_0/text = "123"
+item_1/text = "1231"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="ProfileFull/Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="ProfileFull/Control/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "Name And Second Name"
 

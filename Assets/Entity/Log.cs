@@ -6,6 +6,18 @@ using System.Collections.Generic;
 
 namespace Entity.Log
 {
+    public class Records
+    {
+        public string Record;
+        
+    public Records(Person caller, Person deadbody, Guid location, bool nameSaid) 
+        {
+            if(nameSaid)
+                 Record = $"{caller.FirstName} {caller.SecondName} {caller.Bithday} saw a dead body at {PlayerInfo.CurrentCity.CityTime} on {PlayerInfo.CurrentCity.Locations[location]}.";
+            else
+                Record = $"Unknown {caller.Sex} saw a dead body at {PlayerInfo.CurrentCity.CityTime} on {PlayerInfo.CurrentCity.Locations[location]}.";
+        }
+    }
     public class Necrolog
     {
         public string FullName;

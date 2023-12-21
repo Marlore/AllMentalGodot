@@ -15,8 +15,8 @@ public partial class ProfileShort : VBoxContainer
 		foreach(var person in PlayerInfo.CurrentCity.Population)
 		{			
 			Button but = (Button)personGo.Instantiate();
-			but.Text = person.Value.FirstName + " " + person.Value.SecondName + "\n" + "Age:" + person.Value.Age + "\n" + "Sex:" + person.Value.Sex + "     " + "Alive:" + person.Value.Alive.ToString();
-			but.Name = person.Key.ToString();
+			but.Text = person.Value.FirstName + " " + person.Value.SecondName;
+			but.Call("UpdateId", person.Key.ToString());
 			this.AddChild(but);
 		}
 	}
