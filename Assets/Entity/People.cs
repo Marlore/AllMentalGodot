@@ -22,6 +22,7 @@ namespace Entity.People
     }
     public class Person
     {
+        // Убраться
         Random rand = new Random();
 
         public bool Alive;
@@ -181,7 +182,7 @@ namespace Entity.People
         }
         public void Movement()
         {
-            if(PlayerInfo.CurrentCity.CityTime.Hour == Job.StartHour)
+            if(PlayerInfo.CurrentCity.CityTime.Hour == Job.StartHour && Job.WorkingWeek.Contains(PlayerInfo.CurrentCity.CityTime.DayOfWeek))
                 onJob = true;
             else if(PlayerInfo.CurrentCity.CityTime.Hour == Job.EndHour)
                 onJob = false;

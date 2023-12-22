@@ -2,7 +2,7 @@
 using Entity.People;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace Entity.Log
 {
@@ -10,13 +10,21 @@ namespace Entity.Log
     {
         public string Record;
         
-    public Records(Person caller, Person deadbody, Guid location, bool nameSaid) 
+        public Records(Person caller, Person deadbody, Guid location, bool nameSaid) 
         {
             if(nameSaid)
-                 Record = $"{caller.FirstName} {caller.SecondName} {caller.Bithday} saw a dead body at {PlayerInfo.CurrentCity.CityTime} on {PlayerInfo.CurrentCity.Locations[location]}.";
+                    Record = $"{caller.FirstName} {caller.SecondName} {caller.Bithday} saw a dead body at {PlayerInfo.CurrentCity.CityTime} on {PlayerInfo.CurrentCity.Locations[location]}.";
             else
                 Record = $"Unknown {caller.Sex} saw a dead body at {PlayerInfo.CurrentCity.CityTime} on {PlayerInfo.CurrentCity.Locations[location]}.";
+            PlayerInfo.CurrentCity.PoliceDepList.ElementAt(0).Value.RecordsList.Add(this);
+            PlayerInfo.CurrentCity.HospitalList.ElementAt(0).Value.RecordsList.Add(this);
         }
+        public Records(Person partner1, Person partner2)
+        {
+            Record = $"{partner1.FirstName} {partner1.SecondName} {partner1.Bithday} and {partner2.FirstName} {partner2.SecondName} {partner2.Bithday} get married.";
+            PlayerInfo.CurrentCity.CityAministration.RecordsList.Add(this);
+        }
+
     }
     public class Necrolog
     {

@@ -37,11 +37,10 @@ namespace Entity.Company
         {
             base.Adress = $"{room} {adress}";
             Name = CityGenerator.GenerateName(CityGenerator.ParkNamesList);
-            Vacancy.Add(new Director(this));
-            Vacancy.Add(new Secretary(this));
-            Vacancy.Add(new Janitor(this));
-            Vacancy.Add(new Janitor(this));
-            Vacancy.Add(new Janitor(this));
+            Vacancy.Add(new JanitorFirstShift(this));
+            Vacancy.Add(new JanitorSecondShift(this));
+            Vacancy.Add(new JanitorFirstShift(this));
+            Vacancy.Add(new JanitorSecondShift(this));
             PlayerInfo.CurrentCity.ParkList.Add(this.Id, this);
         }
     }
@@ -87,8 +86,10 @@ namespace Entity.Company
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new Сashier(this));
+            Vacancy.Add(new СashierFirstShift(this));
+            Vacancy.Add(new СashierFirstShift(this));
+            Vacancy.Add(new СashierSecondShift(this));
+            Vacancy.Add(new СashierSecondShift(this));
             PlayerInfo.CurrentCity.CoffeshopList.Add(this.Id, this);
         }
     }
@@ -102,16 +103,21 @@ namespace Entity.Company
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new Waiter(this));
-            Vacancy.Add(new Waiter(this));
-            Vacancy.Add(new Waiter(this));
+            Vacancy.Add(new СashierFirstShift(this));
+            Vacancy.Add(new СashierFirstShift(this));
+            Vacancy.Add(new СashierSecondShift(this));
+            Vacancy.Add(new СashierSecondShift(this));
+            Vacancy.Add(new WaiterFirstShift(this));
+            Vacancy.Add(new WaiterFirstShift(this));
+            Vacancy.Add(new WaiterSecondShift(this));
+            Vacancy.Add(new WaiterSecondShift(this));
             Vacancy.Add(new HeadChef(this));
-            Vacancy.Add(new Cook(this));
-            Vacancy.Add(new Cook(this));
-            Vacancy.Add(new Cook(this));
-            Vacancy.Add(new Janitor(this));
+            Vacancy.Add(new CookFirstShift(this));
+            Vacancy.Add(new CookFirstShift(this));
+            Vacancy.Add(new CookSecondShift(this));
+            Vacancy.Add(new CookSecondShift(this));
+            Vacancy.Add(new JanitorFirstShift(this));
+            Vacancy.Add(new JanitorSecondShift(this));
             PlayerInfo.CurrentCity.RestaurantsList.Add(this.Id, this);
         }
     }
@@ -125,9 +131,9 @@ namespace Entity.Company
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
-            Vacancy.Add(new Pharmacist(this));
-            Vacancy.Add(new Pharmacist(this));
-            Vacancy.Add(new Janitor(this));
+            Vacancy.Add(new PharmacistFirstShift(this));
+            Vacancy.Add(new PharmacistFirstShift(this));
+            Vacancy.Add(new JanitorFirstShift(this));
             PlayerInfo.CurrentCity.PharmacyList.Add(this.Id, this);
         }
     }
@@ -142,13 +148,16 @@ namespace Entity.Company
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new NightСashier(this));
-            Vacancy.Add(new NightСashier(this));
-            Vacancy.Add(new NightСashier(this));
-            Vacancy.Add(new Janitor(this));
+            Vacancy.Add(new СashierFirstShift(this));
+            Vacancy.Add(new СashierFirstShift(this));
+            Vacancy.Add(new СashierSecondShift(this));
+            Vacancy.Add(new СashierSecondShift(this));
+            Vacancy.Add(new NightСashierFirstShift(this));
+            Vacancy.Add(new NightСashierFirstShift(this));
+            Vacancy.Add(new NightСashierSecondShift(this));
+            Vacancy.Add(new NightСashierSecondShift(this));
+            Vacancy.Add(new JanitorFirstShift(this));
+            Vacancy.Add(new JanitorSecondShift(this));
             PlayerInfo.CurrentCity.GroceryStoreList.Add(this.Id, this);
         }
     }
@@ -170,10 +179,10 @@ namespace Entity.Company
             Vacancy.Add(new Mechanic(this));
             Vacancy.Add(new Mechanic(this));
             Vacancy.Add(new Mechanic(this));
-            Vacancy.Add(new Janitor(this));
-            Vacancy.Add(new Janitor(this));
-            Vacancy.Add(new Janitor(this));
-            Vacancy.Add(new Janitor(this));
+            Vacancy.Add(new JanitorFirstShift(this));
+            Vacancy.Add(new JanitorFirstShift(this));
+            Vacancy.Add(new JanitorSecondShift(this));
+            Vacancy.Add(new JanitorSecondShift(this));
         }
     }
     public class PostMart : Business
@@ -186,10 +195,10 @@ namespace Entity.Company
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new Janitor(this));
+            Vacancy.Add(new СashierFirstShift(this));
+            Vacancy.Add(new СashierFirstShift(this));
+            Vacancy.Add(new СashierSecondShift(this));
+            Vacancy.Add(new СashierSecondShift(this));
             PlayerInfo.CurrentCity.PostmartList.Add(this.Id, this);
         }
     }
@@ -203,11 +212,12 @@ namespace Entity.Company
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
-            Vacancy.Add(new Сashier(this));
-            Vacancy.Add(new Coach(this));
-            Vacancy.Add(new Coach(this));
-            Vacancy.Add(new Coach(this));
-            Vacancy.Add(new Coach(this));
+            Vacancy.Add(new СashierFirstShift(this));
+            Vacancy.Add(new СashierSecondShift(this));
+            Vacancy.Add(new CoachFirstShift(this));
+            Vacancy.Add(new CoachFirstShift(this));
+            Vacancy.Add(new CoachSecondShift(this));
+            Vacancy.Add(new CoachSecondShift(this));
             PlayerInfo.CurrentCity.GymList.Add(this.Id, this);
         }
     }
@@ -241,11 +251,12 @@ namespace Entity.Company
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
-            Vacancy.Add(new Barman(this));
-            Vacancy.Add(new Barman(this));
-            Vacancy.Add(new NightBarman(this));
-            Vacancy.Add(new NightBarman(this));
-            Vacancy.Add(new Janitor(this));
+            Vacancy.Add(new BarmanFirstShift(this));
+            Vacancy.Add(new BarmanSecondShift(this));
+            Vacancy.Add(new NightBarmanFirstShift(this));
+            Vacancy.Add(new NightBarmanSecondShift(this));
+            Vacancy.Add(new JanitorFirstShift(this));
+            Vacancy.Add(new JanitorSecondShift(this));
             PlayerInfo.CurrentCity.BarList.Add(this.Id, this);
         }
         ~Bar(){
@@ -370,14 +381,14 @@ namespace Entity.Company
             Vacancy.Add(new Accountant(this));
             Vacancy.Add(new Accountant(this));
             Vacancy.Add(new Accountant(this));
-            Vacancy.Add(new Policeman(this));
-            Vacancy.Add(new Policeman(this));
-            Vacancy.Add(new Policeman(this));
-            Vacancy.Add(new Policeman(this));
-            Vacancy.Add(new Policeman(this));
-            Vacancy.Add(new Policeman(this));
-            Vacancy.Add(new Policeman(this));
-            Vacancy.Add(new Policeman(this));
+            Vacancy.Add(new PolicemanFirstShift(this));
+            Vacancy.Add(new PolicemanFirstShift(this));
+            Vacancy.Add(new PolicemanFirstShift(this));
+            Vacancy.Add(new PolicemanFirstShift(this));
+            Vacancy.Add(new PolicemanSecondShift(this));
+            Vacancy.Add(new PolicemanSecondShift(this));
+            Vacancy.Add(new PolicemanSecondShift(this));
+            Vacancy.Add(new PolicemanSecondShift(this));
             PlayerInfo.CurrentCity.PoliceDepList.Add(Id, this);
         }
     }

@@ -2,6 +2,7 @@
 using Entity.Company;
 using Entity.People;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Entity.Job
@@ -15,7 +16,7 @@ namespace Entity.Job
         public abstract float Salary { get; }
         public abstract bool WorkingFromHome { get; }
         public abstract bool FreeEmployee { get; }
-
+        public abstract List<DayOfWeek> WorkingWeek { get;}
         public Guid Id;
 
         public Guid Worker;
@@ -53,6 +54,7 @@ namespace Entity.Job
         public override float Salary => 10000f;
         public override bool WorkingFromHome=> true;
         public override bool FreeEmployee => true;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday,DayOfWeek.Friday };
         public override void WorkProccess()
         {}
         public SelfEmployed()
@@ -70,6 +72,7 @@ namespace Entity.Job
         public override float Salary => 0f;
         public override bool WorkingFromHome => true;
         public override bool FreeEmployee => true;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
 
         private KinderGarten CurrentKinderGartener;
         public override void WorkProccess()
@@ -96,6 +99,7 @@ namespace Entity.Job
         public override float Salary => 0f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => true;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
 
         private KinderGarten CurrentKinderGartener;
         public override void WorkProccess()
@@ -122,6 +126,7 @@ namespace Entity.Job
         public override float Salary => 0f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => true;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
 
         private School CurrentSchool;
         public override void WorkProccess()
@@ -148,6 +153,7 @@ namespace Entity.Job
         public override float Salary => 0f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => true;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         private University CurrentUniversity;
         public override void WorkProccess()
         {
@@ -175,6 +181,7 @@ namespace Entity.Job
         public override float Salary => 25000f;
         public override bool WorkingFromHome => true;
         public override bool FreeEmployee => true;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { };
         public override void WorkProccess()
         { }
         public Retiree()
@@ -194,6 +201,7 @@ namespace Entity.Job
         public override float Salary => 60000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
 
@@ -210,13 +218,14 @@ namespace Entity.Job
         public override float Salary => 45000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
         public Teacher(Business business)
             : base(business)
         { }
     }
-    public class Doctor : Work
+    public class DoctorFirstShift : Work
     {
         public override string Name => "Secretary";
         public override int StartHour => 8;
@@ -225,9 +234,26 @@ namespace Entity.Job
         public override float Salary => 70000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday};
         public override void WorkProccess()
         { }
-        public Doctor(Business business)
+        public DoctorFirstShift(Business business)
+            : base(business)
+        { }
+    }
+    public class DoctorSecondShift : Work
+    {
+        public override string Name => "Secretary";
+        public override int StartHour => 8;
+        public override int EndHour => 20;
+        public override int StatValue => 2;
+        public override float Salary => 65000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday,  DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public DoctorSecondShift(Business business)
             : base(business)
         { }
     }
@@ -240,13 +266,14 @@ namespace Entity.Job
         public override float Salary => 60000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
         public Mechanic(Business business)
             : base(business)
         { }
     }
-    public class Сashier : Work
+    public class СashierFirstShift : Work
     {
         public override string Name => "Сashier";
         public override int StartHour => 9;
@@ -255,13 +282,30 @@ namespace Entity.Job
         public override float Salary => 55000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public Сashier(Business business)
+        public СashierFirstShift(Business business)
             : base(business)
         { }
     }
-    public class Janitor: Work
+    public class СashierSecondShift : Work
+    {
+        public override string Name => "Сashier";
+        public override int StartHour => 9;
+        public override int EndHour => 19;
+        public override int StatValue => 3;
+        public override float Salary => 51000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() {DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public СashierSecondShift(Business business)
+            : base(business)
+        { }
+    }
+    public class JanitorFirstShift: Work
     {
         public override string Name => "Janitor";
         public override int StartHour => 8;
@@ -270,13 +314,30 @@ namespace Entity.Job
         public override float Salary => 40000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public Janitor(Business business) 
+        public JanitorFirstShift(Business business) 
             :base(business)
         { }
     }
-    public class Waiter : Work
+    public class JanitorSecondShift : Work
+    {
+        public override string Name => "Janitor";
+        public override int StartHour => 8;
+        public override int EndHour => 20;
+        public override int StatValue => 2;
+        public override float Salary => 37000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public JanitorSecondShift(Business business)
+            : base(business)
+        { }
+    }
+    public class WaiterFirstShift : Work
     {
         public override string Name => "Waiter";
         public override int StartHour => 8;
@@ -285,9 +346,27 @@ namespace Entity.Job
         public override float Salary => 50000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public Waiter(Business business)
+        public WaiterFirstShift(Business business)
+            : base(business)
+        { }
+    }
+
+    public class WaiterSecondShift : Work
+    {
+        public override string Name => "Waiter";
+        public override int StartHour => 8;
+        public override int EndHour => 20;
+        public override int StatValue => 3;
+        public override float Salary => 47000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public WaiterSecondShift(Business business)
             : base(business)
         { }
     }
@@ -300,6 +379,7 @@ namespace Entity.Job
         public override float Salary => 100000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
         public Mayor(Business business)
@@ -315,13 +395,14 @@ namespace Entity.Job
         public override float Salary => 60000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
         public Manager(Business business)
             : base(business)
         { }
     }
-    public class Policeman : Work
+    public class PolicemanFirstShift : Work
     {
         public override string Name => "Policeman";
         public override int StartHour => 8;
@@ -330,9 +411,26 @@ namespace Entity.Job
         public override float Salary => 80000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public Policeman(Business business)
+        public PolicemanFirstShift(Business business)
+            : base(business)
+        { }
+    }
+    public class PolicemanSecondShift : Work
+    {
+        public override string Name => "Policeman";
+        public override int StartHour => 8;
+        public override int EndHour => 20;
+        public override int StatValue => 4;
+        public override float Salary => 77000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public PolicemanSecondShift(Business business)
             : base(business)
         { }
     }
@@ -345,6 +443,7 @@ namespace Entity.Job
         public override float Salary => 75000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
         public Accountant(Business business)
@@ -360,6 +459,7 @@ namespace Entity.Job
         public override float Salary => 90000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
         public Director(Business business)
@@ -375,13 +475,14 @@ namespace Entity.Job
         public override float Salary => 75000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
         public HeadChef(Business business)
             : base(business)
         { }
     }
-    public class Cook : Work
+    public class CookFirstShift : Work
     {
         public override string Name => "Cook";
         public override int StartHour => 10;
@@ -390,13 +491,30 @@ namespace Entity.Job
         public override float Salary => 55000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public Cook(Business business)
+        public CookFirstShift(Business business)
             : base(business)
         { }
     }
-    public class Pharmacist : Work
+    public class CookSecondShift : Work
+    {
+        public override string Name => "Cook";
+        public override int StartHour => 10;
+        public override int EndHour => 18;
+        public override int StatValue => 3;
+        public override float Salary => 51000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public CookSecondShift(Business business)
+            : base(business)
+        { }
+    }
+    public class PharmacistFirstShift : Work
     {
         public override string Name => "Pharmacist";
         public override int StartHour => 10;
@@ -405,13 +523,30 @@ namespace Entity.Job
         public override float Salary => 60000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public Pharmacist(Business business)
+        public PharmacistFirstShift(Business business)
             : base(business)
         { }
     }
-    public class Coach : Work
+    public class PharmacistSecondShift : Work
+    {
+        public override string Name => "Pharmacist";
+        public override int StartHour => 10;
+        public override int EndHour => 18;
+        public override int StatValue => 4;
+        public override float Salary => 56000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public PharmacistSecondShift(Business business)
+            : base(business)
+        { }
+    }
+    public class CoachFirstShift : Work
     {
         public override string Name => "Coach";
         public override int StartHour => 8;
@@ -420,43 +555,94 @@ namespace Entity.Job
         public override float Salary => 45000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public Coach(Business business)
+        public CoachFirstShift(Business business)
             : base(business)
         { }
     }
-    public class Barman : Work
+    public class CoachSecondShift : Work
     {
-        public override string Name => "Barman";
+        public override string Name => "Coach";
         public override int StartHour => 8;
         public override int EndHour => 18;
+        public override int StatValue => 3;
+        public override float Salary => 42000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public CoachSecondShift(Business business)
+            : base(business)
+        { }
+    }
+    public class BarmanFirstShift : Work
+    {
+        public override string Name => "Barman";
+        public override int StartHour => 12;
+        public override int EndHour => 0;
         public override int StatValue => 3;
         public override float Salary => 65000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public Barman(Business business)
+        public BarmanFirstShift(Business business)
             : base(business)
         { }
     }
-    public class NightBarman : Work
+    public class BarmanSecondShift : Work
+    {
+        public override string Name => "Barman";
+        public override int StartHour => 12;
+        public override int EndHour => 0;
+        public override int StatValue => 3;
+        public override float Salary => 62000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public BarmanSecondShift(Business business)
+            : base(business)
+        { }
+    }
+    public class NightBarmanFirstShift : Work
     {
         public override string Name => "Night barman";
-        public override int StartHour => 18;
-        public override int EndHour => 8;
+        public override int StartHour => 0;
+        public override int EndHour => 12;
         public override int StatValue => 3;
         public override float Salary => 67000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public NightBarman(Business business)
+        public NightBarmanFirstShift(Business business)
             : base(business)
         { }
     }
-    public class NightСashier : Work
+    public class NightBarmanSecondShift : Work
+    {
+        public override string Name => "Night barman";
+        public override int StartHour => 0;
+        public override int EndHour => 12;
+        public override int StatValue => 3;
+        public override float Salary => 65000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public NightBarmanSecondShift(Business business)
+            : base(business)
+        { }
+    }
+    public class NightСashierFirstShift : Work
     {
         public override string Name => "Night cashier";
         public override int StartHour => 19;
@@ -465,9 +651,26 @@ namespace Entity.Job
         public override float Salary => 57000f;
         public override bool WorkingFromHome => false;
         public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public NightСashier(Business business)
+        public NightСashierFirstShift(Business business)
+            : base(business)
+        { }
+    }
+    public class NightСashierSecondShift : Work
+    {
+        public override string Name => "Night cashier";
+        public override int StartHour => 19;
+        public override int EndHour => 8;
+        public override int StatValue => 3;
+        public override float Salary => 54000f;
+        public override bool WorkingFromHome => false;
+        public override bool FreeEmployee => false;
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
+        public override void WorkProccess()
+        { }
+        public NightСashierSecondShift(Business business)
             : base(business)
         { }
     }
