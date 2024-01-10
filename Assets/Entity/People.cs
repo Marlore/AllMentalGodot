@@ -2,6 +2,7 @@ using Data.Appartment;
 using Engine.Generator;
 using Engine.PlayerEngine;
 using Entity.Job;
+using Entity.Plans;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,10 @@ namespace Entity.People
     {
         park, bar,gym
     }
+    public enum _status
+    {
+        walk,work,sleep,talk,messingAround, hobby
+    }
     public class Person
     {
         // Убраться
@@ -30,12 +35,14 @@ namespace Entity.People
         public string FirstName;
         public string SecondName;
 
-        public int Intellegence;
-        public int Mental;
-        public int Beuty;
-        public int Healthfull;
-        public int Stress;
-        public float Age { get {
+        public float Intellegence;
+        public float Mental;
+        public float Beuty;
+        public float Healthfull;
+        public float Stress;
+        public float Social;
+        public float Age { 
+            get {
                 if (Alive)
                     return (PlayerInfo.CurrentCity.CityTime - Bithday).Days / 365;
                 else
@@ -47,6 +54,7 @@ namespace Entity.People
         public _orientation OrientationEnum;
         public _hobby HobbyEnum;
         public _sex SexEnum;
+        public _status StatusEnum;
 
         public DateTime AgeOfDeath;
         public DateTime DateOfDeath{get{ return new DateTime(Bithday.Ticks+AgeOfDeath.Ticks); } }
@@ -70,12 +78,41 @@ namespace Entity.People
                 else return null;
             } 
         }
+        public string Status { get
+            { 
+               switch (StatusEnum)
+                {
+                    case _status.hobby:
+                        return "Hobby";
+                        break;
+                    case _status.work:
+                        return "Working";
+                        break;
+                    case _status.walk:
+                        return "Goes to";
+                        break;
+                    case _status.sleep:
+                        return "Sleep";
+                        break;
+                    case _status.messingAround:
+                        return "Messing around";
+                        break;
+                    case _status.talk:
+                        return "Talk";
+                        break;
+                    default:
+                        return "Messing around";
+                }   
+
+            }
+        }
         public Work Job;
         public Person Mother;
         public Person Father;
         public Person Partner;
         public List<Person> Childs = new List<Person>();
         public Dictionary<Person, int> Contacts = new Dictionary<Person, int>();
+        public List<Plan> Plans = new List<Plan> { };
 
         public Apartments Apartment;
         public Guid CurrentLocation;
@@ -109,6 +146,7 @@ namespace Entity.People
             Mental = rand.Next(1, 11);
             Beuty = rand.Next(1, 11);
             Healthfull = rand.Next(1, 11);
+            Social = rand.Next(1, 11);
 
             Bithday = PersonGenerator.GenerateBith();
             HobbyEnum =FindHobby();
@@ -172,7 +210,6 @@ namespace Entity.People
 
             }
         }
-        private bool onJob = false;
         public void CallEmergency()
         {
             foreach(var person in PlayerInfo.CurrentCity.Locations[CurrentLocation].PeopleInside)
@@ -183,22 +220,24 @@ namespace Entity.People
         public void Movement()
         {
             if(PlayerInfo.CurrentCity.CityTime.Hour == Job.StartHour && Job.WorkingWeek.Contains(PlayerInfo.CurrentCity.CityTime.DayOfWeek))
-                onJob = true;
+                StatusEnum = _status.work;
             else if(PlayerInfo.CurrentCity.CityTime.Hour == Job.EndHour)
-                onJob = false;
-            if(onJob)
+                StatusEnum = _status.messingAround;
+            if (StatusEnum == _status.work)
             {
                 if (!this.Job.WorkingFromHome)
                     this.MoveTo(this.Job.WorkingCompany.Id);
                 else
                     this.MoveTo(this.Apartment.Id);
             }
-            else if(!onJob && PlayerInfo.CurrentCity.CityTime.Hour<= HomeTime&& Age>7)
+            else if(StatusEnum != _status.work && PlayerInfo.CurrentCity.CityTime.Hour<= HomeTime&& Age>7)
             {
+                StatusEnum = _status.hobby;
                 this.MoveTo(HobbyPlace);
             }
             else 
             {
+                StatusEnum = _status.messingAround;
                 this.MoveTo(this.Apartment.Id);
             }
              
@@ -241,6 +280,10 @@ namespace Entity.People
                     {
                         person.Contacts[this]++;
                         Contacts[person]++;
+                        if (Contacts[person] >= 10 && Plans.Count <= (int)Social/2)
+                        {
+
+                        }
                     }
                     else
                     {
@@ -265,7 +308,10 @@ namespace Entity.People
             }
            
         }
+        public void AskForPlans(Person person)
+        {
 
+        }
         public void FindJob()
         {
             if (this.Job == null)

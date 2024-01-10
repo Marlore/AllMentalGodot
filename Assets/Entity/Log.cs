@@ -9,6 +9,7 @@ namespace Entity.Log
     public class Records
     {
         public string Record;
+        public DateTime Date;
         
         public Records(Person caller, Person deadbody, Guid location, bool nameSaid) 
         {
@@ -18,11 +19,18 @@ namespace Entity.Log
                 Record = $"Unknown {caller.Sex} saw a dead body at {PlayerInfo.CurrentCity.CityTime} on {PlayerInfo.CurrentCity.Locations[location]}.";
             PlayerInfo.CurrentCity.PoliceDepList.ElementAt(0).Value.RecordsList.Add(this);
             PlayerInfo.CurrentCity.HospitalList.ElementAt(0).Value.RecordsList.Add(this);
+            Date = PlayerInfo.CurrentCity.CityTime;
         }
         public Records(Person partner1, Person partner2)
         {
             Record = $"{partner1.FirstName} {partner1.SecondName} {partner1.Bithday} and {partner2.FirstName} {partner2.SecondName} {partner2.Bithday} get married.";
             PlayerInfo.CurrentCity.CityAministration.RecordsList.Add(this);
+            Date = PlayerInfo.CurrentCity.CityTime;
+        }
+        public Records(Person newborn)
+        {
+            Record = $"{newborn.FirstName} {newborn.SecondName} was born";
+            Date = PlayerInfo.CurrentCity.CityTime;
         }
 
     }

@@ -18,4 +18,5 @@ namespace Entity.Plans
             Duration = duration;
         }
     }
+
 }

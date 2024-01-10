@@ -59,14 +59,14 @@ namespace Engine.Generator
             int num = rand.Next(0, SecondNamesList.Count - 1);
             return SecondNamesList[num].Trim();
         }
-        public static int GenerateNumFromTo(int first, int second) 
+        public static int GenerateNumFromTo(float first, float second) 
         {
             if (first > second)
-                return rand.Next(second, first);
+                return rand.Next((int)second, (int)first);
             else if (second > first)
-                return rand.Next(first,second);
+                return rand.Next((int)first,(int)second);
             else if (second == first)
-                return first;
+                return (int)first;
             else return 0;
         }
         public static DateTime GenerateBith()
