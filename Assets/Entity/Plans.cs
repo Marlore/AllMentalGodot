@@ -8,15 +8,18 @@ namespace Entity.Plans
 {
     public class Plan
     {
-        public Action PlannedAction;
+        public Guid PlannedPlace;
         public DateTime PlannedDate;
         public int Duration;
-        public Plan(Action plannedAction, DateTime plannedDate, int duration)
+        public List<Guid> InvitedPeople;
+        public Plan(Guid plannedPlace, DateTime plannedDate, int duration, Guid person)
         {
-            PlannedAction = plannedAction;
+            PlannedPlace = plannedPlace;
             PlannedDate = plannedDate;
             Duration = duration;
+            InvitedPeople.Add(person);
         }
+        public void Invite(Guid person)=> InvitedPeople.Add(person);
     }
 
 }

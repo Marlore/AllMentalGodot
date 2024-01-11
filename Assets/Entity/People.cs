@@ -6,6 +6,7 @@ using Entity.Plans;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Entity.People
 {
@@ -280,10 +281,7 @@ namespace Entity.People
                     {
                         person.Contacts[this]++;
                         Contacts[person]++;
-                        if (Contacts[person] >= 10 && Plans.Count <= (int)Social/2)
-                        {
-
-                        }
+                        
                     }
                     else
                     {
@@ -310,7 +308,62 @@ namespace Entity.People
         }
         public void AskForPlans(Person person)
         {
+            DateTime time= (DateTime)default;
+            int Starthour=12;
+            if (Contacts[person] >= 10 && Plans.Count < (int)Social / 2)
+            {
+                for(int i=0; i< 7; i++)
+                {
+                    DayOfWeek day = (DayOfWeek)i;
+                    if (person.Job.WorkingWeek!.Contains(day) && this.Job.WorkingWeek!.Contains(day))
+                    {
+                        int j = 0;
+                            time = new DateTime(PlayerInfo.CurrentCity.CityTime.AddDays(i).Ticks);
+                        while (time.DayOfWeek == day || j>=7);
+                        foreach(var plan in Plans)
+                            if(plan.PlannedDate.DayOfWeek == time.DayOfWeek)
+                            {
+                                for(int t= Starthour; t < 23; i++)
+                                {
+                                    if (plan.PlannedDate.Hour != t && t > plan.PlannedDate.AddMinutes(plan.Duration).Hour)
+                                        time = new DateTime(plan.PlannedDate.Year, plan.PlannedDate.Month, plan.PlannedDate.Day, Starthour, plan.PlannedDate.AddMinutes(plan.Duration).Minute + 30, 0);
+                                }
+                            }
+                    }
+                    //придумать формирование расписания встреч вне выходных
+                }
+                var completePlan = new Plan(HobbyPlace, time, (this.Contacts[person]) / 10 * 30, person.Id);
+                this.Plans.Add(completePlan);
+                int index = this.Plans.IndexOf(completePlan);
+                this.Plans[index].Invite(this.Id);
+                person.Plans.Add(this.Plans[index]);
+            }
+            else if(Contacts[person] >= 10 && Plans.Count == (int)Social / 2)
+            {
+                foreach (var plan in this.Plans)
+                {
+                    int rate = 0;
+                    foreach (var invitedPerson in plan.InvitedPeople)
+                    {
+                        if (person.Contacts.ContainsKey(PlayerInfo.CurrentCity.Population[invitedPerson]))
+                            rate = rate + Math.Sign(person.Contacts[PlayerInfo.CurrentCity.Population[invitedPerson]]);
+                    }
+                    if (rate > 0)
+                    {
+                        plan.InvitedPeople.Add(person.Id);
+                        foreach (var invitedPerson in plan.InvitedPeople)
+                        {
+                            foreach (var currentplan in PlayerInfo.CurrentCity.Population[invitedPerson].Plans)
+                                if (currentplan.PlannedDate == plan.PlannedDate)
+                                    currentplan.InvitedPeople.Add(person.Id);
+                        }
+                        plan.InvitedPeople.Add(person.Id);
+                        person.Plans.Add(plan);
+                    }
 
+                        
+                }
+            }
         }
         public void FindJob()
         {
