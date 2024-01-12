@@ -113,7 +113,7 @@ namespace Entity.People
         public Person Partner;
         public List<Person> Childs = new List<Person>();
         public Dictionary<Person, int> Contacts = new Dictionary<Person, int>();
-        public List<Plan> Plans = new List<Plan> { };
+        public List<Plan> Plans = new List<Plan>();
 
         public Apartments Apartment;
         public Guid CurrentLocation;
@@ -236,6 +236,16 @@ namespace Entity.People
                 StatusEnum = _status.hobby;
                 this.MoveTo(HobbyPlace);
             }
+            //else if (Plans[0]!=null)
+            //{
+            //    if(Plans[0].PlannedDate <= PlayerInfo.CurrentCity.CityTime && Plans[0].PlannedDate.AddMinutes(Plans[0].Duration) <= PlayerInfo.CurrentCity.CityTime)
+            //    {
+            //        MoveTo(Plans[0].PlannedPlace);
+            //        if (PlayerInfo.CurrentCity.CityTime == Plans[0].PlannedDate.AddMinutes(Plans[0].Duration))
+            //            foreach (var peopleId in Plans[0].InvitedPeople)
+            //                PlayerInfo.CurrentCity.Population[peopleId].Plans.RemoveAt(0);
+            //    }
+            //}
             else 
             {
                 StatusEnum = _status.messingAround;
@@ -281,7 +291,7 @@ namespace Entity.People
                     {
                         person.Contacts[this]++;
                         Contacts[person]++;
-                        
+                        AskForPlans(person);
                     }
                     else
                     {
@@ -345,8 +355,9 @@ namespace Entity.People
                     int rate = 0;
                     foreach (var invitedPerson in plan.InvitedPeople)
                     {
-                        if (person.Contacts.ContainsKey(PlayerInfo.CurrentCity.Population[invitedPerson]))
-                            rate = rate + Math.Sign(person.Contacts[PlayerInfo.CurrentCity.Population[invitedPerson]]);
+                        if(person.Job.WorkingWeek!.Contains(plan.PlannedDate.DayOfWeek))
+                            if (person.Contacts.ContainsKey(PlayerInfo.CurrentCity.Population[invitedPerson]))
+                                rate = rate + Math.Sign(person.Contacts[PlayerInfo.CurrentCity.Population[invitedPerson]]);
                     }
                     if (rate > 0)
                     {

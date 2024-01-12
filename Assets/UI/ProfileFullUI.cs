@@ -17,7 +17,6 @@ public partial class ProfileFullUI : Window
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public void Open(string id)
 	{
-		GD.Print(id);
 		this.Show();
 		Guid guid = Guid.Parse(id);
 		var person = PlayerInfo.CurrentCity.Population[guid];
@@ -28,6 +27,11 @@ public partial class ProfileFullUI : Window
 	{
 		this.Hide();
 	}
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        GD.Print(PlayerInfo.CurrentCity.CityTime);
+    }
 }
 
 
