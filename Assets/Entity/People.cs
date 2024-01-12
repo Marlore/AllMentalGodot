@@ -113,7 +113,7 @@ namespace Entity.People
         public Person Partner;
         public List<Person> Childs = new List<Person>();
         public Dictionary<Person, int> Contacts = new Dictionary<Person, int>();
-        public List<Plan> Plans = new List<Plan>();
+        public Dictionary<Guid,Plan> Plans = new Dictionary<Guid, Plan>();
 
         public Apartments Apartment;
         public Guid CurrentLocation;
@@ -320,7 +320,7 @@ namespace Entity.People
         {
             DateTime time= (DateTime)default;
             int Starthour=12;
-            if (Contacts[person] >= 10 && Plans.Count < (int)Social / 2)
+            if (Contacts[person] >= 1 && Plans.Count < (int)Social / 2)
             {
                 for(int i=0; i< 7; i++)
                 {
@@ -331,49 +331,37 @@ namespace Entity.People
                             time = new DateTime(PlayerInfo.CurrentCity.CityTime.AddDays(i).Ticks);
                         while (time.DayOfWeek == day || j>=7);
                         foreach(var plan in Plans)
-                            if(plan.PlannedDate.DayOfWeek == time.DayOfWeek)
+                            if(plan.Value.PlannedDate.DayOfWeek == time.DayOfWeek)
                             {
-                                for(int t= Starthour; t < 23; i++)
+                                for(int t= Starthour; t < 23; t++)
                                 {
-                                    if (plan.PlannedDate.Hour != t && t > plan.PlannedDate.AddMinutes(plan.Duration).Hour)
-                                        time = new DateTime(plan.PlannedDate.Year, plan.PlannedDate.Month, plan.PlannedDate.Day, Starthour, plan.PlannedDate.AddMinutes(plan.Duration).Minute + 30, 0);
-                                }
+                                    if (plan.Value.PlannedDate.Hour != t && t > plan.Value.PlannedDate.AddMinutes(plan.Value.Duration).Hour)
+                                        time = new DateTime(plan.Value.PlannedDate.Year, plan.Value.PlannedDate.Month, plan.Value.PlannedDate.Day, Starthour, plan.Value.PlannedDate.AddMinutes(plan.Value.Duration).Minute + 30, 0);
+                                }                                
                             }
                     }
                     //придумать формирование расписания встреч вне выходных
                 }
-                var completePlan = new Plan(HobbyPlace, time, (this.Contacts[person]) / 10 * 30, person.Id);
-                this.Plans.Add(completePlan);
-                int index = this.Plans.IndexOf(completePlan);
-                this.Plans[index].Invite(this.Id);
-                person.Plans.Add(this.Plans[index]);
+                var PlanId = Guid.NewGuid();
+                var completePlan = new Plan(HobbyPlace, time, (this.Contacts[person]) / 10 * 30, PlanId);
+                this.Plans.Add(PlanId,completePlan);
+                person.Plans.Add(PlanId,this.Plans[PlanId]);
             }
-            else if(Contacts[person] >= 10 && Plans.Count == (int)Social / 2)
+            else if(Contacts[person] >= 1 && Plans.Count >= (int)Social / 2)
             {
+                Guid id = default(Guid);
                 foreach (var plan in this.Plans)
-                {
-                    int rate = 0;
-                    foreach (var invitedPerson in plan.InvitedPeople)
+                {//поправить
+                    foreach (var personPlans in person.Plans)
                     {
-                        if(person.Job.WorkingWeek!.Contains(plan.PlannedDate.DayOfWeek))
-                            if (person.Contacts.ContainsKey(PlayerInfo.CurrentCity.Population[invitedPerson]))
-                                rate = rate + Math.Sign(person.Contacts[PlayerInfo.CurrentCity.Population[invitedPerson]]);
+                        if (!person.Job.WorkingWeek.Contains(plan.Value.PlannedDate.DayOfWeek) && !person.Plans.ContainsKey(plan.Key) && personPlans.Value.PlannedDate != plan.Value.PlannedDate)
+                            id = plan.Key;
+                        else
+                            id = default(Guid);
                     }
-                    if (rate > 0)
-                    {
-                        plan.InvitedPeople.Add(person.Id);
-                        foreach (var invitedPerson in plan.InvitedPeople)
-                        {
-                            foreach (var currentplan in PlayerInfo.CurrentCity.Population[invitedPerson].Plans)
-                                if (currentplan.PlannedDate == plan.PlannedDate)
-                                    currentplan.InvitedPeople.Add(person.Id);
-                        }
-                        plan.InvitedPeople.Add(person.Id);
-                        person.Plans.Add(plan);
-                    }
-
-                        
                 }
+                if (id != default(Guid))
+                    person.Plans.Add(id, this.Plans[id]);
             }
         }
         public void FindJob()

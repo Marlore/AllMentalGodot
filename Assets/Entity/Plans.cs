@@ -11,15 +11,14 @@ namespace Entity.Plans
         public Guid PlannedPlace;
         public DateTime PlannedDate;
         public int Duration;
-        public List<Guid> InvitedPeople;
-        public Plan(Guid plannedPlace, DateTime plannedDate, int duration, Guid person)
+        public Guid Id;
+        public Plan(Guid plannedPlace, DateTime plannedDate, int duration, Guid id)
         {
             PlannedPlace = plannedPlace;
             PlannedDate = plannedDate;
             Duration = duration;
-            InvitedPeople.Add(person);
+            Id = id;
         }
-        public void Invite(Guid person)=> InvitedPeople.Add(person);
     }
 
 }
