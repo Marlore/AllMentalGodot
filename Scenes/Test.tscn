@@ -13,7 +13,7 @@ energy = 5.04
 height = 1.0
 
 [node name="ProfileFull" type="Window" parent="."]
-process_thread_group = 2
+process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0
 mode = 4
@@ -53,7 +53,7 @@ vertical_alignment = 1
 
 [node name="DateOfBith" type="Label" parent="ProfileFull/Control/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "Age "
+text = "DateOfBith"
 vertical_alignment = 1
 
 [node name="Contact" type="Label" parent="ProfileFull/Control/HBoxContainer/VBoxContainer"]
@@ -81,9 +81,13 @@ item_1/text = "1231"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Name" type="Label" parent="ProfileFull/Control/HBoxContainer/VBoxContainer2"]
+[node name="Alive" type="Label" parent="ProfileFull/Control/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
-text = "Name And Second Name"
+text = "Alive"
+
+[node name="Location" type="Label" parent="ProfileFull/Control/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Location"
 
 [node name="ProfileShort" type="Window" parent="."]
 mode = 3

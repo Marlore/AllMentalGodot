@@ -26,7 +26,6 @@ public partial class ProfileFullUI : Window
 		Contacts.Clear();
 		foreach(var contact in person.Contacts)
 		{
-			
 			Contacts.AddItem($"Relationships with {contact.Key.FirstName} {contact.Key.SecondName} is {contact.Value}", null, true);
 		}
 	}
@@ -37,7 +36,6 @@ public partial class ProfileFullUI : Window
     public override void _Process(double delta)
     {
         base._Process(delta);
-        GD.Print(PlayerInfo.CurrentCity.CityTime);
     }
 }
 

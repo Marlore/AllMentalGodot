@@ -3,6 +3,7 @@ using Engine.Generator;
 using Engine.PlayerEngine;
 using Entity.Job;
 using Entity.Plans;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,22 +86,16 @@ namespace Entity.People
                 {
                     case _status.hobby:
                         return "Hobby";
-                        break;
                     case _status.work:
                         return "Working";
-                        break;
                     case _status.walk:
                         return "Goes to";
-                        break;
                     case _status.sleep:
                         return "Sleep";
-                        break;
                     case _status.messingAround:
                         return "Messing around";
-                        break;
                     case _status.talk:
                         return "Talk";
-                        break;
                     default:
                         return "Messing around";
                 }   
@@ -318,51 +313,97 @@ namespace Entity.People
         }
         public void AskForPlans(Person person)
         {
-            DateTime time= (DateTime)default;
-            int Starthour=12;
-            if (Contacts[person] >= 1 && Plans.Count < (int)Social / 2)
+            (int Day, int Month, int Year) DateOfPlans;
+            int digitWeek = -1;
+            Plan plan;
+            
+            if (this.Contacts[person]>=7 && this.Plans.Count<= (this.Social / 2))
             {
-                for(int i=0; i< 7; i++)
+                do
                 {
-                    DayOfWeek day = (DayOfWeek)i;
-                    if (person.Job.WorkingWeek!.Contains(day) && this.Job.WorkingWeek!.Contains(day))
-                    {
-                        int j = 0;
-                            time = new DateTime(PlayerInfo.CurrentCity.CityTime.AddDays(i).Ticks);
-                        while (time.DayOfWeek == day || j>=7);
-                        foreach(var plan in Plans)
-                            if(plan.Value.PlannedDate.DayOfWeek == time.DayOfWeek)
-                            {
-                                for(int t= Starthour; t < 23; t++)
-                                {
-                                    if (plan.Value.PlannedDate.Hour != t && t > plan.Value.PlannedDate.AddMinutes(plan.Value.Duration).Hour)
-                                        time = new DateTime(plan.Value.PlannedDate.Year, plan.Value.PlannedDate.Month, plan.Value.PlannedDate.Day, Starthour, plan.Value.PlannedDate.AddMinutes(plan.Value.Duration).Minute + 30, 0);
-                                }                                
-                            }
-                    }
-                    //придумать формирование расписания встреч вне выходных
+                    digitWeek = CalculatePlanDateOfWeek(digitWeek, person);
+                    DateOfPlans = CalculatePlanDate(digitWeek);
+                    plan = CreatePlan(DateOfPlans);
                 }
-                var PlanId = Guid.NewGuid();
-                var completePlan = new Plan(HobbyPlace, time, (this.Contacts[person]) / 10 * 30, PlanId);
-                this.Plans.Add(PlanId,completePlan);
-                person.Plans.Add(PlanId,this.Plans[PlanId]);
+                while (plan == null && digitWeek != 8);
+                if (plan != null)
+                {
+                    this.Plans.Add(plan.Id,plan);
+                    person.Plans.Add(plan.Id, plan);
+                }
+                
+
             }
-            else if(Contacts[person] >= 1 && Plans.Count >= (int)Social / 2)
+        }
+        private Plan CreatePlan((int Day, int Month, int Year) DateOfPlans)
+        {
+            int planHour = 10;
+            DateTime NewPlan = default(DateTime);
+            if (DateOfPlans.Day == 0 && DateOfPlans.Month == 0 && DateOfPlans.Year == 0)
+                return null;           
+            for (int i = planHour; i < 23; i++)
             {
-                Guid id = default(Guid);
-                foreach (var plan in this.Plans)
-                {//поправить
-                    foreach (var personPlans in person.Plans)
+                NewPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
+                for(int j = 0; j< this.Plans.Count; j++)
+                {
+                    var _plannedDate = this.Plans.ElementAt(j).Value.PlannedDate;
+                    if (_plannedDate.Day == DateOfPlans.Day && _plannedDate.Month == DateOfPlans.Month && _plannedDate.Year == DateOfPlans.Year && i > _plannedDate.Hour && i < _plannedDate.AddHours(this.Plans.ElementAt(j).Value.Duration).Hour)
                     {
-                        if (!person.Job.WorkingWeek.Contains(plan.Value.PlannedDate.DayOfWeek) && !person.Plans.ContainsKey(plan.Key) && personPlans.Value.PlannedDate != plan.Value.PlannedDate)
-                            id = plan.Key;
-                        else
-                            id = default(Guid);
+                        NewPlan = default(DateTime);
+                    }
+                    else
+                    {
+                        NewPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
                     }
                 }
-                if (id != default(Guid))
-                    person.Plans.Add(id, this.Plans[id]);
             }
+            if (NewPlan == default(DateTime))
+            {
+                return null;
+            }
+            else
+            {
+                return new Plan(HobbyPlace, NewPlan, 30 * (int)(this.Social / 2), Guid.NewGuid());
+            }
+                
+        }
+        private int CalculatePlanDateOfWeek(int _startedDayOfWeek, Person person) 
+        {
+            int digitWeek = 8;
+            for (int i = _startedDayOfWeek+1; i < 7; i++)
+            {
+                if (!person.Job.WorkingWeek.Contains((DayOfWeek)i) && !this.Job.WorkingWeek.Contains((DayOfWeek)i))
+                {
+                    digitWeek = i;
+                    
+                    break;
+                }
+                else
+                    digitWeek = 8;
+            }
+            return digitWeek;
+        }
+
+        private (int,int,int) CalculatePlanDate(int _digitWeek)
+        {
+            int day, month, year;
+            day = 0;
+            month = 0;
+            year = 0;
+            if (_digitWeek < 8)
+            {
+                for (int i = 1; i <= 7; i++)
+                {
+                    if (PlayerInfo.CurrentCity.CityTime.AddDays(i).DayOfWeek == (DayOfWeek)_digitWeek)
+                    {
+                        day = PlayerInfo.CurrentCity.CityTime.AddDays(i).Day;
+                        month = PlayerInfo.CurrentCity.CityTime.AddDays(i).Month;
+                        year = PlayerInfo.CurrentCity.CityTime.AddDays(i).Year;
+                        break;
+                    }
+                }
+            }
+            return (day, month, year);
         }
         public void FindJob()
         {
