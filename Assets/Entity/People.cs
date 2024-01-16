@@ -317,17 +317,18 @@ namespace Entity.People
             int digitWeek = -1;
             Plan plan;
             
-            if (this.Contacts[person]>=7 && this.Plans.Count<= (this.Social / 2))
+            if (this.Contacts[person]>=1 && this.Plans.Count<= (int)(this.Social / 2))
             {
                 do
                 {
                     digitWeek = CalculatePlanDateOfWeek(digitWeek, person);
                     DateOfPlans = CalculatePlanDate(digitWeek);
-                    plan = CreatePlan(DateOfPlans);
+                    plan = CreatePlan(DateOfPlans,person);
                 }
                 while (plan == null && digitWeek != 8);
                 if (plan != null)
                 {
+                    GD.Print(PlayerInfo.CurrentCity.CityTime);
                     this.Plans.Add(plan.Id,plan);
                     person.Plans.Add(plan.Id, plan);
                 }
@@ -335,35 +336,84 @@ namespace Entity.People
 
             }
         }
-        private Plan CreatePlan((int Day, int Month, int Year) DateOfPlans)
+        private Plan CreatePlan((int Day, int Month, int Year) DateOfPlans, Person person)
         {
+            // Ќе работает когда у кого-то есть план у кого-то нет
             int planHour = 10;
-            DateTime NewPlan = default(DateTime);
+            DateTime TimesPlan = default(DateTime);
+            GD.Print(person.Plans.Count + "  " + this.Plans.Count);
             if (DateOfPlans.Day == 0 && DateOfPlans.Month == 0 && DateOfPlans.Year == 0)
                 return null;           
             for (int i = planHour; i < 23; i++)
             {
-                NewPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
-                for(int j = 0; j< this.Plans.Count; j++)
+                TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
+                if (this.Plans.Count != 0 && person.Plans.Count != 0)
                 {
-                    var _plannedDate = this.Plans.ElementAt(j).Value.PlannedDate;
-                    if (_plannedDate.Day == DateOfPlans.Day && _plannedDate.Month == DateOfPlans.Month && _plannedDate.Year == DateOfPlans.Year && i > _plannedDate.Hour && i < _plannedDate.AddHours(this.Plans.ElementAt(j).Value.Duration).Hour)
+                    for (int j = 0; j < this.Plans.Count; j++)
                     {
-                        NewPlan = default(DateTime);
-                    }
-                    else
-                    {
-                        NewPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
+                        for (int k = 0; k < person.Plans.Count; k++)
+                        {
+                            GD.Print(person.Plans.Count + "  " + this.Plans.Count);
+                            var _plannedDate = this.Plans.ElementAt(j).Value.PlannedDate;
+                            var _personPlannedDate = person.Plans.ElementAt(k).Value.PlannedDate;
+                            if ((_plannedDate.Day == DateOfPlans.Day && _plannedDate.Month == DateOfPlans.Month && _plannedDate.Year == DateOfPlans.Year && i >= _plannedDate.Hour && i <= _plannedDate.AddMinutes(this.Plans.ElementAt(j).Value.Duration).Hour)
+                                || (_personPlannedDate.Day == DateOfPlans.Day && _personPlannedDate.Month == DateOfPlans.Month && _personPlannedDate.Year == DateOfPlans.Year && i >= _personPlannedDate.Hour && i <= _personPlannedDate.AddMinutes(person.Plans.ElementAt(k).Value.Duration).Hour))
+                            {
+                                TimesPlan = default(DateTime);
+                            }
+                            else
+                            {
+                                TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
+                            }
+                        }
                     }
                 }
+                else if(person.Plans.Count != 0 && this.Plans.Count == 0)
+                {
+                    for (int k = 0; k < person.Plans.Count; k++)
+                    {
+                        GD.Print(person.Plans.Count + "  " + this.Plans.Count);
+                        var _personPlannedDate = person.Plans.ElementAt(k).Value.PlannedDate;
+                        if (_personPlannedDate.Day == DateOfPlans.Day && _personPlannedDate.Month == DateOfPlans.Month && _personPlannedDate.Year == DateOfPlans.Year && i >= _personPlannedDate.Hour && i <= _personPlannedDate.AddMinutes(person.Plans.ElementAt(k).Value.Duration).Hour)
+                        {
+                            TimesPlan = default(DateTime);
+                        }
+                        else
+                        {
+                            TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
+                        }
+                    }
+                }
+                else if(person.Plans.Count == 0 && this.Plans.Count != 0)
+                {
+                    for (int j = 0; j < this.Plans.Count; j++)
+                    {
+                        GD.Print(person.Plans.Count + "  " + this.Plans.Count);
+                        var _plannedDate = this.Plans.ElementAt(j).Value.PlannedDate;
+                        if (_plannedDate.Day == DateOfPlans.Day && _plannedDate.Month == DateOfPlans.Month && _plannedDate.Year == DateOfPlans.Year && i >= _plannedDate.Hour && i <= _plannedDate.AddMinutes(this.Plans.ElementAt(j).Value.Duration).Hour)                            
+                        {
+                            TimesPlan = default(DateTime);
+                        }
+                        else
+                        {
+                            TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
+                        }
+                    }
+                }
+                else if(person.Plans.Count == 0 && this.Plans.Count == 0)
+                {
+                    TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
+                }
+                if (TimesPlan != default(DateTime))
+                    break;
             }
-            if (NewPlan == default(DateTime))
+            if (TimesPlan == default(DateTime))
             {
                 return null;
             }
             else
             {
-                return new Plan(HobbyPlace, NewPlan, 30 * (int)(this.Social / 2), Guid.NewGuid());
+                return new Plan(HobbyPlace, TimesPlan,Math.Max( 30 * (int)(this.Social / 2),30), Guid.NewGuid());
             }
                 
         }
@@ -375,7 +425,6 @@ namespace Entity.People
                 if (!person.Job.WorkingWeek.Contains((DayOfWeek)i) && !this.Job.WorkingWeek.Contains((DayOfWeek)i))
                 {
                     digitWeek = i;
-                    
                     break;
                 }
                 else
