@@ -38,7 +38,7 @@ public partial class ProfileFullUI : Window
 		Events.Clear();
         foreach (var plan in person.Plans)
         {
-            Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)}", null, true);
+            Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)} {plan.Key}", null, true);
         }
 		
     }
