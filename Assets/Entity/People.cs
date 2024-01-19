@@ -267,7 +267,7 @@ namespace Entity.People
         {
 
             Person person = null;
-            if (PlayerInfo.CurrentCity.Locations[CurrentLocation].PeopleInside.Count > 1 && PlayerInfo.CurrentCity.CityTime.Minute ==30)
+            if (PlayerInfo.CurrentCity.Locations[CurrentLocation].PeopleInside.Count > 1 && PlayerInfo.CurrentCity.CityTime.Minute == 30)
             {
                 do
                 {
@@ -317,7 +317,7 @@ namespace Entity.People
             int digitWeek = -1;
             Plan plan;
             
-            if (this.Contacts[person]>=1 && this.Plans.Count<= 5/*(int)(this.Social / 2)*/)
+            if (this.Contacts[person]>=7 && this.Plans.Count<= (int)(this.Social / 2))
             {
                 do
                 {
@@ -338,41 +338,33 @@ namespace Entity.People
         }
         private Plan CreatePlan((int Day, int Month, int Year) DateOfPlans, Person person)
         {
-            int planHour = 10;
+            
             DateTime TimesPlan = default(DateTime);
+            bool _isBusy = false;
             if (DateOfPlans.Day == 0 && DateOfPlans.Month == 0 && DateOfPlans.Year == 0)
                 return null;
-            for (int i = planHour; i < 23; i++)
+            for (int i = 10; i < 23; i++)
             {
+                _isBusy = false;
                 TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
                 if (this.Plans.Count != 0 && person.Plans.Count != 0)
                 {
                     for (int j = 0; j < this.Plans.Count; j++)
                     {
-                        for (int k = 0; k < person.Plans.Count; k++)
+                        var _plannedDate = this.Plans.ElementAt(j).Value.PlannedDate;
+                        if (_plannedDate.Day == DateOfPlans.Day && _plannedDate.Month == DateOfPlans.Month && _plannedDate.Year == DateOfPlans.Year && i >= _plannedDate.Hour && i <= _plannedDate.AddMinutes(this.Plans.ElementAt(j).Value.Duration).Hour)
                         {
-                            var _plannedDate = this.Plans.ElementAt(j).Value.PlannedDate;
-                            var _personPlannedDate = person.Plans.ElementAt(k).Value.PlannedDate;
-                            if ((_plannedDate.Day == DateOfPlans.Day && _plannedDate.Month == DateOfPlans.Month && _plannedDate.Year == DateOfPlans.Year && i >= _plannedDate.Hour && i <= _plannedDate.AddMinutes(this.Plans.ElementAt(j).Value.Duration).Hour)
-                                || (_personPlannedDate.Day == DateOfPlans.Day && _personPlannedDate.Month == DateOfPlans.Month && _personPlannedDate.Year == DateOfPlans.Year && i >= _personPlannedDate.Hour && i <= _personPlannedDate.AddMinutes(person.Plans.ElementAt(k).Value.Duration).Hour))
-                            {
-                                TimesPlan = default(DateTime);
-                            }
-                            else if((_plannedDate.Day == DateOfPlans.Day && _plannedDate.Month == DateOfPlans.Month && _plannedDate.Year == DateOfPlans.Year && i < _plannedDate.Hour && i > _plannedDate.AddMinutes(this.Plans.ElementAt(j).Value.Duration).Hour)
-                                || (_personPlannedDate.Day == DateOfPlans.Day && _personPlannedDate.Month == DateOfPlans.Month && _personPlannedDate.Year == DateOfPlans.Year && i < _personPlannedDate.Hour && i > _personPlannedDate.AddMinutes(person.Plans.ElementAt(k).Value.Duration).Hour))
-                            {
-                                TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
-                                return new Plan(HobbyPlace, TimesPlan,Math.Max( 30 * (int)(this.Social / 2),30), Guid.NewGuid());
-                            }
-                            else 
-                            {
-                                TimesPlan = default(DateTime);
-                            }
+                            _isBusy = true;
                         }
                     }
-                    if (TimesPlan != default(DateTime))
-                        break;
-
+                    for (int k = 0; k < person.Plans.Count; k++)
+                    {
+                        var _personPlannedDate = person.Plans.ElementAt(k).Value.PlannedDate;
+                        if(_personPlannedDate.Day == DateOfPlans.Day && _personPlannedDate.Month == DateOfPlans.Month && _personPlannedDate.Year == DateOfPlans.Year && i >= _personPlannedDate.Hour && i <= _personPlannedDate.AddMinutes(person.Plans.ElementAt(k).Value.Duration).Hour)
+                        {
+                            _isBusy = true;
+                        }
+                    }
                 }
                 else if(person.Plans.Count != 0 && this.Plans.Count == 0)
                 {
@@ -381,16 +373,7 @@ namespace Entity.People
                         var _personPlannedDate = person.Plans.ElementAt(k).Value.PlannedDate;
                         if (_personPlannedDate.Day == DateOfPlans.Day && _personPlannedDate.Month == DateOfPlans.Month && _personPlannedDate.Year == DateOfPlans.Year && i >= _personPlannedDate.Hour && i <= _personPlannedDate.AddMinutes(person.Plans.ElementAt(k).Value.Duration).Hour)
                         {
-                            TimesPlan = default(DateTime);
-                        }
-                        else if(_personPlannedDate.Day == DateOfPlans.Day && _personPlannedDate.Month == DateOfPlans.Month && _personPlannedDate.Year == DateOfPlans.Year && i < _personPlannedDate.Hour && i > _personPlannedDate.AddMinutes(person.Plans.ElementAt(k).Value.Duration).Hour)
-                        {
-                            TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
-                            return new Plan(HobbyPlace, TimesPlan,Math.Max( 30 * (int)(this.Social / 2),30), Guid.NewGuid());
-                        }
-                        else
-                        {
-                            TimesPlan = default(DateTime);
+                            _isBusy = true;
                         }
                     }
                 }
@@ -401,16 +384,7 @@ namespace Entity.People
                         var _plannedDate = this.Plans.ElementAt(j).Value.PlannedDate;
                         if (_plannedDate.Day == DateOfPlans.Day && _plannedDate.Month == DateOfPlans.Month && _plannedDate.Year == DateOfPlans.Year && i >= _plannedDate.Hour && i <= _plannedDate.AddMinutes(this.Plans.ElementAt(j).Value.Duration).Hour)                            
                         {
-                            TimesPlan = default(DateTime);
-                        }
-                        else if (_plannedDate.Day == DateOfPlans.Day && _plannedDate.Month == DateOfPlans.Month && _plannedDate.Year == DateOfPlans.Year && i < _plannedDate.Hour && i > _plannedDate.AddMinutes(this.Plans.ElementAt(j).Value.Duration).Hour)
-                        {
-                            TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
-                            return new Plan(HobbyPlace, TimesPlan,Math.Max( 30 * (int)(this.Social / 2),30), Guid.NewGuid());
-                        }
-                        else
-                        {
-                            TimesPlan = default(DateTime);
+                           _isBusy = true;
                         }
                     }
                 }
@@ -419,8 +393,15 @@ namespace Entity.People
                     TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
                     return new Plan(HobbyPlace, TimesPlan,Math.Max( 30 * (int)(this.Social / 2),30), Guid.NewGuid());
                 }
-                if(TimesPlan!=default(DateTime))
+                if(!_isBusy)
+                {
+                    TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
                     break;
+                }      
+                else 
+                {
+                    TimesPlan = default(DateTime);
+                }                 
                
             }
             if (TimesPlan == default(DateTime))
