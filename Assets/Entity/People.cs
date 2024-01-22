@@ -183,7 +183,57 @@ namespace Entity.People
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
-
+        private void Aged()
+        {
+            if ((PlayerInfo.CurrentCity.CityTime - Bithday).Ticks >= AgeOfDeath.Ticks)
+                Death(null, "Old Age");
+        }
+        public void FindJob()
+        {
+            if (this.Job == null)
+            {
+                if (Age <= 5)
+                {
+                    Job = new KinderGartenerYoung(this);
+                    Job.Worker = this.Id;
+                }
+                else if (Age >= 5 && Age < 7)
+                {
+                    Job = new KinderGartenerOld(this);
+                    Job.Worker = this.Id;
+                }
+                else if (Age >= 7 && Age < 18)
+                {
+                    Job = new SchoolStudent(this);
+                    Job.Worker = this.Id;
+                }
+                else if (Age >= 18 && Age <= 21)
+                {
+                    Job = new UniversityStudent(this);
+                    Job.Worker = this.Id;
+                }
+                else if (Age > 21 && Age < 60)
+                {
+                    float payment = 0f;
+                    Work work = new SelfEmployed();
+                    foreach (var job in PlayerInfo.CurrentCity.Vacancy)
+                    {
+                        if (payment < job.Value.Salary && job.Value.StatValue <= Intellegence && !job.Value.IsBusy)
+                        {
+                            work = job.Value;
+                            payment = job.Value.Salary;
+                        }
+                    }
+                    Job = work;
+                    Job.Worker = this.Id;
+                }
+                else if (Age >= 60)
+                {
+                    Job = new Retiree();
+                    Job.Worker = this.Id;
+                }
+            }
+        }
         public _hobby FindHobby()
         {
             var rand = new System.Random();
@@ -311,7 +361,7 @@ namespace Entity.People
             }
            
         }
-        public void AskForPlans(Person person)
+        private void AskForPlans(Person person)
         {
             (int Day, int Month, int Year) DateOfPlans;
             int digitWeek = -1;
@@ -335,6 +385,24 @@ namespace Entity.People
                 
 
             }
+        }
+        private Dictionary<Guid, Plan> PlanSort()
+        {//сделать нормально сортировку
+            Dictionary<Guid, Plan> Extencion = new Dictionary<Guid, Plan>();
+            (Guid id, Plan value) plan;
+            for (int write = 0; write < this.Plans.Count; write++)
+            {
+                for (int sort = 0; sort < this.Plans.Count - 1; sort++)
+                {
+                    if (DateTime.Compare(Plans.ElementAt(sort).Value.PlannedDate , Plans.ElementAt(sort+1).Value.PlannedDate)>0)
+                    {
+                        var DicElem = Plans.ElementAt(sort + 1);
+                        Plans[Plans.ElementAt(sort + 1).Key] = Plans[Plans.ElementAt(sort).Key];
+                        Plans[Plans.ElementAt(sort).Key] = plan;
+                    }
+                }
+            }
+            return Extencion;
         }
         private Plan CreatePlan((int Day, int Month, int Year) DateOfPlans, Person person)
         {
@@ -452,53 +520,6 @@ namespace Entity.People
             }
             return (day, month, year);
         }
-        public void FindJob()
-        {
-            if (this.Job == null)
-            {
-                if (Age <= 5)
-                {
-                    Job = new KinderGartenerYoung(this);
-                    Job.Worker = this.Id;
-                }
-                else if (Age >= 5 && Age<7)
-                {
-                    Job = new KinderGartenerOld(this);
-                    Job.Worker = this.Id;
-                }
-                else if (Age >= 7 && Age < 18)
-                {
-                    Job = new SchoolStudent(this);
-                    Job.Worker = this.Id;
-                }
-                else if (Age >= 18 && Age <= 21)
-                {
-                    Job = new UniversityStudent(this);
-                    Job.Worker = this.Id;
-                }
-                else if (Age > 21 && Age < 60)
-                {
-                    float payment = 0f;
-                    Work work = new SelfEmployed();
-                    foreach (var job in PlayerInfo.CurrentCity.Vacancy)
-                    {
-                        if (payment < job.Value.Salary && job.Value.StatValue <= Intellegence && !job.Value.IsBusy)
-                        {
-                            work = job.Value;
-                            payment = job.Value.Salary;
-                        }
-                    }
-                    Job = work;
-                    Job.Worker = this.Id;
-                }
-                else if (Age >= 60)
-                {
-                    Job = new Retiree();
-                    Job.Worker = this.Id;
-                }
-            }
-        }
-
         public void TryMarry()
         {
             foreach (var partner in Contacts) 
@@ -525,12 +546,7 @@ namespace Entity.People
                         break;
                     }
             }
-        }
-        private void Aged()
-        {
-            if ((PlayerInfo.CurrentCity.CityTime - Bithday).Ticks >= AgeOfDeath.Ticks)
-                Death(null, "Old Age");
-        }
+        }       
         private bool MarryAccept(Person person)
         {
             if (person.SexEnum != this.SexEnum && person.OrientationEnum == _orientation.Hetero)

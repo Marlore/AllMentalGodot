@@ -21,6 +21,7 @@ public partial class ProfileFullUI : Window
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public void Open(string id)
 	{
+		int indexContacts= 0;
         for (int i = 0; i < 0; i++)
         {
             GD.Print("First");
@@ -32,15 +33,10 @@ public partial class ProfileFullUI : Window
 		PersonAge.Text = "Age:" + person.Age +"     " +person.Plans.Count;
 		Contacts.Clear();
 		foreach(var contact in person.Contacts)
-		{
 			Contacts.AddItem($"Relationships with {contact.Key.FirstName} {contact.Key.SecondName} is {contact.Value}", null, true);
-		}
 		Events.Clear();
         foreach (var plan in person.Plans)
-        {
             Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)} {plan.Key}", null, true);
-        }
-		
     }
 	private void _on_close_requested()
 	{
