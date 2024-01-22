@@ -25,7 +25,7 @@ namespace Entity.People
     }
     public enum _status
     {
-        walk,work,sleep,talk,messingAround, hobby
+        walk,work,sleep,talk,messingAround, hobby, onDate
     }
     public class Person
     {
@@ -267,6 +267,17 @@ namespace Entity.People
         {
             if(PlayerInfo.CurrentCity.CityTime.Hour == Job.StartHour && Job.WorkingWeek.Contains(PlayerInfo.CurrentCity.CityTime.DayOfWeek))
                 StatusEnum = _status.work;
+            else if (Plans.Count >= 0)
+            {
+                if (Plans.ElementAt(0).Value.PlannedDate >= PlayerInfo.CurrentCity.CityTime && Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) <= PlayerInfo.CurrentCity.CityTime)
+                    StatusEnum = _status.onDate;
+                else if (Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) > PlayerInfo.CurrentCity.CityTime)
+                {
+                    Plans.Remove(Plans.ElementAt(0).Key);  
+                    StatusEnum = _status.messingAround;
+                }
+                   
+            }
             else if(PlayerInfo.CurrentCity.CityTime.Hour == Job.EndHour)
                 StatusEnum = _status.messingAround;
             if (StatusEnum == _status.work)
@@ -276,21 +287,16 @@ namespace Entity.People
                 else
                     this.MoveTo(this.Apartment.Id);
             }
-            else if(StatusEnum != _status.work && PlayerInfo.CurrentCity.CityTime.Hour<= HomeTime&& Age>7)
+            else if (StatusEnum == _status.onDate)
+            {
+                this.MoveTo(Plans.ElementAt(0).Value.PlannedPlace);
+            }
+            else if(StatusEnum != _status.work && StatusEnum !=_status.hobby && StatusEnum != _status.onDate && PlayerInfo.CurrentCity.CityTime.Hour<= HomeTime&& Age>7)
             {
                 StatusEnum = _status.hobby;
                 this.MoveTo(HobbyPlace);
             }
-            //else if (Plans[0]!=null)
-            //{
-            //    if(Plans[0].PlannedDate <= PlayerInfo.CurrentCity.CityTime && Plans[0].PlannedDate.AddMinutes(Plans[0].Duration) <= PlayerInfo.CurrentCity.CityTime)
-            //    {
-            //        MoveTo(Plans[0].PlannedPlace);
-            //        if (PlayerInfo.CurrentCity.CityTime == Plans[0].PlannedDate.AddMinutes(Plans[0].Duration))
-            //            foreach (var peopleId in Plans[0].InvitedPeople)
-            //                PlayerInfo.CurrentCity.Population[peopleId].Plans.RemoveAt(0);
-            //    }
-            //}
+            
             else 
             {
                 StatusEnum = _status.messingAround;
@@ -382,27 +388,15 @@ namespace Entity.People
                     this.Plans.Add(plan.Id,plan);
                     person.Plans.Add(plan.Id, plan);
                 }
-                
-
+                this.PlanSort();
+                person.PlanSort();
             }
         }
-        private Dictionary<Guid, Plan> PlanSort()
-        {//сделать нормально сортировку
+        private void PlanSort()
+        {
             Dictionary<Guid, Plan> Extencion = new Dictionary<Guid, Plan>();
-            (Guid id, Plan value) plan;
-            for (int write = 0; write < this.Plans.Count; write++)
-            {
-                for (int sort = 0; sort < this.Plans.Count - 1; sort++)
-                {
-                    if (DateTime.Compare(Plans.ElementAt(sort).Value.PlannedDate , Plans.ElementAt(sort+1).Value.PlannedDate)>0)
-                    {
-                        var DicElem = Plans.ElementAt(sort + 1);
-                        Plans[Plans.ElementAt(sort + 1).Key] = Plans[Plans.ElementAt(sort).Key];
-                        Plans[Plans.ElementAt(sort).Key] = plan;
-                    }
-                }
-            }
-            return Extencion;
+            Extencion = this.Plans.OrderBy(x => x.Value.PlannedDate).ToDictionary(x => x.Key, x => x.Value);
+            this.Plans =  Extencion;
         }
         private Plan CreatePlan((int Day, int Month, int Year) DateOfPlans, Person person)
         {

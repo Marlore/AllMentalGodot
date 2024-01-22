@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://Assets/UI/ProfileShort.cs" id="2_vc5ds"]
 
 [node name="MainDesk" type="Node2D"]
+metadata/_edit_vertical_guides_ = []
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 324)
