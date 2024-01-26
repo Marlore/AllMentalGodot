@@ -1,3 +1,4 @@
+using AllMentalGodot.Assets.Entity;
 using Data.Appartment;
 using Engine.Generator;
 using Engine.PlayerEngine;
@@ -109,6 +110,8 @@ namespace Entity.People
         public List<Person> Childs = new List<Person>();
         public Dictionary<Person, int> Contacts = new Dictionary<Person, int>();
         public Dictionary<Guid,Plan> Plans = new Dictionary<Guid, Plan>();
+
+        public Body body = new Body();
 
         public Apartments Apartment;
         public Guid CurrentLocation;
@@ -267,7 +270,7 @@ namespace Entity.People
         {
             if(PlayerInfo.CurrentCity.CityTime.Hour == Job.StartHour && Job.WorkingWeek.Contains(PlayerInfo.CurrentCity.CityTime.DayOfWeek))
                 StatusEnum = _status.work;
-            else if (Plans.Count >= 0)
+            else if (Plans.Count > 0)
             {
                 if (Plans.ElementAt(0).Value.PlannedDate >= PlayerInfo.CurrentCity.CityTime && Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) <= PlayerInfo.CurrentCity.CityTime)
                     StatusEnum = _status.onDate;
