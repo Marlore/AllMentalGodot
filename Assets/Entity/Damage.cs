@@ -8,7 +8,7 @@ namespace AllMentalGodot.Assets.Entity
 {
     public enum DamageType
     {
-        flat, sharp, slicing, temp
+        flat, sharp, slicing, temp, poison
     }
     public abstract class Damage
     {

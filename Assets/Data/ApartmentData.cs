@@ -1,4 +1,5 @@
-﻿using Engine.PlayerEngine;
+﻿using Data.HouseData;
+using Engine.PlayerEngine;
 using Entity.Locations;
 using Entity.People;
 using System;
@@ -21,10 +22,12 @@ namespace Data.Appartment
         public string RoomNumber;
         public int Floor;
         public string PhoneNumber;
+        public Houses InHouse;
         public List<Person> Residents;
         public List<Guid> PeopleInside { get; set; }
-        public Apartments(string adress, int number)
+        public Apartments(string adress, int number, Houses _inHouse)
         {
+            InHouse = _inHouse;
             Floor = (int)(number / 4f);
             int room = (Floor * 1000) + number;
             Id = Guid.NewGuid();
@@ -36,6 +39,21 @@ namespace Data.Appartment
             PeopleInside = new List<Guid>();
             PlayerInfo.CurrentCity.CityApartments.Add(Id,this);
             PlayerInfo.CurrentCity.Locations.Add(Id,this);
+        }
+    }
+    public class Room : ILocations
+    {
+        public Guid Id;
+        public string Destination;
+        public string Adress { get; set; }
+        public List<Guid> PeopleInside { get; set; }
+        public Room(string adress, string destination)
+        {
+
+            Adress = adress;
+            Destination = destination;
+            Id = Guid.NewGuid();
+            PlayerInfo.CurrentCity.Locations.Add(Id, this);
         }
     }
 }

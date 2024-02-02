@@ -1,4 +1,5 @@
-﻿using Engine.Generator;
+﻿using Data.Appartment;
+using Engine.Generator;
 using Engine.PlayerEngine;
 using Entity.Job;
 using Entity.Locations;
@@ -20,6 +21,7 @@ namespace Entity.Company
         public Guid Id;
         public List<Work> Vacancy= new List<Work>();
         public List<Guid> PeopleInside { get; set; }
+        public List<Room> Rooms = new List<Room>();
         public Business(string adress, int room) 
         {
             Id = Guid.NewGuid();
@@ -35,7 +37,9 @@ namespace Entity.Company
         public Park(string adress, int room)
             : base(adress, room)
         {
+            
             base.Adress = $"{room} {adress}";
+            Rooms.Add(new Room(base.Adress, "Gatehouse"));
             Name = CityGenerator.GenerateName(CityGenerator.ParkNamesList);
             Vacancy.Add(new JanitorFirstShift(this));
             Vacancy.Add(new JanitorSecondShift(this));
@@ -51,6 +55,9 @@ namespace Entity.Company
             : base(adress, room)
         {
             base.Adress = $"{room} {adress}";
+            Rooms.Add(new Room(base.Adress, "Office"));
+            Rooms.Add(new Room(base.Adress, "Director's Office"));
+            Rooms.Add(new Room(base.Adress, "Reception"));
             Name = "Labor Exchange";
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));

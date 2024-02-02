@@ -12,6 +12,8 @@ using Entity.Log;
 using Entity.Locations;
 using Engine.PlayerEngine;
 using System.Threading;
+using Godot;
+using System.Text.RegularExpressions;
 
 namespace Data.CityData
 {
@@ -79,52 +81,63 @@ namespace Data.CityData
 		{
 			for (int i = 0; i < 9; i++)
 			{
-				var street = new Streets();
-				CityStreets.Add(street.Id, street);
-			}
+				CreateStreet();
+            }
 			BuildInfrostructure();
 		}
-		public void PopulateTheCity(int populate)
+		private void CreateStreet()
 		{
-			for (int i = 0; i < populate; i++)
+            var street = new Streets();
+            street.HouseList.AddRange(street.CreateHouses(street.Adress, street.Length));
+            foreach (var House in street.HouseList)
+			{
+                House.ApartmentList.AddRange(House.CreateApartments(House.Adress, House.ApartmentCount));
+            }
+            GD.Print(CityApartments.Count);
+            CityStreets.Add(street.Id, street);
+        }
+		public void PopulateTheCity(int populate)
+        {
+            for (int i = 0; i < populate; i++)
 			{
 				var person = new Person();
 				Population.Add(person.Id,  person);
-			}
-			ReCreatePopulation();            
-		}
-		private bool Repopulate(Person person)
-		{
-			bool AllBusy = false;
-		 
-			for (int i = 0; i < CityApartments.Count; i++)
-				if (!CityApartments.ElementAt(i).Value.Busy)
-				{
-					person.Apartment = CityApartments.ElementAt(i).Value;
-					CityApartments.ElementAt(i).Value.Residents.Add(person);
-					AllBusy = false;
-					return AllBusy;
-				}
-				else
-					AllBusy = true;
-			return AllBusy;
-		}
-		public void ReCreatePopulation()
-		{
-			bool createStreet = false;
-			foreach(var person in Population)
-				if (person.Value.Apartment == null)
-					createStreet = Repopulate(person.Value);
-			if (createStreet)
-			{
-				var street = new Streets();
-				CityStreets.Add(street.Id, street);
-				ReCreatePopulation();
-			}
-		}
+            }
+            ReCreatePopulation();
+        }
+        private bool Repopulate(Person person)
+        {
+            bool AllBusy = false;
 
-		
-		public void BuildInfrostructure()
+            for (int i = 0; i < CityApartments.Count; i++)
+                if (!CityApartments.ElementAt(i).Value.Busy)
+                {
+                    person.Apartment = CityApartments.ElementAt(i).Value;
+                    CityApartments.ElementAt(i).Value.Residents.Add(person);
+                    AllBusy = false;
+                    return AllBusy;
+                }
+                else
+                    AllBusy = true;
+            return AllBusy;
+        }
+        public void ReCreatePopulation()
+        {
+            bool createStreet = false;
+            foreach (var person in Population)
+                if (person.Value.Apartment == null)
+                    createStreet = Repopulate(person.Value);
+            if (createStreet)
+            {
+                var street = new Streets(); 
+				CreateStreet();
+                ReCreatePopulation();
+            }
+        }
+
+
+
+        public void BuildInfrostructure()
 		{        
 		   var infostructer = new Dictionary<business, int>()
 				{
