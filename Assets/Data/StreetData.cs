@@ -1,4 +1,5 @@
 ﻿using Data.HouseData;
+using Data.SectionData;
 using Engine.Generator;
 using Engine.PlayerEngine;
 using Entity.Company;
@@ -16,17 +17,22 @@ namespace Data.StreetData
     {
         Random random = new Random();
         public string Adress { get; set; }
+        public List<Segment> Segments { get; set; }
+        public Segment EntryExitPoint { get; set; }
         public Guid Id;
         public int Length;        
         public List<Houses> HouseList = new List<Houses>();
         public Business Infostructer;
-        public List<Guid> PeopleInside { get; set; }
+      
         public Streets() 
         {
+            var _entryExit = new OnStreet(this);
+            Segments = new List<Segment>() {new Payphone(this), _entryExit };
+            EntryExitPoint = _entryExit;
+
             Adress = CityGenerator.GenerateName(CityGenerator.StreetsNamesList);
             Id= Guid.NewGuid();
             Length = random.Next(5, 12);
-            PeopleInside = new List<Guid>();
             PlayerInfo.CurrentCity.Locations.Add(Id, this);
         }
         public List<Houses> CreateHouses(string street, int count)

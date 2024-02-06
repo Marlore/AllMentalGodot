@@ -1,4 +1,5 @@
 ﻿using Data.Appartment;
+using Data.SectionData;
 using Data.StreetData;
 using Engine.PlayerEngine;
 using Entity.Company;
@@ -20,7 +21,9 @@ namespace Data.HouseData
         public List<Apartments> ApartmentList=  new List<Apartments> ();
         public List<Business> HouseBusiness = new List<Business> ();
         public Streets OnStreet;
-        public List<Guid> PeopleInside {get; set;}
+        public int NumberOfFloors;
+        public List<Segment> Segments { get; set; }
+        public Segment EntryExitPoint { get; set; }
 
         public Houses(string street,int number, Streets _onStreet) 
         {
@@ -30,9 +33,20 @@ namespace Data.HouseData
             Id = Guid.NewGuid();
             int rand = random.Next(0, ApartmentCountRandom.Count());
             ApartmentCount = ApartmentCountRandom[rand];
-            PeopleInside = new List<Guid>();
+            NumberOfFloors = ApartmentCount / 4+1;
             PlayerInfo.CurrentCity.CityHouses.Add(Id,this);
             PlayerInfo.CurrentCity.Locations.Add(Id, this);
+            
+            Segments = new List<Segment> ();
+            for(int i =0; i< NumberOfFloors; i++)
+            {
+                var hall = new Hallway(this, i);
+                if(i==0)
+                    EntryExitPoint = hall;
+                Segments.Add(hall);
+                Segments.Add(new Stairwell(this, i));
+            }
+
         }
         public List<Apartments> CreateApartments( string name, int count)
         {

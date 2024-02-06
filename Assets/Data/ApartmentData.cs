@@ -1,10 +1,12 @@
 ﻿using Data.HouseData;
+using Data.SectionData;
 using Engine.PlayerEngine;
 using Entity.Locations;
 using Entity.People;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Data.Appartment
 {
@@ -23,8 +25,9 @@ namespace Data.Appartment
         public int Floor;
         public string PhoneNumber;
         public Houses InHouse;
-        public List<Person> Residents;
-        public List<Guid> PeopleInside { get; set; }
+        public List<Person> Residents = new List<Person>();
+        public List<Segment> Segments { get; set; }
+        public Segment EntryExitPoint { get; set; }
         public Apartments(string adress, int number, Houses _inHouse)
         {
             InHouse = _inHouse;
@@ -33,27 +36,16 @@ namespace Data.Appartment
             Id = Guid.NewGuid();
             var rnd = new System.Random(Id.GetHashCode());
             PhoneNumber = rnd.Next(1000000,9999999).ToString();
-            Residents = new List<Person>();
             RoomNumber = room.ToString();
             Adress = $"{adress} {room}";
-            PeopleInside = new List<Guid>();
+
             PlayerInfo.CurrentCity.CityApartments.Add(Id,this);
             PlayerInfo.CurrentCity.Locations.Add(Id,this);
-        }
-    }
-    public class Room : ILocations
-    {
-        public Guid Id;
-        public string Destination;
-        public string Adress { get; set; }
-        public List<Guid> PeopleInside { get; set; }
-        public Room(string adress, string destination)
-        {
 
-            Adress = adress;
-            Destination = destination;
-            Id = Guid.NewGuid();
-            PlayerInfo.CurrentCity.Locations.Add(Id, this);
+            var _entryExit = new Hallway(this);
+            Segments = new List<Segment>() { new Kitchen(this), new BedRoom(this), new LivingRoom(this),new Toilet(this) , _entryExit};            
+            EntryExitPoint = _entryExit;
         }
     }
+   
 }

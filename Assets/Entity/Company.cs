@@ -1,4 +1,5 @@
 ﻿using Data.Appartment;
+using Data.SectionData;
 using Engine.Generator;
 using Engine.PlayerEngine;
 using Entity.Job;
@@ -21,25 +22,29 @@ namespace Entity.Company
         public Guid Id;
         public List<Work> Vacancy= new List<Work>();
         public List<Guid> PeopleInside { get; set; }
-        public List<Room> Rooms = new List<Room>();
+        public List<Segment> Segments { get; set; }
+        public Segment EntryExitPoint { get; set; }
         public Business(string adress, int room) 
         {
+           
             Id = Guid.NewGuid();
             Adress = $"{adress} 000{room}";
             PeopleInside = new List<Guid>();
             PlayerInfo.CurrentCity.CompanyList.Add(Id,this);
             PlayerInfo.CurrentCity.Locations.Add(Id, this);
+            Segments = new List<Segment>();
         }
     }
     public class Park: Business
     {
-        public override string Description => "Labor Exchange";
+        public override string Description => "Park";
         public Park(string adress, int room)
             : base(adress, room)
         {
-            
+            var _entryExit = new Outdoors(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Toilet(this), new StoreRoom(this) };
             base.Adress = $"{room} {adress}";
-            Rooms.Add(new Room(base.Adress, "Gatehouse"));
             Name = CityGenerator.GenerateName(CityGenerator.ParkNamesList);
             Vacancy.Add(new JanitorFirstShift(this));
             Vacancy.Add(new JanitorSecondShift(this));
@@ -54,16 +59,18 @@ namespace Entity.Company
         public LaborExchange(string adress, int room)
             : base(adress, room)
         {
+            var _entryExit= new Reception(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Toilet(this), new StoreRoom(this), new RecreationRoom(this),new OfficeSegment(this), new DirectorsOffice(this)  };
             base.Adress = $"{room} {adress}";
-            Rooms.Add(new Room(base.Adress, "Office"));
-            Rooms.Add(new Room(base.Adress, "Director's Office"));
-            Rooms.Add(new Room(base.Adress, "Reception"));
             Name = "Labor Exchange";
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
             Vacancy.Add(new Accountant(this));
             Vacancy.Add(new Accountant(this));
+            Vacancy.Add(new JanitorFirstShift(this));
+            Vacancy.Add(new JanitorSecondShift(this));
             PlayerInfo.CurrentCity.CityLaborExchange = this;
         }
     }
@@ -75,11 +82,16 @@ namespace Entity.Company
             : base(adress, room)
         {
             base.Adress = $"{room} {adress}";
+            var _entryExit = new Reception(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Toilet(this), new StoreRoom(this), new RecreationRoom(this), new OfficeSegment(this), new DirectorsOffice(this) };
             Name = "City Hall";
             Vacancy.Add(new Mayor(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Accountant(this));
             Vacancy.Add(new Accountant(this));
+            Vacancy.Add(new JanitorFirstShift(this));
+            Vacancy.Add(new JanitorSecondShift(this));
             PlayerInfo.CurrentCity.CityAministration = this;
         }
     }
@@ -106,6 +118,10 @@ namespace Entity.Company
         public Restaurants(string adress, int room)
             : base(adress, room)
         {
+            var _entryExit = new Reception(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Toilet(this),new Kitchen(this), new StoreRoom(this),new DiningRoom(this), new RecreationRoom(this), new OfficeSegment(this), new DirectorsOffice(this) };
+
             Name = CityGenerator.GenerateName(CityGenerator.RestaurantsNamesList);
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
@@ -134,6 +150,10 @@ namespace Entity.Company
         public Pharmacy(string adress, int room)
             : base(adress, room)
         {
+            var _entryExit = new Reception(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new RecreationRoom(this), new DirectorsOffice(this) };
+
             Name = CityGenerator.GenerateName(CityGenerator.PharmacyNamesList);
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
@@ -151,6 +171,10 @@ namespace Entity.Company
         public GroceryStore(string adress, int room)
             : base(adress, room)
         {
+            var _entryExit = new Reception(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Toilet(this), new StoreRoom(this), new DiningRoom(this), new RecreationRoom(this), new OfficeSegment(this), new DirectorsOffice(this) };
+
             Name = CityGenerator.GenerateName(CityGenerator.GroceryStoresNamesList);
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
@@ -177,6 +201,12 @@ namespace Entity.Company
         {
             Name = CityGenerator.GenerateName(CityGenerator.FactoryNamesList);
             base.Adress = $"{room} {adress}";
+
+            var _entryExit = new Workshop(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Toilet(this), new StoreRoom(this), new RecreationRoom(this), new OfficeSegment(this), new DirectorsOffice(this) };
+
+
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
@@ -198,6 +228,10 @@ namespace Entity.Company
         public PostMart(string adress, int room)
             : base(adress, room)
         {
+            var _entryExit = new Reception(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new StoreRoom(this), new RecreationRoom(this), new OfficeSegment(this), new DirectorsOffice(this) };
+
             Name = CityGenerator.GenerateName(CityGenerator.PostOfficeList);
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
@@ -216,6 +250,11 @@ namespace Entity.Company
             : base(adress, room)
         {
             Name =CityGenerator.GenerateName(CityGenerator.GymNamesList);
+            
+            var _entryExit = new Reception(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new StoreRoom(this), new RecreationRoom(this),new TrainingRoom(this),  new OfficeSegment(this), new DirectorsOffice(this) };
+
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
@@ -235,6 +274,11 @@ namespace Entity.Company
             : base(adress, room)
         {
             Name = CityGenerator.GenerateName(CityGenerator.OfficeNamesList);
+
+            var _entryExit = new OfficeSegment(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit,new RecreationRoom(this), new DirectorsOffice(this) };
+
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
             Vacancy.Add(new Manager(this));
@@ -254,6 +298,9 @@ namespace Entity.Company
         public Bar(string adress, int room)
             : base(adress, room)
         {
+            var _entryExit = new DiningRoom(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Reception(this), new RecreationRoom(this), new OfficeSegment(this), new DirectorsOffice(this), new StoreRoom(this), new Toilet(this) };
             Name = CityGenerator.GenerateName(CityGenerator.BarNamesList);
             Vacancy.Add(new Director(this));
             Vacancy.Add(new Secretary(this));
@@ -266,9 +313,7 @@ namespace Entity.Company
             Vacancy.Add(new JanitorSecondShift(this));
             PlayerInfo.CurrentCity.BarList.Add(this.Id, this);
         }
-        ~Bar(){
-
-        }
+      
     }
     public class KinderGarten : Business
     {
