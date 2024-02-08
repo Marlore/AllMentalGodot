@@ -1,7 +1,11 @@
 using AllMentalGodot.Assets.Entity;
 using Data.Appartment;
+using Data.HouseData;
+using Data.SectionData;
+using Data.StreetData;
 using Engine.Generator;
 using Engine.PlayerEngine;
+using Entity.Company;
 using Entity.Job;
 using Entity.Plans;
 using Godot;
@@ -114,7 +118,7 @@ namespace Entity.People
         public Body body = new Body();
 
         public Apartments Apartment;
-        public Guid CurrentLocation;
+        public Segment CurrentLocation;
         public Guid HobbyPlace;
         public DateTime Bithday;
         public Action Live;
@@ -152,7 +156,7 @@ namespace Entity.People
             HobbyPlace = FindHobbyPlace();
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
            //Live = () => { this.TryMarry(); this.FindJob();this.Movement();this.Talk(); this.Aged(); };
-            Live += this.TryMarry; Live += this.FindJob; Live += this.Movement; Live += this.Talk; Live += this.Aged; 
+            Live += this.TryMarry; Live += this.FindJob;/* Live += this.Movement; Live += this.Talk;*/ Live += this.Aged; 
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
@@ -182,7 +186,7 @@ namespace Entity.People
             HobbyPlace = FindHobbyPlace();
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
 
-            Live += this.TryMarry; Live += this.FindJob; Live += this.Movement; Live += this.Talk; Live += this.Aged;
+            Live += this.TryMarry; Live += this.FindJob;/* Live += this.Movement; Live += this.Talk;*/ Live += this.Aged;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
@@ -259,83 +263,263 @@ namespace Entity.People
 
             }
         }
-        public void CallEmergency()
+        //public void CallEmergency()
+        //{
+        //    foreach(var person in PlayerInfo.CurrentCity.Locations[CurrentLocation].PeopleInside)
+        //    {
+
+        //    }
+        //}
+        //public void Movement()
+        //{
+        //    if(PlayerInfo.CurrentCity.CityTime.Hour == Job.StartHour && Job.WorkingWeek.Contains(PlayerInfo.CurrentCity.CityTime.DayOfWeek))
+        //        StatusEnum = _status.work;
+        //    else if (Plans.Count > 0)
+        //    {
+        //        if (Plans.ElementAt(0).Value.PlannedDate >= PlayerInfo.CurrentCity.CityTime && Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) <= PlayerInfo.CurrentCity.CityTime)
+        //            StatusEnum = _status.onDate;
+        //        else if (Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) > PlayerInfo.CurrentCity.CityTime)
+        //        {
+        //            Plans.Remove(Plans.ElementAt(0).Key);  
+        //            StatusEnum = _status.messingAround;
+        //        }
+
+        //    }
+        //    else if(PlayerInfo.CurrentCity.CityTime.Hour == Job.EndHour)
+        //        StatusEnum = _status.messingAround;
+        //    if (StatusEnum == _status.work)
+        //    {
+        //        if (!this.Job.WorkingFromHome)
+        //            this.MoveTo(this.Job.WorkingCompany.Id);
+        //        else
+        //            this.MoveTo(this.Apartment.Id);
+        //    }
+        //    else if (StatusEnum == _status.onDate)
+        //    {
+        //        this.MoveTo(Plans.ElementAt(0).Value.PlannedPlace);
+        //    }
+        //    else if(StatusEnum != _status.work && StatusEnum !=_status.hobby && StatusEnum != _status.onDate && PlayerInfo.CurrentCity.CityTime.Hour<= HomeTime&& Age>7)
+        //    {
+        //        StatusEnum = _status.hobby;
+        //        this.MoveTo(HobbyPlace);
+        //    }
+
+        //    else 
+        //    {
+        //        StatusEnum = _status.messingAround;
+        //        this.MoveTo(this.Apartment.Id);
+        //    }
+
+        //}
+        private void MoveTo(Segment location)
         {
-            foreach(var person in PlayerInfo.CurrentCity.Locations[CurrentLocation].PeopleInside)
+            if (this.CurrentLocation.LocatedOn is Apartments)
             {
+                Apartments locatedApartPoint = this.CurrentLocation.LocatedOn as Apartments;
+                if (location.LocatedOn is Apartments)
+                {
+                    Apartments apartTarget = location.LocatedOn as Apartments;
+                    if (apartTarget.InHouse == locatedApartPoint.InHouse)
+                    {
+                        //движение
+                    }
+                    else if (apartTarget.InHouse != locatedApartPoint.InHouse)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Houses)
+                {
+                    Houses houseTarget = location.LocatedOn as Houses;
+                    if (locatedApartPoint.InHouse == houseTarget)
+                    {
+                        //движение
+                    }
+                    else if (locatedApartPoint.InHouse != houseTarget)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Business)
+                {
+                    Houses businessTarget = location.LocatedOn as Houses;
+                    if (locatedApartPoint.InHouse == businessTarget)
+                    {
+                        //движение
+                    }
+                    else if (locatedApartPoint.InHouse != businessTarget)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Streets)
+                {
+                    //движение
+                }
 
             }
-        }
-        public void Movement()
-        {
-            if(PlayerInfo.CurrentCity.CityTime.Hour == Job.StartHour && Job.WorkingWeek.Contains(PlayerInfo.CurrentCity.CityTime.DayOfWeek))
-                StatusEnum = _status.work;
-            else if (Plans.Count > 0)
+            else if (this.CurrentLocation.LocatedOn is Business)
             {
-                if (Plans.ElementAt(0).Value.PlannedDate >= PlayerInfo.CurrentCity.CityTime && Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) <= PlayerInfo.CurrentCity.CityTime)
-                    StatusEnum = _status.onDate;
-                else if (Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) > PlayerInfo.CurrentCity.CityTime)
+                Business LocatedBussinessPoint = this.CurrentLocation.LocatedOn as Business;
+                if (location.LocatedOn is Apartments)
                 {
-                    Plans.Remove(Plans.ElementAt(0).Key);  
-                    StatusEnum = _status.messingAround;
+                    Apartments apartTarget = location.LocatedOn as Apartments;
+                    if (apartTarget.InHouse == LocatedBussinessPoint.InHouse)
+                    {
+                        //движение
+                    }
+                    else if (apartTarget.InHouse != LocatedBussinessPoint.InHouse)
+                    {
+                        //движение
+                    }
                 }
-                   
+                else if (location.LocatedOn is Houses)
+                {
+                    Houses houseTarget = location.LocatedOn as Houses;
+                    if (LocatedBussinessPoint.InHouse == houseTarget)
+                    {
+                        //движение
+                    }
+                    else if (LocatedBussinessPoint.InHouse != houseTarget)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Business)
+                {
+                    Houses businessTarget = location.LocatedOn as Houses;
+                    if (LocatedBussinessPoint.InHouse == businessTarget)
+                    {
+                        //движение
+                    }
+                    else if (LocatedBussinessPoint.InHouse != businessTarget)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Streets)
+                {
+                    //движение
+                }
             }
-            else if(PlayerInfo.CurrentCity.CityTime.Hour == Job.EndHour)
-                StatusEnum = _status.messingAround;
-            if (StatusEnum == _status.work)
+            else if (this.CurrentLocation.LocatedOn is Houses)
             {
-                if (!this.Job.WorkingFromHome)
-                    this.MoveTo(this.Job.WorkingCompany.Id);
-                else
-                    this.MoveTo(this.Apartment.Id);
+                Houses LocatedHousePoint = this.CurrentLocation.LocatedOn as Houses;
+                if (location.LocatedOn is Apartments)
+                {
+                    Apartments apartTarget = location.LocatedOn as Apartments;
+                    if (apartTarget.InHouse == LocatedHousePoint)
+                    {
+                        //движение
+                    }
+                    else if (apartTarget.InHouse != LocatedHousePoint)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Houses)
+                {
+                    Houses houseTarget = location.LocatedOn as Houses;
+                    if (LocatedHousePoint == houseTarget)
+                    {
+                        //движение
+                    }
+                    else if (LocatedHousePoint != houseTarget)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Business)
+                {
+                    Houses businessTarget = location.LocatedOn as Houses;
+                    if (LocatedHousePoint == businessTarget)
+                    {
+                        //движение
+                    }
+                    else if (LocatedHousePoint != businessTarget)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Streets)
+                {
+                    //движение
+                }
             }
-            else if (StatusEnum == _status.onDate)
+            else if (this.CurrentLocation.LocatedOn is Streets)
             {
-                this.MoveTo(Plans.ElementAt(0).Value.PlannedPlace);
+                Streets LocatedStreetPoint = this.CurrentLocation.LocatedOn as Streets;
+                if (location.LocatedOn is Apartments)
+                {
+                    Apartments apartTarget = location.LocatedOn as Apartments;
+                    if (apartTarget.InHouse.OnStreet == LocatedStreetPoint)
+                    {
+                        //движение
+                    }
+                    else if (apartTarget.InHouse.OnStreet != LocatedStreetPoint)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Houses)
+                {
+                    Houses houseTarget = location.LocatedOn as Houses;
+                    if (LocatedStreetPoint == houseTarget.OnStreet)
+                    {
+                        //движение
+                    }
+                    else if (LocatedStreetPoint != houseTarget.OnStreet)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Business)
+                {
+                    Houses businessTarget = location.LocatedOn as Houses;
+                    if (LocatedStreetPoint == businessTarget.OnStreet)
+                    {
+                        //движение
+                    }
+                    else if (LocatedStreetPoint != businessTarget.OnStreet)
+                    {
+                        //движение
+                    }
+                }
+                else if (location.LocatedOn is Streets)
+                {
+                    Streets StreetTarget = location.LocatedOn as Streets;
+                    if (LocatedStreetPoint == StreetTarget)
+                    {
+
+                    }
+                    else if(LocatedStreetPoint != StreetTarget)
+                    {
+
+                    }
+                }
             }
-            else if(StatusEnum != _status.work && StatusEnum !=_status.hobby && StatusEnum != _status.onDate && PlayerInfo.CurrentCity.CityTime.Hour<= HomeTime&& Age>7)
+            // Обдумать где проводить инициализацию
+            else if (this.CurrentLocation == null)
             {
-                StatusEnum = _status.hobby;
-                this.MoveTo(HobbyPlace);
+                this.CurrentLocation = this.Apartment.Segments.Find(x => x is BedRoom);
+                this.CurrentLocation.PeopleInside.Add(this.Id);
             }
             
-            else 
-            {
-                StatusEnum = _status.messingAround;
-                this.MoveTo(this.Apartment.Id);
-            }
-             
-        }
-        private void MoveTo(Guid location)
-        {
-            if (this.CurrentLocation != location && this.CurrentLocation != default(Guid))
-            {
-                PlayerInfo.CurrentCity.Locations[this.CurrentLocation].PeopleInside.Remove(this.Id);
-                PlayerInfo.CurrentCity.Locations[location].PeopleInside.Add(this.Id);
-                this.CurrentLocation = location;
-            }
-            else if(this.CurrentLocation == default(Guid))
-            {
-                this.CurrentLocation = this.Apartment.Id;
-                PlayerInfo.CurrentCity.Locations[this.Apartment.Id].PeopleInside.Add(this.Id);
-            }
         }
         private System.Random randomtalk = new System.Random();
         public void Talk()
         {
-
             Person person = null;
-            if (PlayerInfo.CurrentCity.Locations[CurrentLocation].PeopleInside.Count > 1 && PlayerInfo.CurrentCity.CityTime.Minute == 30)
+            if (this.CurrentLocation.PeopleInside.Count > 1 && PlayerInfo.CurrentCity.CityTime.Minute == 30)
             {
                 do
                 {
-                    int rand = randomtalk.Next(0, PlayerInfo.CurrentCity.Locations[CurrentLocation].PeopleInside.Count);
-                    var id = PlayerInfo.CurrentCity.Locations[CurrentLocation].PeopleInside[rand];
+                    int rand = randomtalk.Next(0, this.CurrentLocation.PeopleInside.Count);
+                    var id = this.CurrentLocation.PeopleInside[rand];
                     person = PlayerInfo.CurrentCity.Population[id];
                 }
                 while (person == this);
-            }     
+            }
             if (person != null)
             {
                 if (Contacts.ContainsKey(person))
@@ -356,19 +540,18 @@ namespace Entity.People
                 else
                 {
                     int random = randomtalk.Next(0, 10);
-                    if(random> Math.Abs(person.Mental - this.Mental))
+                    if (random > Math.Abs(person.Mental - this.Mental))
                     {
                         person.Contacts.Add(this, 1);
                         Contacts.Add(person, 1);
                     }
                     else
                     {
-                        person.Contacts.Add(this,-1);
+                        person.Contacts.Add(this, -1);
                         Contacts.Add(person, -1);
                     }
                 }
             }
-           
         }
         private void AskForPlans(Person person)
         {

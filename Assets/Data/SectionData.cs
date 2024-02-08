@@ -1,4 +1,7 @@
-﻿using Entity.Locations;
+﻿using Data.StreetData;
+using Engine.PlayerEngine;
+using Entity.Locations;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +15,16 @@ namespace Data.SectionData
     {
         public abstract string Purpose { get; }
         public string Adress;
+        public Guid Id;
         public List<Guid> PeopleInside = new List<Guid>();
         public ILocations LocatedOn;
         public Segment(ILocations location) 
         {
+            Id = Guid.NewGuid();
             LocatedOn = location;
             Adress = location.Adress + " " + Purpose;
+            PlayerInfo.CurrentCity.CitySegments.Add(Id, this);
+            GD.Print(LocatedOn is Streets);
         }
     }
     public class StoreRoom : Segment

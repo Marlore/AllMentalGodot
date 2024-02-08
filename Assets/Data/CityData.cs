@@ -14,6 +14,7 @@ using Engine.PlayerEngine;
 using System.Threading;
 using Godot;
 using System.Text.RegularExpressions;
+using Data.SectionData;
 
 namespace Data.CityData
 {
@@ -29,6 +30,7 @@ namespace Data.CityData
 		public Dictionary<Guid, Streets> CityStreets = new Dictionary<Guid, Streets>();
 		public Dictionary<Guid, Houses> CityHouses = new Dictionary<Guid, Houses>();
 		public Dictionary<Guid, Apartments> CityApartments = new Dictionary<Guid, Apartments>();
+		public Dictionary<Guid, Segment> CitySegments = new Dictionary<Guid, Segment>();
 
 		public Dictionary<Guid, Business> CompanyList = new Dictionary<Guid, Business>();
 		public Dictionary<Guid, Work> Vacancy = new Dictionary<Guid, Work>();
@@ -153,13 +155,15 @@ namespace Data.CityData
 				};
 			foreach (var street in CityStreets)
 			{
-				if (street.Value.Infostructer == null)
+				if (!street.Value.HaveInfostructer)
 				{
 					int rand = random.Next(0, infostructer.Count);
 					var creator = new AbstractFactory(); 
 					var key = infostructer.ElementAt(rand).Key;
-					var company = creator.CompanyCreator(key, street.Value.Adress, street.Value.HouseList.Count + 1);
-					street.Value.Infostructer = company;
+					var house = street.Value.CreateHouseForBusiness();
+					street.Value.HouseList.Add(house);
+                    var company = creator.CompanyCreator(key, street.Value.Adress, street.Value.HouseList.Count + 1, house);
+					house.Infostructer = company;
 					infostructer[key]--;
 					if (infostructer[key] <= 0)
 						infostructer.Remove(key);
@@ -183,7 +187,7 @@ namespace Data.CityData
 							int rand = random.Next(0, business.Count);
 							var creator = new AbstractFactory();
 							var key = business.ElementAt(rand).Key;
-							var company = creator.CompanyCreator(key, house.Adress, house.HouseBusiness.Count + 1);
+							var company = creator.CompanyCreator(key, house.Adress, house.HouseBusiness.Count + 1, house);
 							house.HouseBusiness.Add(company);
 							business[key]--;
 							if (business[key] <= 0)

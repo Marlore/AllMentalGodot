@@ -1,4 +1,5 @@
 ﻿using Data.Appartment;
+using Data.HouseData;
 using Data.SectionData;
 using Engine.Generator;
 using Engine.PlayerEngine;
@@ -24,7 +25,8 @@ namespace Entity.Company
         public List<Guid> PeopleInside { get; set; }
         public List<Segment> Segments { get; set; }
         public Segment EntryExitPoint { get; set; }
-        public Business(string adress, int room) 
+        public Houses InHouse;
+        public Business(string adress, int room, Houses _inHouse) 
         {
            
             Id = Guid.NewGuid();
@@ -33,13 +35,15 @@ namespace Entity.Company
             PlayerInfo.CurrentCity.CompanyList.Add(Id,this);
             PlayerInfo.CurrentCity.Locations.Add(Id, this);
             Segments = new List<Segment>();
+            InHouse = _inHouse;
+
         }
     }
     public class Park: Business
     {
         public override string Description => "Park";
-        public Park(string adress, int room)
-            : base(adress, room)
+        public Park(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             var _entryExit = new Outdoors(this);
             EntryExitPoint = _entryExit;
@@ -56,8 +60,8 @@ namespace Entity.Company
     public class LaborExchange : Business
     {
         public override string Description => "Labor Exchange";
-        public LaborExchange(string adress, int room)
-            : base(adress, room)
+        public LaborExchange(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             var _entryExit= new Reception(this);
             EntryExitPoint = _entryExit;
@@ -78,8 +82,8 @@ namespace Entity.Company
     {
         public override string Description => "Administration";
         public List<Records> RecordsList = new List<Records>();
-        public Administration(string adress, int room)
-            : base(adress, room)
+        public Administration(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             base.Adress = $"{room} {adress}";
             var _entryExit = new Reception(this);
@@ -98,8 +102,8 @@ namespace Entity.Company
     public class CoffeShop: Business
     {
         public override string Description => "Coffe Shop";
-        public CoffeShop(string adress, int room)
-            : base(adress, room)
+        public CoffeShop(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             Name = CityGenerator.GenerateName(CityGenerator.CoffeNamesList);
             Vacancy.Add(new Director(this));
@@ -115,8 +119,8 @@ namespace Entity.Company
     public class Restaurants : Business
     {
         public override string Description => "Restaurants";
-        public Restaurants(string adress, int room)
-            : base(adress, room)
+        public Restaurants(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             var _entryExit = new Reception(this);
             EntryExitPoint = _entryExit;
@@ -147,8 +151,8 @@ namespace Entity.Company
     public class Pharmacy : Business
     {
         public override string Description => "Pharmacy";
-        public Pharmacy(string adress, int room)
-            : base(adress, room)
+        public Pharmacy(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             var _entryExit = new Reception(this);
             EntryExitPoint = _entryExit;
@@ -168,8 +172,8 @@ namespace Entity.Company
     {
        
         public override string Description => "Grocery Store";
-        public GroceryStore(string adress, int room)
-            : base(adress, room)
+        public GroceryStore(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             var _entryExit = new Reception(this);
             EntryExitPoint = _entryExit;
@@ -196,8 +200,8 @@ namespace Entity.Company
     {
         
         public override string Description => "Factory";
-        public Factory(string adress, int room)
-            : base(adress, room)
+        public Factory(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             Name = CityGenerator.GenerateName(CityGenerator.FactoryNamesList);
             base.Adress = $"{room} {adress}";
@@ -225,8 +229,8 @@ namespace Entity.Company
     public class PostMart : Business
     {
         public override string Description => "Postmart";
-        public PostMart(string adress, int room)
-            : base(adress, room)
+        public PostMart(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             var _entryExit = new Reception(this);
             EntryExitPoint = _entryExit;
@@ -246,8 +250,8 @@ namespace Entity.Company
     public class Gym : Business
     {
         public override string Description => "Gym";
-        public Gym(string adress, int room)
-            : base(adress, room)
+        public Gym(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             Name =CityGenerator.GenerateName(CityGenerator.GymNamesList);
             
@@ -270,8 +274,8 @@ namespace Entity.Company
     public class Office : Business
     {
         public override string Description => "Office";
-        public Office(string adress, int room)
-            : base(adress, room)
+        public Office(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             Name = CityGenerator.GenerateName(CityGenerator.OfficeNamesList);
 
@@ -295,8 +299,8 @@ namespace Entity.Company
     {
        
         public override string Description => "Bar";
-        public Bar(string adress, int room)
-            : base(adress, room)
+        public Bar(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             var _entryExit = new DiningRoom(this);
             EntryExitPoint = _entryExit;
@@ -319,8 +323,8 @@ namespace Entity.Company
     {
         public override string Description => "Kindergarten";
         public List<Guid> Students = new List<Guid>();
-        public KinderGarten(string adress, int room)
-            : base(adress, room)
+        public KinderGarten(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             Name = CityGenerator.GenerateName(CityGenerator.SchoolNamesList);
             base.Adress = $"{room} {adress}";
@@ -344,8 +348,8 @@ namespace Entity.Company
     {
         public override string Description => "School";
         public List<Guid> Students = new List<Guid>();
-        public School(string adress, int room)
-            : base(adress, room)
+        public School(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             Name = CityGenerator.GenerateName(CityGenerator.SchoolNamesList);
             base.Adress = $"{room} {adress}";
@@ -369,8 +373,8 @@ namespace Entity.Company
     {
         public override string Description => "University";
         public List<Guid> Students = new List<Guid>();
-        public University(string adress, int room)
-            : base(adress, room)
+        public University(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             Name = "Central University";
             base.Adress = $"{room} {adress}";
@@ -395,8 +399,8 @@ namespace Entity.Company
         public override string Description => "Hospital";
         public List<Guid> Patient = new List<Guid>();
         public List<Records> RecordsList = new List<Records>();
-        public Hospital(string adress, int room)
-            : base(adress, room)
+        public Hospital(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             Name = CityGenerator.GenerateName(CityGenerator.HospitalNamesList);
             base.Adress = $"{room} {adress}";
@@ -422,8 +426,8 @@ namespace Entity.Company
         public override string Description => "Police Department";
         public List<Records> RecordsList = new List<Records>();
         public List<Guid> Client = new List<Guid>();
-        public Police(string adress, int room)
-            : base(adress, room)
+        public Police(string adress, int room, Houses _inHouse)
+            : base(adress, room, _inHouse)
         {
             Name = "Police Department";
             base.Adress = $"{room} {adress}";

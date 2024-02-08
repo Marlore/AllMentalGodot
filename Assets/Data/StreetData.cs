@@ -22,8 +22,10 @@ namespace Data.StreetData
         public Guid Id;
         public int Length;        
         public List<Houses> HouseList = new List<Houses>();
-        public Business Infostructer;
-      
+        public bool HaveInfostructer;
+
+
+
         public Streets() 
         {
             var _entryExit = new OnStreet(this);
@@ -34,6 +36,7 @@ namespace Data.StreetData
             Id= Guid.NewGuid();
             Length = random.Next(5, 12);
             PlayerInfo.CurrentCity.Locations.Add(Id, this);
+            HaveInfostructer = false;
         }
         public List<Houses> CreateHouses(string street, int count)
         {
@@ -42,5 +45,10 @@ namespace Data.StreetData
                 houses.Add(new Houses(street, i + 1,this));
             return houses;
         }
+        public Houses CreateHouseForBusiness()
+        {
+            return new Houses(this.Adress, Length, this, true);
+        }
+
     }
 }
