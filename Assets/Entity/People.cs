@@ -119,6 +119,7 @@ namespace Entity.People
 
         public Apartments Apartment;
         public Segment CurrentLocation;
+        private Segment Destination;
         public Guid HobbyPlace;
         public DateTime Bithday;
         public Action Live;
@@ -311,48 +312,53 @@ namespace Entity.People
         //    }
 
         //}
-        private void MoveTo(Segment location)
+        private void MoveTo()
         {
             if (this.CurrentLocation.LocatedOn is Apartments)
             {
                 Apartments locatedApartPoint = this.CurrentLocation.LocatedOn as Apartments;
-                if (location.LocatedOn is Apartments)
+                if (Destination.LocatedOn is Apartments)
                 {
-                    Apartments apartTarget = location.LocatedOn as Apartments;
-                    if (apartTarget.InHouse == locatedApartPoint.InHouse)
+                    Apartments apartTarget = Destination.LocatedOn as Apartments;
+                    if(locatedApartPoint == apartTarget)
                     {
-                        //движение
+                        CurrentLocation.PeopleInside.Remove(this.Id);
+
                     }
-                    else if (apartTarget.InHouse != locatedApartPoint.InHouse)
+                    else if (locatedApartPoint != apartTarget && this.CurrentLocation != locatedApartPoint.EntryExitPoint)
                     {
-                        //движение
+                        //Перейти на точку выхода
+                    }
+                    else if (locatedApartPoint != apartTarget && this.CurrentLocation == locatedApartPoint.EntryExitPoint)
+                    {
+                        //Выйти в холл
                     }
                 }
-                else if (location.LocatedOn is Houses)
+                else if (Destination.LocatedOn is Houses)
                 {
-                    Houses houseTarget = location.LocatedOn as Houses;
-                    if (locatedApartPoint.InHouse == houseTarget)
+                    Houses houseTarget = Destination.LocatedOn as Houses;
+                    if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
                     {
-                        //движение
+                        //Перейти на точку выхода
                     }
-                    else if (locatedApartPoint.InHouse != houseTarget)
+                    else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
                     {
-                        //движение
+                        //Выйти в холл
                     }
                 }
-                else if (location.LocatedOn is Business)
+                else if (Destination.LocatedOn is Business)
                 {
-                    Houses businessTarget = location.LocatedOn as Houses;
-                    if (locatedApartPoint.InHouse == businessTarget)
+                    Houses businessTarget = Destination.LocatedOn as Houses;
+                    if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
                     {
-                        //движение
+                        //Перейти на точку выхода
                     }
-                    else if (locatedApartPoint.InHouse != businessTarget)
+                    else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
                     {
-                        //движение
+                        //Выйти в холл
                     }
                 }
-                else if (location.LocatedOn is Streets)
+                else if (Destination.LocatedOn is Streets)
                 {
                     //движение
                 }
@@ -361,77 +367,194 @@ namespace Entity.People
             else if (this.CurrentLocation.LocatedOn is Business)
             {
                 Business LocatedBussinessPoint = this.CurrentLocation.LocatedOn as Business;
-                if (location.LocatedOn is Apartments)
+                if (Destination.LocatedOn is Apartments)
                 {
-                    Apartments apartTarget = location.LocatedOn as Apartments;
-                    if (apartTarget.InHouse == LocatedBussinessPoint.InHouse)
+                    Apartments apartTarget = Destination.LocatedOn as Apartments;
+                    if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
                     {
-                        //движение
+                        //Перейти на точку выхода
                     }
-                    else if (apartTarget.InHouse != LocatedBussinessPoint.InHouse)
+                    else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
                     {
-                        //движение
+                        //Выйти в холл
                     }
                 }
-                else if (location.LocatedOn is Houses)
+                else if (Destination.LocatedOn is Houses)
                 {
-                    Houses houseTarget = location.LocatedOn as Houses;
-                    if (LocatedBussinessPoint.InHouse == houseTarget)
+                    Houses apartTarget = Destination.LocatedOn as Houses;
+                    if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
                     {
-                        //движение
+                        //Перейти на точку выхода
                     }
-                    else if (LocatedBussinessPoint.InHouse != houseTarget)
+                    else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
                     {
-                        //движение
+                        //Выйти на улицу
                     }
                 }
-                else if (location.LocatedOn is Business)
+                else if (Destination.LocatedOn is Business)
                 {
-                    Houses businessTarget = location.LocatedOn as Houses;
-                    if (LocatedBussinessPoint.InHouse == businessTarget)
+                    Business businessTarget = Destination.LocatedOn as Business;
+                    if (businessTarget == LocatedBussinessPoint)
                     {
-                        //движение
+                        //Перейти в точку предприятия
                     }
-                    else if (LocatedBussinessPoint.InHouse != businessTarget)
+                    else if (businessTarget != LocatedBussinessPoint && this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
                     {
-                        //движение
+                        //выйти на улицу
+                    }
+                    else if (businessTarget != LocatedBussinessPoint && this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
+                    {
+                        //выйти в точку выхода
                     }
                 }
-                else if (location.LocatedOn is Streets)
+                else if (Destination.LocatedOn is Streets)
                 {
-                    //движение
+                    if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
+                    {
+                        //Перейти на точку выхода
+                    }
+                    else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
+                    {
+                        //Выйти на улицу
+                    }
                 }
             }
             else if (this.CurrentLocation.LocatedOn is Houses)
             {
                 Houses LocatedHousePoint = this.CurrentLocation.LocatedOn as Houses;
-                if (location.LocatedOn is Apartments)
+                if (Destination.LocatedOn is Apartments)
                 {
-                    Apartments apartTarget = location.LocatedOn as Apartments;
-                    if (apartTarget.InHouse == LocatedHousePoint)
+                    Apartments apartTarget = Destination.LocatedOn as Apartments;
+                    if (LocatedHousePoint.ApartmentList.Contains(apartTarget))
                     {
-                        //движение
+                        if(this.CurrentLocation is Hallway)
+                        {
+                            Hallway HallwayTarget = this.CurrentLocation as Hallway;
+                            if (HallwayTarget.level == apartTarget.Floor)
+                            {
+                                //Зайти в комнату
+                            }
+                            else if (HallwayTarget.level > apartTarget.Floor)
+                            {
+                                //Перейти на лестничный пролет на этом этаже
+                            }
+                            else if (HallwayTarget.level > apartTarget.Floor)
+                            {
+                                //Перейти на лестничный пролет этажом ниже
+                            }
+                        }
+                        else if(this.CurrentLocation is Stairwell)
+                        {
+                            Stairwell StairwellTarget = this.CurrentLocation as Stairwell;
+                            if(StairwellTarget.level == apartTarget.Floor+1)
+                            {
+                                // перейти в хол
+                            }
+                            else if (StairwellTarget.level > apartTarget.Floor+1)
+                            {
+                                //Перейти лестничный пролет на этаж выше
+                            }
+                            else if (StairwellTarget.level < apartTarget.Floor + 1)
+                            {
+                                //Перейти лестничный пролет на этаж ниже
+                            }
+                        }
                     }
-                    else if (apartTarget.InHouse != LocatedHousePoint)
+                    else
                     {
-                        //движение
+
                     }
                 }
-                else if (location.LocatedOn is Houses)
+                else if (Destination.LocatedOn is Houses)
                 {
-                    Houses houseTarget = location.LocatedOn as Houses;
+                    Houses houseTarget = Destination.LocatedOn as Houses;
                     if (LocatedHousePoint == houseTarget)
                     {
-                        //движение
+                        if (this.CurrentLocation is Hallway)
+                        {
+                            Hallway HallwayTarget = this.CurrentLocation as Hallway;
+                            if (Destination is Hallway)
+                            {
+                                Hallway HallwayCurrent = this.CurrentLocation as Hallway;
+                               if (HallwayTarget.level > HallwayCurrent.level)
+                               {
+                                    //Перейти на лестничный пролет на этом этаже
+                               }
+                               else if (HallwayTarget.level < HallwayCurrent.level)
+                               {
+                                        //Перейти на лестничный пролет этажом ниже
+                               }
+                            }
+                            else if (Destination is Stairwell)
+                            {
+                                Stairwell StairwellCurrent = this.CurrentLocation as Stairwell;
+                                if (HallwayTarget.level+1 < StairwellCurrent.level && HallwayTarget.level  < StairwellCurrent.level)
+                                {
+                                    //Перейти на лестничный пролет на этом этаже
+                                }
+                                else if (HallwayTarget.level + 1 > StairwellCurrent.level && HallwayTarget.level > StairwellCurrent.level)
+                                {
+                                    //Перейти на лестничный пролет этажом ниже
+                                }
+                                else if(HallwayTarget.level + 1 == StairwellCurrent.level|| HallwayTarget.level == StairwellCurrent.level)
+                                {
+                                    // перейти в холл
+                                }
+                            }
+                        }
+                        else if (this.CurrentLocation is Stairwell)
+                        {
+                            Stairwell StairwellCurrent = this.CurrentLocation as Stairwell;
+                            if (Destination is Hallway)
+                            {
+                                Hallway HallwayTarget = this.CurrentLocation as Hallway;
+                                if (HallwayTarget.level > StairwellCurrent.level)
+                                {
+                                    //Перейти на лестничный пролет на этом этаже
+                                }
+                                else if (HallwayTarget.level > StairwellCurrent.level)
+                                {
+                                    //Перейти на лестничный пролет этажом ниже
+                                }
+                            }
+                            else if (Destination is Stairwell)
+                            {
+                                Stairwell StairwellCurrent = this.CurrentLocation as Stairwell;
+                                Hallway HallwayTarget = this.CurrentLocation as Hallway;
+                                if (HallwayTarget.level > StairwellCurrent.level)
+                                {
+                                    //Перейти на лестничный пролет на этом этаже
+                                }
+                                else if (HallwayTarget.level > StairwellCurrent.level)
+                                {
+                                    //Перейти на лестничный пролет этажом ниже
+                                }
+                            }
+                        }
                     }
                     else if (LocatedHousePoint != houseTarget)
                     {
-                        //движение
+                        if(CurrentLocation is Hallway)
+                        {
+                            if(houseTarget.EntryExitPoint == this.CurrentLocation)
+                            {
+                                // выйти из дома
+                            }
+                            else
+                            {
+                                // Перейти на лестницу
+                            }
+                        }
+                        else if(CurrentLocation is Stairwell)
+                        {
+                            Stairwell StairwellCurrent = CurrentLocation as Stairwell;
+                            if ()
+                        }
                     }
                 }
-                else if (location.LocatedOn is Business)
+                else if (Destination.LocatedOn is Business)
                 {
-                    Houses businessTarget = location.LocatedOn as Houses;
+                    Houses businessTarget = Destination.LocatedOn as Houses;
                     if (LocatedHousePoint == businessTarget)
                     {
                         //движение
@@ -441,7 +564,7 @@ namespace Entity.People
                         //движение
                     }
                 }
-                else if (location.LocatedOn is Streets)
+                else if (Destination.LocatedOn is Streets)
                 {
                     //движение
                 }
@@ -449,9 +572,9 @@ namespace Entity.People
             else if (this.CurrentLocation.LocatedOn is Streets)
             {
                 Streets LocatedStreetPoint = this.CurrentLocation.LocatedOn as Streets;
-                if (location.LocatedOn is Apartments)
+                if (Destination.LocatedOn is Apartments)
                 {
-                    Apartments apartTarget = location.LocatedOn as Apartments;
+                    Apartments apartTarget = Destination.LocatedOn as Apartments;
                     if (apartTarget.InHouse.OnStreet == LocatedStreetPoint)
                     {
                         //движение
@@ -461,9 +584,9 @@ namespace Entity.People
                         //движение
                     }
                 }
-                else if (location.LocatedOn is Houses)
+                else if (Destination.LocatedOn is Houses)
                 {
-                    Houses houseTarget = location.LocatedOn as Houses;
+                    Houses houseTarget = Destination.LocatedOn as Houses;
                     if (LocatedStreetPoint == houseTarget.OnStreet)
                     {
                         //движение
@@ -473,9 +596,9 @@ namespace Entity.People
                         //движение
                     }
                 }
-                else if (location.LocatedOn is Business)
+                else if (Destination.LocatedOn is Business)
                 {
-                    Houses businessTarget = location.LocatedOn as Houses;
+                    Houses businessTarget = Destination.LocatedOn as Houses;
                     if (LocatedStreetPoint == businessTarget.OnStreet)
                     {
                         //движение
@@ -485,9 +608,9 @@ namespace Entity.People
                         //движение
                     }
                 }
-                else if (location.LocatedOn is Streets)
+                else if (Destination.LocatedOn is Streets)
                 {
-                    Streets StreetTarget = location.LocatedOn as Streets;
+                    Streets StreetTarget = Destination.LocatedOn as Streets;
                     if (LocatedStreetPoint == StreetTarget)
                     {
 
