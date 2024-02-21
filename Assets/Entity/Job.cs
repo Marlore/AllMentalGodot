@@ -1,4 +1,5 @@
-﻿using Engine.PlayerEngine;
+﻿using Data.SectionData;
+using Engine.PlayerEngine;
 using Entity.Company;
 using Entity.People;
 using System;
@@ -21,6 +22,7 @@ namespace Entity.Job
 
         public Guid Worker;
         public Business WorkingCompany;
+        public Segment WorkingSegment;
 
         public bool IsBusy { get {
                 if (Worker != default(Guid))
@@ -32,8 +34,9 @@ namespace Entity.Job
         }
 
         public abstract int StatValue { get; }
-        public Work(Business business)
+        public Work(Business business, Segment Seg)
         {
+            WorkingSegment = Seg;
             WorkingCompany = business;
             Id = Guid.NewGuid();
             PlayerInfo.CurrentCity.Vacancy.Add(Id,this);
@@ -135,6 +138,7 @@ namespace Entity.Job
         }
         public SchoolStudent(Person person)
         {
+            WorkingSegment = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments.Find(x => x is ClassRoom);
             WorkingCompany = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value;
             CurrentSchool = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value;
             PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Students.Add(person.Id);

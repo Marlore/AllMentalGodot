@@ -94,7 +94,7 @@ namespace Entity.People
                     case _status.work:
                         return "Working";
                     case _status.walk:
-                        return "Goes to";
+                        return $"Goes to {Destination.Adress}";
                     case _status.sleep:
                         return "Sleep";
                     case _status.messingAround:
@@ -123,6 +123,8 @@ namespace Entity.People
         public Guid HobbyPlace;
         public DateTime Bithday;
         public Action Live;
+
+        private DateTime Walking;
        
         private int HomeTime { get {
                 int time = 0;
@@ -314,320 +316,602 @@ namespace Entity.People
         //}
         private void MoveTo()
         {
-            if (this.CurrentLocation.LocatedOn is Apartments)
-            {
-                Apartments locatedApartPoint = this.CurrentLocation.LocatedOn as Apartments;
-                if (Destination.LocatedOn is Apartments)
+            if(StatusEnum!= _status.walk)
+            { 
+                if (this.CurrentLocation.LocatedOn is Apartments)
                 {
-                    Apartments apartTarget = Destination.LocatedOn as Apartments;
-                    if(locatedApartPoint == apartTarget)
+                    Apartments locatedApartPoint = this.CurrentLocation.LocatedOn as Apartments;
+                    if (Destination.LocatedOn is Apartments)
                     {
-                        CurrentLocation.PeopleInside.Remove(this.Id);
-
-                    }
-                    else if (locatedApartPoint != apartTarget && this.CurrentLocation != locatedApartPoint.EntryExitPoint)
-                    {
-                        //Перейти на точку выхода
-                    }
-                    else if (locatedApartPoint != apartTarget && this.CurrentLocation == locatedApartPoint.EntryExitPoint)
-                    {
-                        //Выйти в холл
-                    }
-                }
-                else if (Destination.LocatedOn is Houses)
-                {
-                    Houses houseTarget = Destination.LocatedOn as Houses;
-                    if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
-                    {
-                        //Перейти на точку выхода
-                    }
-                    else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
-                    {
-                        //Выйти в холл
-                    }
-                }
-                else if (Destination.LocatedOn is Business)
-                {
-                    Houses businessTarget = Destination.LocatedOn as Houses;
-                    if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
-                    {
-                        //Перейти на точку выхода
-                    }
-                    else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
-                    {
-                        //Выйти в холл
-                    }
-                }
-                else if (Destination.LocatedOn is Streets)
-                {
-                    //движение
-                }
-
-            }
-            else if (this.CurrentLocation.LocatedOn is Business)
-            {
-                Business LocatedBussinessPoint = this.CurrentLocation.LocatedOn as Business;
-                if (Destination.LocatedOn is Apartments)
-                {
-                    Apartments apartTarget = Destination.LocatedOn as Apartments;
-                    if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
-                    {
-                        //Перейти на точку выхода
-                    }
-                    else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
-                    {
-                        //Выйти в холл
-                    }
-                }
-                else if (Destination.LocatedOn is Houses)
-                {
-                    Houses apartTarget = Destination.LocatedOn as Houses;
-                    if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
-                    {
-                        //Перейти на точку выхода
-                    }
-                    else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
-                    {
-                        //Выйти на улицу
-                    }
-                }
-                else if (Destination.LocatedOn is Business)
-                {
-                    Business businessTarget = Destination.LocatedOn as Business;
-                    if (businessTarget == LocatedBussinessPoint)
-                    {
-                        //Перейти в точку предприятия
-                    }
-                    else if (businessTarget != LocatedBussinessPoint && this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
-                    {
-                        //выйти на улицу
-                    }
-                    else if (businessTarget != LocatedBussinessPoint && this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
-                    {
-                        //выйти в точку выхода
-                    }
-                }
-                else if (Destination.LocatedOn is Streets)
-                {
-                    if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
-                    {
-                        //Перейти на точку выхода
-                    }
-                    else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
-                    {
-                        //Выйти на улицу
-                    }
-                }
-            }
-            else if (this.CurrentLocation.LocatedOn is Houses)
-            {
-                Houses LocatedHousePoint = this.CurrentLocation.LocatedOn as Houses;
-                if (Destination.LocatedOn is Apartments)
-                {
-                    Apartments apartTarget = Destination.LocatedOn as Apartments;
-                    if (LocatedHousePoint.ApartmentList.Contains(apartTarget))
-                    {
-                        if(this.CurrentLocation is Hallway)
+                        Apartments apartTarget = Destination.LocatedOn as Apartments;
+                        if(locatedApartPoint == apartTarget)
                         {
-                            Hallway HallwayTarget = this.CurrentLocation as Hallway;
-                            if (HallwayTarget.level == apartTarget.Floor)
-                            {
-                                //Зайти в комнату
-                            }
-                            else if (HallwayTarget.level > apartTarget.Floor)
-                            {
-                                //Перейти на лестничный пролет на этом этаже
-                            }
-                            else if (HallwayTarget.level > apartTarget.Floor)
-                            {
-                                //Перейти на лестничный пролет этажом ниже
-                            }
+                            WalkTimer(Destination);
                         }
-                        else if(this.CurrentLocation is Stairwell)
+                        else if (locatedApartPoint != apartTarget && this.CurrentLocation != locatedApartPoint.EntryExitPoint)
                         {
-                            Stairwell StairwellTarget = this.CurrentLocation as Stairwell;
-                            if(StairwellTarget.level == apartTarget.Floor+1)
-                            {
-                                // перейти в хол
-                            }
-                            else if (StairwellTarget.level > apartTarget.Floor+1)
-                            {
-                                //Перейти лестничный пролет на этаж выше
-                            }
-                            else if (StairwellTarget.level < apartTarget.Floor + 1)
-                            {
-                                //Перейти лестничный пролет на этаж ниже
-                            }
+                            WalkTimer(locatedApartPoint.EntryExitPoint);
+
+                        }
+                        else if (locatedApartPoint != apartTarget && this.CurrentLocation == locatedApartPoint.EntryExitPoint)
+                        {
+                            var seg = locatedApartPoint.InHouse.Segments.Find(x => x is Hallway && x.level == locatedApartPoint.Floor);
+                            WalkTimer(seg);
                         }
                     }
-                    else
+                    else if (Destination.LocatedOn is Houses)
                     {
+                        Houses houseTarget = Destination.LocatedOn as Houses;
+                        if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
+                        {
+                            WalkTimer(locatedApartPoint.EntryExitPoint);
+                        }
+                        else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
+                        {
+                            var seg = locatedApartPoint.InHouse.Segments.Find(x => x is Hallway && x.level == locatedApartPoint.Floor);
+                            WalkTimer(seg);
+                        }
+                    }
+                    else if (Destination.LocatedOn is Business)
+                    {
+                        Houses businessTarget = Destination.LocatedOn as Houses;
+                        if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
+                        {
+                            WalkTimer(locatedApartPoint.EntryExitPoint);
+                        }
+                        else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
+                        {
+                            var seg = locatedApartPoint.InHouse.Segments.Find(x => x is Hallway && x.level == locatedApartPoint.Floor);
+                            WalkTimer(seg);
+                        }
+                    }
+                    else if (Destination.LocatedOn is Streets)
+                    {
+                        if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
+                        {
+                            WalkTimer(locatedApartPoint.EntryExitPoint);
+                        }
+                        else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
+                        {
+                            var seg = locatedApartPoint.InHouse.Segments.Find(x => x is Hallway && x.level == locatedApartPoint.Floor);
+                            WalkTimer(seg);
+                        }
+                    }
 
+                }
+                else if (this.CurrentLocation.LocatedOn is Business)
+                {
+                    Business LocatedBussinessPoint = this.CurrentLocation.LocatedOn as Business;
+                    if (Destination.LocatedOn is Apartments)
+                    {
+                        Apartments apartTarget = Destination.LocatedOn as Apartments;
+                        if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
+                        {
+                            WalkTimer(LocatedBussinessPoint.EntryExitPoint);
+                        }
+                        else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
+                        {
+                            WalkTimer(LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint);
+                        }
+                    }
+                    else if (Destination.LocatedOn is Houses)
+                    {
+                        Houses apartTarget = Destination.LocatedOn as Houses;
+                        if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
+                        {
+                            WalkTimer(LocatedBussinessPoint.EntryExitPoint);
+                        }
+                        else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
+                        {
+                            WalkTimer(LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint);
+                        }
+                    }
+                    else if (Destination.LocatedOn is Business)
+                    {
+                        Business businessTarget = Destination.LocatedOn as Business;
+                        if (businessTarget == LocatedBussinessPoint)
+                        {
+                            WalkTimer(Destination);
+                        }
+                        else if (businessTarget != LocatedBussinessPoint && this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
+                        {
+                            WalkTimer(LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint);
+                        }
+                        else if (businessTarget != LocatedBussinessPoint && this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
+                        {
+                            WalkTimer(LocatedBussinessPoint.EntryExitPoint);
+                        }
+                    }
+                    else if (Destination.LocatedOn is Streets)
+                    {
+                        if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
+                        {
+                            WalkTimer(LocatedBussinessPoint.EntryExitPoint);
+                        }
+                        else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
+                        {
+                            WalkTimer(LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint);
+                        }
                     }
                 }
-                else if (Destination.LocatedOn is Houses)
+                else if (this.CurrentLocation.LocatedOn is Houses)
                 {
-                    Houses houseTarget = Destination.LocatedOn as Houses;
-                    if (LocatedHousePoint == houseTarget)
+                    Houses LocatedHousePoint = this.CurrentLocation.LocatedOn as Houses;
+                    if (Destination.LocatedOn is Apartments)
                     {
-                        if (this.CurrentLocation is Hallway)
+                        Apartments apartTarget = Destination.LocatedOn as Apartments;
+                        if (LocatedHousePoint.ApartmentList.Contains(apartTarget))
                         {
-                            Hallway HallwayTarget = this.CurrentLocation as Hallway;
-                            if (Destination is Hallway)
+                            if(this.CurrentLocation is Hallway)
                             {
                                 Hallway HallwayCurrent = this.CurrentLocation as Hallway;
-                               if (HallwayTarget.level > HallwayCurrent.level)
-                               {
-                                    //Перейти на лестничный пролет на этом этаже
-                               }
-                               else if (HallwayTarget.level < HallwayCurrent.level)
-                               {
-                                        //Перейти на лестничный пролет этажом ниже
-                               }
+                                if (HallwayCurrent.level == apartTarget.Floor)
+                                {
+                                    WalkTimer(apartTarget.EntryExitPoint);
+                                }
+                                else if (HallwayCurrent.level > apartTarget.Floor)
+                                {
+                                    var currSeg = this.CurrentLocation as Hallway;
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level);
+                                    WalkTimer(seg);
+                                }
+                                else if (HallwayCurrent.level > apartTarget.Floor)
+                                {
+                                    var currSeg = this.CurrentLocation as Hallway;
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
+                                    WalkTimer(seg);
+                                }
                             }
-                            else if (Destination is Stairwell)
+                            else if(this.CurrentLocation is Stairwell)
                             {
                                 Stairwell StairwellCurrent = this.CurrentLocation as Stairwell;
-                                if (HallwayTarget.level+1 < StairwellCurrent.level && HallwayTarget.level  < StairwellCurrent.level)
+                                if(StairwellCurrent.level == apartTarget.Floor+1 || StairwellCurrent.level == apartTarget.Floor)
                                 {
-                                    //Перейти на лестничный пролет на этом этаже
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Hallway && x.level == apartTarget.Floor);
+                                    WalkTimer(seg);
+                                    // перейти в хол
                                 }
-                                else if (HallwayTarget.level + 1 > StairwellCurrent.level && HallwayTarget.level > StairwellCurrent.level)
+                                else if (StairwellCurrent.level > apartTarget.Floor+1 && StairwellCurrent.level > apartTarget.Floor)
                                 {
-                                    //Перейти на лестничный пролет этажом ниже
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level + 1);
+                                    WalkTimer(seg);
+                                    //Перейти лестничный пролет на этаж выше
                                 }
-                                else if(HallwayTarget.level + 1 == StairwellCurrent.level|| HallwayTarget.level == StairwellCurrent.level)
+                                else if (StairwellCurrent.level < apartTarget.Floor + 1 && StairwellCurrent.level < apartTarget.Floor )
                                 {
-                                    // перейти в холл
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level - 1);
+                                    WalkTimer(seg);
+                                    //Перейти лестничный пролет на этаж ниже
                                 }
                             }
                         }
-                        else if (this.CurrentLocation is Stairwell)
+                        else
                         {
-                            Stairwell StairwellCurrent = this.CurrentLocation as Stairwell;
-                            if (Destination is Hallway)
+                            if (CurrentLocation is Hallway)
                             {
-                                Hallway HallwayTarget = this.CurrentLocation as Hallway;
-                                if (HallwayTarget.level > StairwellCurrent.level)
+                            
+                                if (LocatedHousePoint.EntryExitPoint == this.CurrentLocation)
                                 {
-                                    //Перейти на лестничный пролет на этом этаже
+                                    WalkTimer(LocatedHousePoint.OnStreet.EntryExitPoint);
+                                    // выйти из дома
                                 }
-                                else if (HallwayTarget.level > StairwellCurrent.level)
+                                else
                                 {
-                                    //Перейти на лестничный пролет этажом ниже
+                                    var currSeg = this.CurrentLocation as Hallway;
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
+                                    WalkTimer(seg);
+                                    // Перейти на лестницу
                                 }
                             }
-                            else if (Destination is Stairwell)
+                            else if (CurrentLocation is Stairwell)
                             {
-                                Stairwell StairwellCurrent = this.CurrentLocation as Stairwell;
-                                Hallway HallwayTarget = this.CurrentLocation as Hallway;
-                                if (HallwayTarget.level > StairwellCurrent.level)
+                                Stairwell StairwellCurrent = CurrentLocation as Stairwell;
+                                if (StairwellCurrent.level == 0)
                                 {
-                                    //Перейти на лестничный пролет на этом этаже
+                                    WalkTimer(LocatedHousePoint.EntryExitPoint);
+                                    //перейти в холл
                                 }
-                                else if (HallwayTarget.level > StairwellCurrent.level)
+                                else
                                 {
-                                    //Перейти на лестничный пролет этажом ниже
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level - 1);
+                                    WalkTimer(seg);
+                                    //спуститься
                                 }
+
                             }
                         }
                     }
-                    else if (LocatedHousePoint != houseTarget)
+                    else if (Destination.LocatedOn is Houses)
                     {
-                        if(CurrentLocation is Hallway)
+                        Houses houseTarget = Destination.LocatedOn as Houses;
+                        if (LocatedHousePoint == houseTarget)
                         {
-                            if(houseTarget.EntryExitPoint == this.CurrentLocation)
+                            if (this.CurrentLocation is Hallway)
                             {
+                                Hallway HallwayCurrent = this.CurrentLocation as Hallway;
+                                if (Destination is Hallway)
+                                {
+                                    Hallway HallwayTarget = Destination as Hallway;
+                                   if (HallwayCurrent.level > HallwayTarget.level)
+                                   {
+                                        var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == HallwayTarget.level);
+                                        WalkTimer(seg);
+                                        //Перейти на лестничный пролет на этом этаже
+                                   }
+                                   else if (HallwayCurrent.level < HallwayTarget.level)
+                                   {
+                                        var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == HallwayTarget.level-1);
+                                        WalkTimer(seg);
+                                        //Перейти на лестничный пролет этажом ниже
+                                    }
+                                }
+                                else if (Destination is Stairwell)
+                                {
+                                    Stairwell StairwellTarget = this.Destination as Stairwell;
+                                    if (HallwayCurrent.level+1 < StairwellTarget.level && HallwayCurrent.level  < StairwellTarget.level)
+                                    {
+                                        var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellTarget.level - 1);
+                                        WalkTimer(seg);
+                                        //Перейти на лестничный пролет на этом этаже
+                                    }
+                                    else if (HallwayCurrent.level + 1 > StairwellTarget.level && HallwayCurrent.level > StairwellTarget.level)
+                                    {
+                                        var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellTarget.level + 1);
+                                        WalkTimer(seg);
+                                        //Перейти на лестничный пролет этажом ниже
+                                    }
+                                    else if(HallwayCurrent.level + 1 == StairwellTarget.level|| HallwayCurrent.level == StairwellTarget.level)
+                                    {
+                                        var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellTarget.level);
+                                        WalkTimer(seg);
+                                        //перейти на нужный лестничный пролет
+                                    }
+                                }
+                            }
+                            else if (this.CurrentLocation is Stairwell)
+                            {
+                                Stairwell StairwellCurrent = this.CurrentLocation as Stairwell;
+                                if (Destination is Hallway)
+                                {
+                                    Hallway HallwayTarget = this.Destination as Hallway;
+                                    if (HallwayTarget.level > StairwellCurrent.level && HallwayTarget.level > StairwellCurrent.level+1)
+                                    {
+                                        var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level+1);
+                                        WalkTimer(seg);
+                                        //Перейти на лестничный пролет на этом этаже
+                                    }
+                                    else if (HallwayTarget.level < StairwellCurrent.level && HallwayTarget.level < StairwellCurrent.level+1 )
+                                    {
+                                        var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level - 1);
+                                        WalkTimer(seg);
+                                        //Перейти на лестничный пролет этажом ниже
+                                    }
+                                    else if(HallwayTarget.level == StairwellCurrent.level || HallwayTarget.level == StairwellCurrent.level + 1)
+                                    {
+                                        WalkTimer(HallwayTarget);
+                                    }
+                                }
+                                else if (Destination is Stairwell)
+                                {
+                                    Stairwell StairwellTarget = this.Destination as Stairwell;
+                                    if (StairwellTarget.level > StairwellCurrent.level)
+                                    {
+                                        var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level + 1);
+                                        WalkTimer(seg);
+                                        //Перейти на лестничный пролет на этом этаже
+                                    }
+                                    else if (StairwellTarget.level < StairwellCurrent.level)
+                                    {
+                                        var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level - 1);
+                                        WalkTimer(seg);
+                                        //Перейти на лестничный пролет этажом ниже
+                                    }
+                                }
+                            }
+                        }
+                        else if (LocatedHousePoint != houseTarget)
+                        {
+                            if(CurrentLocation is Hallway)
+                            {
+                                if(LocatedHousePoint.EntryExitPoint == this.CurrentLocation)
+                                {
+                                    var seg = LocatedHousePoint.OnStreet.EntryExitPoint;
+                                    WalkTimer(seg);
+                                    // выйти из дома
+                                }
+                                else
+                                {
+                                    var currSeg = CurrentLocation as Hallway;
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Hallway && x.level == currSeg.level - 1);
+                                    WalkTimer(seg);
+                                    // Перейти на лестницу
+                                }
+                            }
+                            else if(CurrentLocation is Stairwell)
+                            {
+                                Stairwell StairwellCurrent = CurrentLocation as Stairwell;
+                                if (StairwellCurrent.level == 0)
+                                {
+                                    WalkTimer(LocatedHousePoint.EntryExitPoint);
+                                    //перейти в холл
+                                }
+                                else
+                                {
+                                    var currSeg = CurrentLocation as Stairwell;
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
+                                    WalkTimer(seg);
+                                    //спуститься
+                                }
+
+                            }
+                        }
+                    }
+                    else if (Destination.LocatedOn is Business)
+                    {
+                        Houses businessTarget = Destination.LocatedOn as Houses;
+                        if (CurrentLocation is Hallway)
+                        {
+                            if (LocatedHousePoint.EntryExitPoint == this.CurrentLocation)
+                            {
+                                var seg = LocatedHousePoint.OnStreet.EntryExitPoint;
+                                WalkTimer(seg);
                                 // выйти из дома
                             }
                             else
                             {
+                                var currSeg = CurrentLocation as Hallway;
+                                var seg = LocatedHousePoint.Segments.Find(x => x is Hallway && x.level == currSeg.level - 1);
+                                WalkTimer(seg);
                                 // Перейти на лестницу
                             }
                         }
-                        else if(CurrentLocation is Stairwell)
+                        else if (CurrentLocation is Stairwell)
                         {
                             Stairwell StairwellCurrent = CurrentLocation as Stairwell;
-                            if ()
+                            if (StairwellCurrent.level == 0)
+                            {
+                                WalkTimer(LocatedHousePoint.EntryExitPoint);
+                                //перейти в холл
+                            }
+                            else
+                            {
+                                var currSeg = CurrentLocation as Stairwell;
+                                var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
+                                WalkTimer(seg);
+                                //спуститься
+                            }
+
+                        }
+                    }
+                    else if (Destination.LocatedOn is Streets)
+                    {
+                        if (CurrentLocation is Hallway)
+                        {
+                            if (LocatedHousePoint.EntryExitPoint == this.CurrentLocation)
+                            {
+                                var seg = LocatedHousePoint.OnStreet.EntryExitPoint;
+                                WalkTimer(seg);
+                                // выйти из дома
+                            }
+                            else
+                            {
+                                var currSeg = CurrentLocation as Hallway;
+                                var seg = LocatedHousePoint.Segments.Find(x => x is Hallway && x.level == currSeg.level - 1);
+                                WalkTimer(seg);
+                                // Перейти на лестницу
+                            }
+                        }
+                        else if (CurrentLocation is Stairwell)
+                        {
+                            Stairwell StairwellCurrent = CurrentLocation as Stairwell;
+                            if (StairwellCurrent.level == 0)
+                            {
+                                WalkTimer(LocatedHousePoint.EntryExitPoint);
+                                //перейти в холл
+                            }
+                            else
+                            {
+                                var currSeg = CurrentLocation as Stairwell;
+                                var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
+                                WalkTimer(seg);
+                                //спуститься
+                            }
+
                         }
                     }
                 }
-                else if (Destination.LocatedOn is Business)
+                else if (this.CurrentLocation.LocatedOn is Streets)
                 {
-                    Houses businessTarget = Destination.LocatedOn as Houses;
-                    if (LocatedHousePoint == businessTarget)
+                    Streets LocatedStreetPoint = this.CurrentLocation.LocatedOn as Streets;
+                    if (Destination.LocatedOn is Apartments)
                     {
-                        //движение
+                        Apartments apartTarget = Destination.LocatedOn as Apartments;
+                        if (apartTarget.InHouse.OnStreet == LocatedStreetPoint)
+                        {
+                            if(this.CurrentLocation== LocatedStreetPoint.EntryExitPoint)
+                            {
+                                var seg = apartTarget.InHouse.EntryExitPoint;
+                                WalkTimer(seg);
+                            }
+                            else
+                            {
+                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                // перейти на точку перехода
+                            }
+                        }
+                        else if (apartTarget.InHouse.OnStreet != LocatedStreetPoint)
+                        {
+                            if (this.CurrentLocation == LocatedStreetPoint.EntryExitPoint)
+                            {
+                                int targetIndex=0;
+                                int currentIndex=0;
+                                for(int i =0; i<PlayerInfo.CurrentCity.CityStreets.Count; i++)
+                                {
+                                    if (apartTarget.InHouse.OnStreet == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                        targetIndex = i;
+                                    if(LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                        currentIndex = i;
+                                }
+                                if(targetIndex> currentIndex)
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).Value.EntryExitPoint);
+                                else if(targetIndex < currentIndex)
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).Value.EntryExitPoint);
+                                //Перейти на другую улицу
+                            }
+                            else
+                            {
+                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                // перейти на точку перехода
+                            }
+                        }
                     }
-                    else if (LocatedHousePoint != businessTarget)
+                    else if (Destination.LocatedOn is Houses)
                     {
-                        //движение
+                        Houses houseTarget = Destination.LocatedOn as Houses;
+                        if (LocatedStreetPoint == houseTarget.OnStreet)
+                        {
+                            if (this.CurrentLocation == LocatedStreetPoint.EntryExitPoint)
+                            {
+                                var seg = houseTarget.EntryExitPoint;
+                                WalkTimer(seg);
+                                //Зайти в дом
+                            }
+                            else
+                            {
+                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                // перейти на точку перехода
+                            }
+                        }
+                        else if (LocatedStreetPoint != houseTarget.OnStreet)
+                        {
+                            if (this.CurrentLocation == LocatedStreetPoint.EntryExitPoint)
+                            {
+                                int targetIndex = 0;
+                                int currentIndex = 0;
+                                for (int i = 0; i < PlayerInfo.CurrentCity.CityStreets.Count; i++)
+                                {
+                                    if (houseTarget.OnStreet == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                        targetIndex = i;
+                                    if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                        currentIndex = i;
+                                }
+                                if (targetIndex > currentIndex)
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).Value.EntryExitPoint);
+                                else if (targetIndex < currentIndex)
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).Value.EntryExitPoint);
+                                //Перейти на другую улицу
+                            }
+                            else
+                            {
+                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                // перейти на точку перехода
+                            }
+                        }
+                    }
+                    else if (Destination.LocatedOn is Business)
+                    {
+                        Business businessTarget = Destination.LocatedOn as Business;
+                        if (LocatedStreetPoint == businessTarget.InHouse.OnStreet)
+                        {
+                            if (this.CurrentLocation == LocatedStreetPoint.EntryExitPoint)
+                            {
+                                var seg = businessTarget.EntryExitPoint;
+                                WalkTimer(seg);
+                                //Зайти в бизнесс
+                            }
+                            else
+                            {
+                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                // перейти на точку перехода
+                            }
+                        }
+                        else if (LocatedStreetPoint != businessTarget.InHouse.OnStreet)
+                        {
+                            if (this.CurrentLocation == LocatedStreetPoint.EntryExitPoint)
+                            {
+                                int targetIndex = 0;
+                                int currentIndex = 0;
+                                for (int i = 0; i < PlayerInfo.CurrentCity.CityStreets.Count; i++)
+                                {
+                                    if (businessTarget.InHouse.OnStreet == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                        targetIndex = i;
+                                    if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                        currentIndex = i;
+                                }
+                                if (targetIndex > currentIndex)
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).Value.EntryExitPoint);
+                                else if (targetIndex < currentIndex)
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).Value.EntryExitPoint);
+                                //Перейти на другую улицу
+                            }
+                            else
+                            {
+                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                // перейти на точку перехода
+                            }
+                        }
+                    }
+                    else if (Destination.LocatedOn is Streets)
+                    {
+                        Streets StreetTarget = Destination.LocatedOn as Streets;
+                        if (LocatedStreetPoint == StreetTarget)
+                        {
+                            WalkTimer(Destination);
+                            //Перейти в другой сектор
+                        }
+                        else if(LocatedStreetPoint != StreetTarget)
+                        {
+                            if (this.CurrentLocation == LocatedStreetPoint.EntryExitPoint)
+                            {
+                                int targetIndex = 0;
+                                int currentIndex = 0;
+                                for (int i = 0; i < PlayerInfo.CurrentCity.CityStreets.Count; i++)
+                                {
+                                    if (StreetTarget == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                        targetIndex = i;
+                                    if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                        currentIndex = i;
+                                }
+                                if (targetIndex > currentIndex)
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).Value.EntryExitPoint);
+                                else if (targetIndex < currentIndex)
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).Value.EntryExitPoint);
+                                //Перейти на другую улицу
+                            }
+                            else
+                            {
+                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                // перейти на точку перехода
+                            }
+                        }
                     }
                 }
-                else if (Destination.LocatedOn is Streets)
+                // Обдумать где проводить инициализацию
+                else if (this.CurrentLocation == null)
                 {
-                    //движение
+                    this.CurrentLocation = this.Apartment.Segments.Find(x => x is BedRoom);
+                    this.CurrentLocation.PeopleInside.Add(this.Id);
                 }
             }
-            else if (this.CurrentLocation.LocatedOn is Streets)
-            {
-                Streets LocatedStreetPoint = this.CurrentLocation.LocatedOn as Streets;
-                if (Destination.LocatedOn is Apartments)
-                {
-                    Apartments apartTarget = Destination.LocatedOn as Apartments;
-                    if (apartTarget.InHouse.OnStreet == LocatedStreetPoint)
-                    {
-                        //движение
-                    }
-                    else if (apartTarget.InHouse.OnStreet != LocatedStreetPoint)
-                    {
-                        //движение
-                    }
-                }
-                else if (Destination.LocatedOn is Houses)
-                {
-                    Houses houseTarget = Destination.LocatedOn as Houses;
-                    if (LocatedStreetPoint == houseTarget.OnStreet)
-                    {
-                        //движение
-                    }
-                    else if (LocatedStreetPoint != houseTarget.OnStreet)
-                    {
-                        //движение
-                    }
-                }
-                else if (Destination.LocatedOn is Business)
-                {
-                    Houses businessTarget = Destination.LocatedOn as Houses;
-                    if (LocatedStreetPoint == businessTarget.OnStreet)
-                    {
-                        //движение
-                    }
-                    else if (LocatedStreetPoint != businessTarget.OnStreet)
-                    {
-                        //движение
-                    }
-                }
-                else if (Destination.LocatedOn is Streets)
-                {
-                    Streets StreetTarget = Destination.LocatedOn as Streets;
-                    if (LocatedStreetPoint == StreetTarget)
-                    {
 
-                    }
-                    else if(LocatedStreetPoint != StreetTarget)
-                    {
-
-                    }
-                }
-            }
-            // Обдумать где проводить инициализацию
-            else if (this.CurrentLocation == null)
-            {
-                this.CurrentLocation = this.Apartment.Segments.Find(x => x is BedRoom);
-                this.CurrentLocation.PeopleInside.Add(this.Id);
-            }
+        }
+        private void WalkTimer(Segment seg)
+        {
             
+            Walking = new DateTime(PlayerInfo.CurrentCity.CityTime.AddMinutes(CurrentLocation.Lenght).Ticks);
+            do
+            {
+                StatusEnum = _status.walk;
+            } 
+            while (PlayerInfo.CurrentCity.CityTime < Walking || this.Alive);
+            if (this.Alive)
+            {
+                CurrentLocation.PeopleInside.Remove(this.Id);
+                seg.PeopleInside.Add(this.Id);
+                CurrentLocation = seg;
+                StatusEnum = _status.messingAround;
+            }
+
         }
         private System.Random randomtalk = new System.Random();
         public void Talk()
