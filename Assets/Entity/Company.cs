@@ -354,6 +354,9 @@ namespace Entity.Company
         public School(string adress, int room, Houses _inHouse)
             : base(adress, room, _inHouse)
         {
+            var _entryExit = new Hallway(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Toilet(this), new StoreRoom(this), new DiningRoom(this), new RecreationRoom(this), new OfficeSegment(this), new DirectorsOffice(this), new ClassRoom(this) };
             Name = CityGenerator.GenerateName(CityGenerator.SchoolNamesList);
             base.Adress = $"{room} {adress}";
             Vacancy.Add(new Director(this));
@@ -379,6 +382,9 @@ namespace Entity.Company
         public University(string adress, int room, Houses _inHouse)
             : base(adress, room, _inHouse)
         {
+            var _entryExit = new Hallway(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Toilet(this), new StoreRoom(this), new DiningRoom(this), new RecreationRoom(this), new OfficeSegment(this), new DirectorsOffice(this), new ClassRoom(this) };
             Name = "Central University";
             base.Adress = $"{room} {adress}";
             Vacancy.Add(new Director(this));
@@ -405,6 +411,9 @@ namespace Entity.Company
         public Hospital(string adress, int room, Houses _inHouse)
             : base(adress, room, _inHouse)
         {
+            var _entryExit = new Hallway(this);
+            EntryExitPoint = _entryExit;
+            Segments = new List<Segment>() { _entryExit, new Toilet(this), new StoreRoom(this), new DiningRoom(this), new RecreationRoom(this), new OfficeSegment(this), new DirectorsOffice(this), new ClassRoom(this) };
             Name = CityGenerator.GenerateName(CityGenerator.HospitalNamesList);
             base.Adress = $"{room} {adress}";
             Vacancy.Add(new Director(this));
