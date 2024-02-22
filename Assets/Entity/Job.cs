@@ -138,7 +138,39 @@ namespace Entity.Job
         }
         public SchoolStudent(Person person)
         {
-            WorkingSegment = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments.Find(x => x is ClassRoom);
+           if(PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments.Any(x => x is ClassRoom))
+            {
+                bool HaveFreeAvailableSeats = true;
+                ClassRoom AvailableClassRoom = null;
+                for (int i=0; i< PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments.Count; i++)
+                {
+                    if (PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments[i] is ClassRoom)
+                    {
+                        var classroom = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments[i] as ClassRoom;
+                        if (classroom.Students.Count < 20)
+                        {
+                            HaveFreeAvailableSeats = true;
+                            AvailableClassRoom = classroom;
+                            break;
+                        }
+                        else
+                        {
+                            HaveFreeAvailableSeats = false;
+                        }
+                           
+                    }
+                }
+                if (HaveFreeAvailableSeats)
+                {
+                    AvailableClassRoom.Students.Add(person);
+                    WorkingSegment = AvailableClassRoom;
+                }
+                else
+                {
+
+                }
+            }
+
             WorkingCompany = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value;
             CurrentSchool = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value;
             PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Students.Add(person.Id);
@@ -209,8 +241,8 @@ namespace Entity.Job
         public override void WorkProccess()
         { }
 
-        public Secretary(Business business)
-            : base(business)
+        public Secretary(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class Teacher : Work
@@ -225,8 +257,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
-        public Teacher(Business business)
-            : base(business)
+        public Teacher(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class DoctorFirstShift : Work
@@ -241,8 +273,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday};
         public override void WorkProccess()
         { }
-        public DoctorFirstShift(Business business)
-            : base(business)
+        public DoctorFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class DoctorSecondShift : Work
@@ -257,8 +289,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday,  DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public DoctorSecondShift(Business business)
-            : base(business)
+        public DoctorSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class Mechanic : Work
@@ -273,8 +305,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
-        public Mechanic(Business business)
-            : base(business)
+        public Mechanic(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class СashierFirstShift : Work
@@ -289,8 +321,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public СashierFirstShift(Business business)
-            : base(business)
+        public СashierFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class СashierSecondShift : Work
@@ -305,8 +337,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() {DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public СashierSecondShift(Business business)
-            : base(business)
+        public СashierSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class JanitorFirstShift: Work
@@ -321,8 +353,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public JanitorFirstShift(Business business) 
-            :base(business)
+        public JanitorFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class JanitorSecondShift : Work
@@ -337,8 +369,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public JanitorSecondShift(Business business)
-            : base(business)
+        public JanitorSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class WaiterFirstShift : Work
@@ -353,8 +385,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public WaiterFirstShift(Business business)
-            : base(business)
+        public WaiterFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
 
@@ -370,8 +402,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public WaiterSecondShift(Business business)
-            : base(business)
+        public WaiterSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class Mayor : Work
@@ -386,8 +418,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
-        public Mayor(Business business)
-            : base(business)
+        public Mayor(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class Manager : Work
@@ -402,8 +434,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
-        public Manager(Business business)
-            : base(business)
+        public Manager(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class PolicemanFirstShift : Work
@@ -418,8 +450,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public PolicemanFirstShift(Business business)
-            : base(business)
+        public PolicemanFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class PolicemanSecondShift : Work
@@ -434,8 +466,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public PolicemanSecondShift(Business business)
-            : base(business)
+        public PolicemanSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class Accountant : Work
@@ -450,8 +482,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
-        public Accountant(Business business)
-            : base(business)
+        public Accountant(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class Director : Work
@@ -466,8 +498,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
-        public Director(Business business)
-            : base(business)
+        public Director(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class HeadChef : Work
@@ -482,8 +514,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public HeadChef(Business business)
-            : base(business)
+        public HeadChef(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class CookFirstShift : Work
@@ -498,8 +530,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public CookFirstShift(Business business)
-            : base(business)
+        public CookFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class CookSecondShift : Work
@@ -514,8 +546,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public CookSecondShift(Business business)
-            : base(business)
+        public CookSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class PharmacistFirstShift : Work
@@ -530,8 +562,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public PharmacistFirstShift(Business business)
-            : base(business)
+        public PharmacistFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class PharmacistSecondShift : Work
@@ -546,8 +578,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public PharmacistSecondShift(Business business)
-            : base(business)
+        public PharmacistSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class CoachFirstShift : Work
@@ -562,8 +594,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public CoachFirstShift(Business business)
-            : base(business)
+        public CoachFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class CoachSecondShift : Work
@@ -578,8 +610,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public CoachSecondShift(Business business)
-            : base(business)
+        public CoachSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class BarmanFirstShift : Work
@@ -594,8 +626,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public BarmanFirstShift(Business business)
-            : base(business)
+        public BarmanFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class BarmanSecondShift : Work
@@ -610,8 +642,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public BarmanSecondShift(Business business)
-            : base(business)
+        public BarmanSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class NightBarmanFirstShift : Work
@@ -626,8 +658,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public NightBarmanFirstShift(Business business)
-            : base(business)
+        public NightBarmanFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class NightBarmanSecondShift : Work
@@ -642,8 +674,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public NightBarmanSecondShift(Business business)
-            : base(business)
+        public NightBarmanSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class NightСashierFirstShift : Work
@@ -658,8 +690,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday, DayOfWeek.Sunday };
         public override void WorkProccess()
         { }
-        public NightСashierFirstShift(Business business)
-            : base(business)
+        public NightСashierFirstShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
     public class NightСashierSecondShift : Work
@@ -674,8 +706,8 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday };
         public override void WorkProccess()
         { }
-        public NightСashierSecondShift(Business business)
-            : base(business)
+        public NightСashierSecondShift(Business business, Segment Seg)
+            : base(business, Seg)
         { }
     }
 }
