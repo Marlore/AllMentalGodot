@@ -378,11 +378,12 @@ namespace Entity.Company
             Vacancy.Add(new Accountant(this, office));
             PlayerInfo.CurrentCity.KinderGartenList.Add(Id, this);
         }
-        public void CreateClassRoom()
+        public ClassRoom CreateClassRoom()
         {
             var NewClassRoom = new ClassRoom(this);
             Segments.Add(NewClassRoom);
             Vacancy.Add(new Teacher(this, NewClassRoom));
+            return NewClassRoom;
         }
     }
     public class School : Business
@@ -406,11 +407,12 @@ namespace Entity.Company
             Vacancy.Add(new Accountant(this, office));
             PlayerInfo.CurrentCity.SchoolList.Add(Id, this);
         }
-        public void CreateClassRoom()
+        public ClassRoom CreateClassRoom()
         {
             var NewClassRoom = new ClassRoom(this);
             Segments.Add(NewClassRoom);
             Vacancy.Add(new Teacher(this, NewClassRoom));
+            return NewClassRoom;
         }
     }
     public class University : Business
@@ -437,11 +439,12 @@ namespace Entity.Company
             Vacancy.Add(new JanitorSecondShift(this, store));
             PlayerInfo.CurrentCity.UniversityList.Add(Id, this);
         }
-        public void CreateClassRoom()
+        public ClassRoom CreateClassRoom()
         {
             var NewClassRoom = new ClassRoom(this);
             Segments.Add(NewClassRoom);
             Vacancy.Add(new Teacher(this, NewClassRoom));
+            return NewClassRoom;
         }
     }
     public class Hospital : Business

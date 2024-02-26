@@ -28,7 +28,6 @@ namespace Data.SectionData
             LocatedOn = location;
             Adress = location.Adress + " " + Purpose;
             PlayerInfo.CurrentCity.CitySegments.Add(Id, this);
-            GD.Print(LocatedOn is Streets);
         }
     }
     public class StoreRoom : Segment

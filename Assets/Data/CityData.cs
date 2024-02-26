@@ -106,6 +106,7 @@ namespace Data.CityData
 				Population.Add(person.Id,  person);
             }
             ReCreatePopulation();
+
         }
         private bool Repopulate(Person person)
         {

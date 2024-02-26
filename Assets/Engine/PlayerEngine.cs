@@ -15,7 +15,8 @@ namespace Engine.PlayerEngine
             CurrentCity = new City();
             CurrentCity.BuildCity();
             CurrentCity.PopulateTheCity(2000);
-            CityLive = new Thread(CurrentCity.CityLife);
+            CurrentCity.CityLife();
+            //CityLive = new Thread(CurrentCity.CityLife);
         }
     }
 }

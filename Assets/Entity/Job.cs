@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Entity.Job
 {
-    
+
     public abstract class Work
     {
         public abstract string Name { get; }
@@ -17,7 +17,7 @@ namespace Entity.Job
         public abstract float Salary { get; }
         public abstract bool WorkingFromHome { get; }
         public abstract bool FreeEmployee { get; }
-        public abstract List<DayOfWeek> WorkingWeek { get;}
+        public abstract List<DayOfWeek> WorkingWeek { get; }
         public Guid Id;
 
         public Guid Worker;
@@ -27,10 +27,10 @@ namespace Entity.Job
         public bool IsBusy { get {
                 if (Worker != default(Guid))
                     return true;
-                else 
+                else
                     return false;
-                    }
-            
+            }
+
         }
 
         public abstract int StatValue { get; }
@@ -39,27 +39,32 @@ namespace Entity.Job
             WorkingSegment = Seg;
             WorkingCompany = business;
             Id = Guid.NewGuid();
-            PlayerInfo.CurrentCity.Vacancy.Add(Id,this);
+            PlayerInfo.CurrentCity.Vacancy.Add(Id, this);
         }
         public Work()
-        {}
+        { }
         public virtual void WorkProccess()
         {
 
         }
+        public void Fire()
+        {
+            PlayerInfo.CurrentCity.Population[Worker].Job = null;
+            Worker = default(Guid);
+        }
     }
-    public class SelfEmployed: Work
+    public class SelfEmployed : Work
     {
         public override string Name => "Self Employed";
         public override int StartHour => 8;
         public override int EndHour => 18;
         public override int StatValue => 0;
         public override float Salary => 10000f;
-        public override bool WorkingFromHome=> true;
+        public override bool WorkingFromHome => true;
         public override bool FreeEmployee => true;
-        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday,DayOfWeek.Friday };
+        public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
-        {}
+        { }
         public SelfEmployed()
         {
             WorkingCompany = PlayerInfo.CurrentCity.CityLaborExchange;
@@ -87,6 +92,7 @@ namespace Entity.Job
             WorkingCompany = PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value;
             CurrentKinderGartener = PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value;
             PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value.Students.Add(person.Id);
+            WorkingSegment = PlayerInfo.CurrentCity.Population[Worker].Apartment.Segments.Find(x => x is BedRoom);
         }
         ~KinderGartenerYoung()
         {
@@ -111,6 +117,38 @@ namespace Entity.Job
         }
         public KinderGartenerOld(Person person)
         {
+            if (PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value.Segments.Any(x => x is ClassRoom))
+            {
+                ClassRoom AvailableClassRoom = null;
+                for (int i = 0; i < PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value.Segments.Count; i++)
+                {
+                    if (PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value.Segments[i] is ClassRoom)
+                    {
+                        var classroom = PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value.Segments[i] as ClassRoom;
+                        if (classroom.Students.Count < 20)
+                        {
+                            AvailableClassRoom = classroom;
+                            break;
+                        }
+                        else
+                        {
+                            AvailableClassRoom = null;
+                        }
+
+                    }
+                }
+                if (AvailableClassRoom!=null)
+                {
+                    AvailableClassRoom.Students.Add(person);
+                    WorkingSegment = AvailableClassRoom;
+                }
+                else
+                {
+                    var NewClassRoom = PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value.CreateClassRoom();
+                    WorkingSegment = NewClassRoom;
+                }
+            }
+
             WorkingCompany = PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value;
             CurrentKinderGartener = PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value;
             PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value.Students.Add(person.Id);
@@ -118,6 +156,11 @@ namespace Entity.Job
         ~KinderGartenerOld()
         {
             CurrentKinderGartener.Students.Remove(Worker);
+            var segments = CurrentKinderGartener.Segments.FindAll(x => x is ClassRoom);
+            List<ClassRoom> classRooms = new List<ClassRoom>();
+            for (int i = 0; i < segments.Count; i++)
+                classRooms.Add(segments[i] as ClassRoom);
+            classRooms.Find(x => x.Students.Contains(PlayerInfo.CurrentCity.Population[Worker])).Students.Remove(PlayerInfo.CurrentCity.Population[Worker]);
         }
     }
     public class SchoolStudent : Work
@@ -134,43 +177,41 @@ namespace Entity.Job
         private School CurrentSchool;
         public override void WorkProccess()
         {
-           
+
         }
         public SchoolStudent(Person person)
         {
-           if(PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments.Any(x => x is ClassRoom))
+            if (PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments.Any(x => x is ClassRoom))
             {
-                bool HaveFreeAvailableSeats = true;
                 ClassRoom AvailableClassRoom = null;
-                for (int i=0; i< PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments.Count; i++)
+                for (int i = 0; i < PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments.Count; i++)
                 {
                     if (PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments[i] is ClassRoom)
                     {
                         var classroom = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Segments[i] as ClassRoom;
                         if (classroom.Students.Count < 20)
                         {
-                            HaveFreeAvailableSeats = true;
                             AvailableClassRoom = classroom;
                             break;
                         }
                         else
                         {
-                            HaveFreeAvailableSeats = false;
+                            AvailableClassRoom = null;
                         }
-                           
+
                     }
                 }
-                if (HaveFreeAvailableSeats)
+                if (AvailableClassRoom != null)
                 {
                     AvailableClassRoom.Students.Add(person);
                     WorkingSegment = AvailableClassRoom;
                 }
                 else
                 {
-
+                    var NewClassRoom = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.CreateClassRoom();
+                    WorkingSegment = NewClassRoom;
                 }
             }
-
             WorkingCompany = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value;
             CurrentSchool = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value;
             PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.Students.Add(person.Id);
@@ -178,6 +219,11 @@ namespace Entity.Job
         ~SchoolStudent()
         {
             CurrentSchool.Students.Remove(Worker);
+            var segments = CurrentSchool.Segments.FindAll(x => x is ClassRoom);
+            List<ClassRoom> classRooms = new List<ClassRoom>();
+            for (int i = 0; i < segments.Count; i++)
+                classRooms.Add(segments[i] as ClassRoom);
+            classRooms.Find(x => x.Students.Contains(PlayerInfo.CurrentCity.Population[Worker])).Students.Remove(PlayerInfo.CurrentCity.Population[Worker]);
         }
     }
     public class UniversityStudent : Work
@@ -193,11 +239,42 @@ namespace Entity.Job
         private University CurrentUniversity;
         public override void WorkProccess()
         {
-           
+
         }
-       
+
         public UniversityStudent(Person person)
         {
+            if (PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value.Segments.Any(x => x is ClassRoom))
+            {
+                ClassRoom AvailableClassRoom = null;
+                for (int i = 0; i < PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value.Segments.Count; i++)
+                {
+                    if (PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value.Segments[i] is ClassRoom)
+                    {
+                        var classroom = PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value.Segments[i] as ClassRoom;
+                        if (classroom.Students.Count < 20)
+                        {
+                            AvailableClassRoom = classroom;
+                            break;
+                        }
+                        else
+                        {
+                            AvailableClassRoom = null;
+                        }
+
+                    }
+                }
+                if (AvailableClassRoom != null)
+                {
+                    AvailableClassRoom.Students.Add(person);
+                    WorkingSegment = AvailableClassRoom;
+                }
+                else
+                {
+                    var NewClassRoom = PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value.CreateClassRoom();
+                    WorkingSegment = NewClassRoom;
+                }
+            }
             WorkingCompany = PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value;
             CurrentUniversity = PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value;
             PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value.Students.Add(person.Id);
@@ -205,6 +282,11 @@ namespace Entity.Job
         ~UniversityStudent()
         {
             CurrentUniversity.Students.Remove(Worker);
+            var segments = CurrentUniversity.Segments.FindAll(x => x is ClassRoom);
+            List<ClassRoom> classRooms = new List<ClassRoom>();
+            for (int i = 0; i < segments.Count; i++)
+                classRooms.Add(segments[i] as ClassRoom);
+            classRooms.Find(x => x.Students.Contains(PlayerInfo.CurrentCity.Population[Worker])).Students.Remove(PlayerInfo.CurrentCity.Population[Worker]);
         }
     }
    
@@ -223,6 +305,7 @@ namespace Entity.Job
         public Retiree()
         {
             WorkingCompany = PlayerInfo.CurrentCity.CityAministration;
+            WorkingSegment = PlayerInfo.CurrentCity.Population[Worker].Apartment.Segments.Find(x => x is LivingRoom);
         }
         ~Retiree()
         {
@@ -244,6 +327,7 @@ namespace Entity.Job
         public Secretary(Business business, Segment Seg)
             : base(business, Seg)
         { }
+       
     }
     public class Teacher : Work
     {
