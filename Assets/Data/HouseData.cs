@@ -37,7 +37,7 @@ namespace Data.HouseData
             int rand = random.Next(0, ApartmentCountRandom.Count());
             ApartmentCount = ApartmentCountRandom[rand];
             NumberOfFloors = ApartmentCount / 4+1;
-            PlayerInfo.CurrentCity.CityHouses.Add(Id,this);
+            PlayerInfo.CurrentCity.CityHouses.Add(this);
             PlayerInfo.CurrentCity.Locations.Add(Id, this);
             
             Segments = new List<Segment> ();
@@ -59,7 +59,7 @@ namespace Data.HouseData
             Adress = $"{number} {street}";
             Id = Guid.NewGuid();
             NumberOfFloors = 1;
-            PlayerInfo.CurrentCity.CityHouses.Add(Id, this);
+            PlayerInfo.CurrentCity.CityHouses.Add(this);
             PlayerInfo.CurrentCity.Locations.Add(Id, this);
         }
         public List<Apartments> CreateApartments( string name, int count)

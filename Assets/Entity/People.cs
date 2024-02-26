@@ -158,11 +158,12 @@ namespace Entity.People
             HobbyEnum =FindHobby();
             HobbyPlace = FindHobbyPlace();
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
+            FindHome();
            //Live = () => { this.TryMarry(); this.FindJob();this.Movement();this.Talk(); this.Aged(); };
-            Live += this.TryMarry;/* Live += this.FindJob;*/Live += this.Movement; Live += this.MovementСalculation;/*  Live += this.Talk;*/ Live += this.Aged; 
+            Live += this.TryMarry;/*Live += this.FindJob;*/Live += this.Movement;/* Live += this.MovementСalculation;*//*  Live += this.Talk;*/ Live += this.Aged; 
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
-            CurrentLocation = PlayerInfo.CurrentCity.CitySegments.ElementAt(rand.Next(0, PlayerInfo.CurrentCity.CitySegments.Count)).Value;
+            CurrentLocation = PlayerInfo.CurrentCity.CitySegments.ElementAt(rand.Next(0, PlayerInfo.CurrentCity.CitySegments.Count));
         }
         public Person(Person mother, Person father)
         {
@@ -189,8 +190,8 @@ namespace Entity.People
             HobbyEnum = FindHobby();
             HobbyPlace = FindHobbyPlace();
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
-            CurrentLocation= Mother.CurrentLocation;
-            Live += this.TryMarry; /*Live += this.FindJob;*/ Live += this.Movement; Live += this.MovementСalculation;/* Live += this.Talk;*/ Live += this.Aged;
+            CurrentLocation = Mother.CurrentLocation;
+            Live += this.TryMarry; /*Live += this.FindJob;*/ Live += this.Movement; /* Live += this.MovementСalculation;*/ /* Live += this.Talk;*/ Live += this.Aged;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
@@ -198,6 +199,20 @@ namespace Entity.People
         {
             if ((PlayerInfo.CurrentCity.CityTime - Bithday).Ticks >= AgeOfDeath.Ticks)
                 Death(null, "Old Age");
+        }
+        public void FindHome()
+        {
+            if (PlayerInfo.CurrentCity.CityApartments.Any(x => !x.Busy))
+            {
+                var apart = PlayerInfo.CurrentCity.CityApartments.Find(x => !x.Busy);
+                this.Apartment = apart;
+                apart.Residents.Add(this);
+            }
+            else
+            {
+                PlayerInfo.CurrentCity.CreateStreet();
+                this.FindHome();
+            }
         }
         public void FindJob()
         {
@@ -748,15 +763,15 @@ namespace Entity.People
                                 int currentIndex=0;
                                 for(int i =0; i<PlayerInfo.CurrentCity.CityStreets.Count; i++)
                                 {
-                                    if (apartTarget.InHouse.OnStreet == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                    if (apartTarget.InHouse.OnStreet == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         targetIndex = i;
-                                    if(LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                    if(LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         currentIndex = i;
                                 }
                                 if(targetIndex> currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).Value.EntryExitPoint);
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint);
                                 else if(targetIndex < currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).Value.EntryExitPoint);
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint);
                                 //Перейти на другую улицу
                             }
                             else
@@ -791,15 +806,15 @@ namespace Entity.People
                                 int currentIndex = 0;
                                 for (int i = 0; i < PlayerInfo.CurrentCity.CityStreets.Count; i++)
                                 {
-                                    if (houseTarget.OnStreet == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                    if (houseTarget.OnStreet == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         targetIndex = i;
-                                    if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                    if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         currentIndex = i;
                                 }
                                 if (targetIndex > currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).Value.EntryExitPoint);
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint);
                                 else if (targetIndex < currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).Value.EntryExitPoint);
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint);
                                 //Перейти на другую улицу
                             }
                             else
@@ -834,15 +849,15 @@ namespace Entity.People
                                 int currentIndex = 0;
                                 for (int i = 0; i < PlayerInfo.CurrentCity.CityStreets.Count; i++)
                                 {
-                                    if (businessTarget.InHouse.OnStreet == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                    if (businessTarget.InHouse.OnStreet == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         targetIndex = i;
-                                    if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                    if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         currentIndex = i;
                                 }
                                 if (targetIndex > currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).Value.EntryExitPoint);
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint);
                                 else if (targetIndex < currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).Value.EntryExitPoint);
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint);
                                 //Перейти на другую улицу
                             }
                             else
@@ -868,15 +883,15 @@ namespace Entity.People
                                 int currentIndex = 0;
                                 for (int i = 0; i < PlayerInfo.CurrentCity.CityStreets.Count; i++)
                                 {
-                                    if (StreetTarget == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                    if (StreetTarget == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         targetIndex = i;
-                                    if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i).Value)
+                                    if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         currentIndex = i;
                                 }
                                 if (targetIndex > currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).Value.EntryExitPoint);
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint);
                                 else if (targetIndex < currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).Value.EntryExitPoint);
+                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint);
                                 //Перейти на другую улицу
                             }
                             else
@@ -1155,17 +1170,17 @@ namespace Entity.People
         public void Death(Person murder, string reason)
         {
             AgeOfDeath = new DateTime(PlayerInfo.CurrentCity.CityTime.Ticks- Bithday.Ticks);   
-            if (murder == null) 
-                PlayerInfo.CurrentCity.NecroLog.Add(new Log.Necrolog(this, reason));
-            else
-                PlayerInfo.CurrentCity.NecroLog.Add(new Log.Necrolog(this,murder));
+            //if (murder == null) 
+            //    PlayerInfo.CurrentCity.NecroLog.Add(new Log.Necrolog(this, reason));
+            //else
+            //    PlayerInfo.CurrentCity.NecroLog.Add(new Log.Necrolog(this,murder));
             Apartment.Residents.Remove(this);
-            foreach (var vacancy in Job.WorkingCompany.Vacancy)
-                if (vacancy.Worker == this.Id)
-                {
-                    vacancy.Worker = default(Guid);
-                    break;
-                }
+            //foreach (var vacancy in Job.WorkingCompany.Vacancy)
+            //    if (vacancy.Worker == this.Id)
+            //    {
+            //        vacancy.Worker = default(Guid);
+            //        break;
+            //    }
             if(Partner !=null)
                 Partner.Partner=null;
             Alive = false;

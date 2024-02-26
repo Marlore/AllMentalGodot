@@ -27,7 +27,7 @@ namespace Data.SectionData
             Id = Guid.NewGuid();
             LocatedOn = location;
             Adress = location.Adress + " " + Purpose;
-            PlayerInfo.CurrentCity.CitySegments.Add(Id, this);
+            PlayerInfo.CurrentCity.CitySegments.Add(this);
         }
     }
     public class StoreRoom : Segment

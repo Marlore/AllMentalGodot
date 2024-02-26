@@ -68,6 +68,7 @@ namespace Entity.Job
         public SelfEmployed()
         {
             WorkingCompany = PlayerInfo.CurrentCity.CityLaborExchange;
+            WorkingSegment = PlayerInfo.CurrentCity.Population[Worker].Apartment.Segments.Find(x => x is LivingRoom);
         }
 
     }

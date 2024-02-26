@@ -39,7 +39,7 @@ namespace Data.Appartment
             RoomNumber = room.ToString();
             Adress = $"{adress} {room}";
 
-            PlayerInfo.CurrentCity.CityApartments.Add(Id,this);
+            PlayerInfo.CurrentCity.CityApartments.Add(this);
             PlayerInfo.CurrentCity.Locations.Add(Id,this);
 
             var _entryExit = new Hallway(this);

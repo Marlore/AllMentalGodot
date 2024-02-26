@@ -27,10 +27,10 @@ namespace Data.CityData
 
 		public Dictionary<Guid,Person> Population = new Dictionary<Guid, Person>();
 
-		public Dictionary<Guid, Streets> CityStreets = new Dictionary<Guid, Streets>();
-		public Dictionary<Guid, Houses> CityHouses = new Dictionary<Guid, Houses>();
-		public Dictionary<Guid, Apartments> CityApartments = new Dictionary<Guid, Apartments>();
-		public Dictionary<Guid, Segment> CitySegments = new Dictionary<Guid, Segment>();
+		public List<Streets> CityStreets = new List<Streets>();
+		public List<Houses> CityHouses = new List<Houses>();
+		public List<Apartments> CityApartments = new List<Apartments>();
+		public List<Segment> CitySegments = new List<Segment>();
 
 		public Dictionary<Guid, Business> CompanyList = new Dictionary<Guid, Business>();
 		public Dictionary<Guid, Work> Vacancy = new Dictionary<Guid, Work>();
@@ -85,9 +85,8 @@ namespace Data.CityData
 			{
 				CreateStreet();
             }
-			BuildInfrostructure();
 		}
-		private void CreateStreet()
+		public void CreateStreet()
 		{
             var street = new Streets();
             street.HouseList.AddRange(street.CreateHouses(street.Adress, street.Length));
@@ -95,8 +94,8 @@ namespace Data.CityData
 			{
                 House.ApartmentList.AddRange(House.CreateApartments(House.Adress, House.ApartmentCount));
             }
-            GD.Print(CityApartments.Count);
-            CityStreets.Add(street.Id, street);
+            CityStreets.Add(street);
+			BuildInfrostructure();
         }
 		public void PopulateTheCity(int populate)
         {
@@ -105,82 +104,49 @@ namespace Data.CityData
 				var person = new Person();
 				Population.Add(person.Id,  person);
             }
-            ReCreatePopulation();
 
         }
-        private bool Repopulate(Person person)
-        {
-            bool AllBusy = false;
-
-            for (int i = 0; i < CityApartments.Count; i++)
-                if (!CityApartments.ElementAt(i).Value.Busy)
-                {
-                    person.Apartment = CityApartments.ElementAt(i).Value;
-                    CityApartments.ElementAt(i).Value.Residents.Add(person);
-                    AllBusy = false;
-                    return AllBusy;
-                }
-                else
-                    AllBusy = true;
-            return AllBusy;
-        }
-        public void ReCreatePopulation()
-        {
-            bool createStreet = false;
-            foreach (var person in Population)
-                if (person.Value.Apartment == null)
-                    createStreet = Repopulate(person.Value);
-            if (createStreet)
-            {
-                var street = new Streets(); 
-				CreateStreet();
-                ReCreatePopulation();
-            }
-        }
-
-
-
-        public void BuildInfrostructure()
-		{        
-		   var infostructer = new Dictionary<business, int>()
+        Dictionary<business, int> infostructer = new Dictionary<business, int>()
 				{
 					{ Entity.Company.business.factory, 1 },
 					{ Entity.Company.business.police, 1 },
 					{ Entity.Company.business.hospital, 1 },
 					{ Entity.Company.business.university, 1 },
 					{ Entity.Company.business.school,1 },
-					{Entity.Company.business.laborExchange, 1 },
-					{Entity.Company.business.administration, 1 },
+					{ Entity.Company.business.laborExchange, 1 },
+					{ Entity.Company.business.administration, 1 },
 					{ Entity.Company.business.park, 1},
-			   {Entity.Company.business.kindergarten,1 }
+			   { Entity.Company.business.kindergarten,1 }
 				};
+		Dictionary<business, int> business = new Dictionary<business, int>()
+                {
+                    { Entity.Company.business.coffeshop, 3 },
+                    { Entity.Company.business.restaurants, 2 },
+                    { Entity.Company.business.pharmacy, 3},
+                    { Entity.Company.business.grocerystore, 5 },
+                    { Entity.Company.business.postmart, 4 },
+                    { Entity.Company.business.gym, 3 },
+                    { Entity.Company.business.office, 4 },
+                    { Entity.Company.business.bar, 2 }
+                };
+        public void BuildInfrostructure()
+		{        
 			foreach (var street in CityStreets)
 			{
-				if (!street.Value.HaveInfostructer)
+				if (!street.HaveInfostructer)
 				{
 					int rand = random.Next(0, infostructer.Count);
 					var creator = new AbstractFactory(); 
 					var key = infostructer.ElementAt(rand).Key;
-					var house = street.Value.CreateHouseForBusiness();
-					street.Value.HouseList.Add(house);
-                    var company = creator.CompanyCreator(key, street.Value.Adress, street.Value.HouseList.Count + 1, house);
+					var house = street.CreateHouseForBusiness();
+					street.HouseList.Add(house);
+                    var company = creator.CompanyCreator(key, street.Adress, street.HouseList.Count + 1, house);
 					house.Infostructer = company;
 					infostructer[key]--;
 					if (infostructer[key] <= 0)
 						infostructer.Remove(key);
 				}
-				var business = new Dictionary<business, int>()
-				{
-					{ Entity.Company.business.coffeshop, 3 },
-					{ Entity.Company.business.restaurants, 2 },
-					{ Entity.Company.business.pharmacy, 3},
-					{ Entity.Company.business.grocerystore, 5 },
-					{ Entity.Company.business.postmart, 4 },
-					{ Entity.Company.business.gym, 3 },
-					{ Entity.Company.business.office, 4 },
-					{ Entity.Company.business.bar, 2 }
-				};
-				foreach(var house in street.Value.HouseList)
+				foreach(var house in street.HouseList)
 				{
 					for(int i =0; i<4;i++)
 						if (house.HouseBusiness.Count < 4 && business.Any())
