@@ -106,7 +106,7 @@ namespace Data.CityData
             }
 
         }
-        Dictionary<business, int> infostructer = new Dictionary<business, int>()
+        private Dictionary<business, int> infostructer = new Dictionary<business, int>()
 				{
 					{ Entity.Company.business.factory, 1 },
 					{ Entity.Company.business.police, 1 },
@@ -118,7 +118,7 @@ namespace Data.CityData
 					{ Entity.Company.business.park, 1},
 			   { Entity.Company.business.kindergarten,1 }
 				};
-		Dictionary<business, int> business = new Dictionary<business, int>()
+        private Dictionary<business, int> business = new Dictionary<business, int>()
                 {
                     { Entity.Company.business.coffeshop, 3 },
                     { Entity.Company.business.restaurants, 2 },
@@ -133,8 +133,9 @@ namespace Data.CityData
 		{        
 			foreach (var street in CityStreets)
 			{
-				if (!street.HaveInfostructer)
+				if (!street.HaveInfostructer && infostructer.Any())
 				{
+					
 					int rand = random.Next(0, infostructer.Count);
 					var creator = new AbstractFactory(); 
 					var key = infostructer.ElementAt(rand).Key;
@@ -145,14 +146,17 @@ namespace Data.CityData
 					infostructer[key]--;
 					if (infostructer[key] <= 0)
 						infostructer.Remove(key);
-				}
+					GD.Print(rand);
+
+                }
 				foreach(var house in street.HouseList)
 				{
 					for(int i =0; i<4;i++)
 						if (house.HouseBusiness.Count < 4 && business.Any())
 						{
 							int rand = random.Next(0, business.Count);
-							var creator = new AbstractFactory();
+                            GD.Print(rand);
+                            var creator = new AbstractFactory();
 							var key = business.ElementAt(rand).Key;
 							var company = creator.CompanyCreator(key, house.Adress, house.HouseBusiness.Count + 1, house);
 							house.HouseBusiness.Add(company);

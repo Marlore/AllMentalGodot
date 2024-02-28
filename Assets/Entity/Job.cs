@@ -65,10 +65,10 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
         public override void WorkProccess()
         { }
-        public SelfEmployed()
+        public SelfEmployed(Person person)
         {
+            WorkingSegment = PlayerInfo.CurrentCity.Population[person.Id].Apartment.Segments.Find(x => x is LivingRoom);
             WorkingCompany = PlayerInfo.CurrentCity.CityLaborExchange;
-            WorkingSegment = PlayerInfo.CurrentCity.Population[Worker].Apartment.Segments.Find(x => x is LivingRoom);
         }
 
     }
@@ -303,10 +303,10 @@ namespace Entity.Job
         public override List<DayOfWeek> WorkingWeek => new List<DayOfWeek>() { };
         public override void WorkProccess()
         { }
-        public Retiree()
+        public Retiree(Person person)
         {
             WorkingCompany = PlayerInfo.CurrentCity.CityAministration;
-            WorkingSegment = PlayerInfo.CurrentCity.Population[Worker].Apartment.Segments.Find(x => x is LivingRoom);
+            WorkingSegment = PlayerInfo.CurrentCity.Population[person.Id].Apartment.Segments.Find(x => x is LivingRoom);
         }
         ~Retiree()
         {

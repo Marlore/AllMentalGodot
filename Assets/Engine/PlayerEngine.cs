@@ -1,7 +1,10 @@
 using Data.CityData;
+using Data.SectionData;
+using Godot;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Engine.PlayerEngine
@@ -14,7 +17,9 @@ namespace Engine.PlayerEngine
         {
             CurrentCity = new City();
             CurrentCity.BuildCity();
-            CurrentCity.PopulateTheCity(2000);
+            var s = CurrentCity.CityApartments.ElementAt(0).Segments.Find(x => x is LivingRoom);
+            GD.Print(s.Adress);
+            CurrentCity.PopulateTheCity(10);
             CurrentCity.CityLife();
             //CityLive = new Thread(CurrentCity.CityLife);
         }

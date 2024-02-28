@@ -14,10 +14,10 @@ namespace Data.Appartment
     {
         public bool Busy { get 
             {
-                if (Residents?.Any()!=true) 
-                    return false;
-                else 
+                if (Residents.Any()) 
                     return true;
+                else 
+                    return false;
             } }
         public string Adress { get; set; }
         public Guid Id;

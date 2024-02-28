@@ -6,11 +6,14 @@ public partial class ProfileFullUI : Window
 {
 	Label PersonName;
 	Label PersonAge;
+	Label Location;
 	ItemList Contacts;
 	ItemList Events;
+	Guid personId;
 	public override void _Ready()
 	{
-		PersonName = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer/Name");
+		Location = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer2/Location");
+        PersonName = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer/Name");
 		PersonAge = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer/Age");
         Contacts = (ItemList)this.GetNode("Control/HBoxContainer/VBoxContainer/Control/ItemList");
         Events = (ItemList)this.GetNode("Control/HBoxContainer/VBoxContainer2/EventControl/Events");
@@ -28,8 +31,9 @@ public partial class ProfileFullUI : Window
         }
         this.Show();
 		Guid guid = Guid.Parse(id);
-		var person = PlayerInfo.CurrentCity.Population[guid];
-		PersonName.Text = person.FirstName + " " + person.SecondName;
+        personId = guid;
+        var person = PlayerInfo.CurrentCity.Population[guid];
+        PersonName.Text = person.FirstName + " " + person.SecondName;
 		PersonAge.Text = "Age:" + person.Age +"     " +person.Plans.Count;
 		Contacts.Clear();
 		foreach(var contact in person.Contacts)
@@ -44,6 +48,11 @@ public partial class ProfileFullUI : Window
 	}
     public override void _Process(double delta)
     {
+		GD.Print(PlayerInfo.CurrentCity.CityTime.DayOfWeek+" "+ PlayerInfo.CurrentCity.CityTime);
+		if (personId != default(Guid)){
+            Location.Text = PlayerInfo.CurrentCity.Population[personId].CurrentLocation.Adress;
+
+        }
         base._Process(delta);
     }
 }

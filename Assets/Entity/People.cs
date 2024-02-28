@@ -155,15 +155,17 @@ namespace Entity.People
             Social = rand.Next(1, 11);
 
             Bithday = PersonGenerator.GenerateBith();
+            AgeOfDeath = PersonGenerator.GenerateAgeDeath();
             HobbyEnum =FindHobby();
             HobbyPlace = FindHobbyPlace();
-            AgeOfDeath = PersonGenerator.GenerateAgeDeath();
-            FindHome();
+
+            this.FindHome();
+            this.FindJob();
            //Live = () => { this.TryMarry(); this.FindJob();this.Movement();this.Talk(); this.Aged(); };
-            Live += this.TryMarry;/*Live += this.FindJob;*/Live += this.Movement;/* Live += this.MovementСalculation;*//*  Live += this.Talk;*/ Live += this.Aged; 
+            Live += /*this.TryMarry;*/Live += this.FindJob;Live += this.Movement; Live += this.MovementСalculation;/*  Live += this.Talk;*/ Live += this.Aged; 
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
-            CurrentLocation = PlayerInfo.CurrentCity.CitySegments.ElementAt(rand.Next(0, PlayerInfo.CurrentCity.CitySegments.Count));
+            CurrentLocation = this.Apartment.Segments.Find(x=>x is LivingRoom);
         }
         public Person(Person mother, Person father)
         {
@@ -191,7 +193,7 @@ namespace Entity.People
             HobbyPlace = FindHobbyPlace();
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
             CurrentLocation = Mother.CurrentLocation;
-            Live += this.TryMarry; /*Live += this.FindJob;*/ Live += this.Movement; /* Live += this.MovementСalculation;*/ /* Live += this.Talk;*/ Live += this.Aged;
+            Live += /*this.TryMarry; */ Live += this.FindJob; Live += this.Movement; Live += this.MovementСalculation; /* Live += this.Talk;*/ Live += this.Aged;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
@@ -202,17 +204,19 @@ namespace Entity.People
         }
         public void FindHome()
         {
-            if (PlayerInfo.CurrentCity.CityApartments.Any(x => !x.Busy))
+            do
             {
-                var apart = PlayerInfo.CurrentCity.CityApartments.Find(x => !x.Busy);
-                this.Apartment = apart;
-                apart.Residents.Add(this);
-            }
-            else
-            {
-                PlayerInfo.CurrentCity.CreateStreet();
-                this.FindHome();
-            }
+                if (PlayerInfo.CurrentCity.CityApartments.Any(x => !x.Busy))
+                {
+                    var apart = PlayerInfo.CurrentCity.CityApartments.Find(x => !x.Busy);
+                    this.Apartment = apart;
+                    apart.Residents.Add(this);
+                }
+                else
+                {
+                    PlayerInfo.CurrentCity.CreateStreet();
+                }
+            } while (Apartment == null);
         }
         public void FindJob()
         {
@@ -241,7 +245,7 @@ namespace Entity.People
                 else if (Age > 21 && Age < 60)
                 {
                     float payment = 0f;
-                    Work work = new SelfEmployed();
+                    Work work = new SelfEmployed(this);
                     foreach (var job in PlayerInfo.CurrentCity.Vacancy)
                     {
                         if (payment < job.Value.Salary && job.Value.StatValue <= Intellegence && !job.Value.IsBusy)
@@ -255,7 +259,7 @@ namespace Entity.People
                 }
                 else if (Age >= 60)
                 {
-                    Job = new Retiree();
+                    Job = new Retiree(this);
                     Job.Worker = this.Id;
                 }
             }
@@ -336,6 +340,7 @@ namespace Entity.People
             { 
                 if (this.CurrentLocation.LocatedOn is Apartments)
                 {
+                    GD.Print("Here");
                     Apartments locatedApartPoint = this.CurrentLocation.LocatedOn as Apartments;
                     if (Destination.LocatedOn is Apartments)
                     {
