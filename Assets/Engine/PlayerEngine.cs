@@ -18,7 +18,7 @@ namespace Engine.PlayerEngine
             CurrentCity = new City();
             CurrentCity.BuildCity();
             var s = CurrentCity.CityApartments.ElementAt(0).Segments.Find(x => x is LivingRoom);
-            CurrentCity.PopulateTheCity(10);
+            CurrentCity.PopulateTheCity(2000);
             CityLive = new Thread(CurrentCity.CityLife);
         }
     }

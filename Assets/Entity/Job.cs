@@ -67,8 +67,8 @@ namespace Entity.Job
         { }
         public SelfEmployed(Person person)
         {
+            WorkingCompany = PlayerInfo.CurrentCity.CityLaborExchange; 
             WorkingSegment = person.Apartment.Segments.Find(x => x is LivingRoom);
-            WorkingCompany = PlayerInfo.CurrentCity.CityLaborExchange;
         }
 
     }
@@ -146,8 +146,15 @@ namespace Entity.Job
                 else
                 {
                     var NewClassRoom = PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value.CreateClassRoom();
+                    NewClassRoom.Students.Add(person);
                     WorkingSegment = NewClassRoom;
                 }
+            }
+            else
+            {
+                var NewClassRoom = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.CreateClassRoom();
+                NewClassRoom.Students.Add(person);
+                WorkingSegment = NewClassRoom;
             }
 
             WorkingCompany = PlayerInfo.CurrentCity.KinderGartenList.ElementAt(0).Value;
@@ -210,8 +217,15 @@ namespace Entity.Job
                 else
                 {
                     var NewClassRoom = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.CreateClassRoom();
+                    NewClassRoom.Students.Add(person);
                     WorkingSegment = NewClassRoom;
                 }
+            }
+            else
+            {
+                var NewClassRoom = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.CreateClassRoom();
+                NewClassRoom.Students.Add(person);
+                WorkingSegment = NewClassRoom;
             }
             WorkingCompany = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value;
             CurrentSchool = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value;
@@ -273,8 +287,15 @@ namespace Entity.Job
                 else
                 {
                     var NewClassRoom = PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value.CreateClassRoom();
+                    NewClassRoom.Students.Add(person);
                     WorkingSegment = NewClassRoom;
                 }
+            }
+            else
+            {
+                var NewClassRoom = PlayerInfo.CurrentCity.SchoolList.ElementAt(0).Value.CreateClassRoom();
+                NewClassRoom.Students.Add(person);
+                WorkingSegment = NewClassRoom;
             }
             WorkingCompany = PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value;
             CurrentUniversity = PlayerInfo.CurrentCity.UniversityList.ElementAt(0).Value;

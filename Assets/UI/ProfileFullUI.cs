@@ -26,8 +26,8 @@ public partial class ProfileFullUI : Window
         Contacts = (ItemList)this.GetNode("Control/HBoxContainer/VBoxContainer/Control/ItemList");
         Events = (ItemList)this.GetNode("Control/HBoxContainer/VBoxContainer2/EventControl/Events");
 		
-        this.Hide(); 
-		
+        this.Hide();
+        
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -48,8 +48,7 @@ public partial class ProfileFullUI : Window
         foreach (var plan in person.Plans)
             Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)} {plan.Key}", null, true);
 		Work.Text = person.Job.Name;
-		
-        
+
     }
 	private void _on_close_requested()
 	{
@@ -59,9 +58,9 @@ public partial class ProfileFullUI : Window
     {
 		if (personId != default(Guid)){
             Location.Text = PlayerInfo.CurrentCity.Population[personId].CurrentLocation.Adress;
-
-            GD.Print(PlayerInfo.CurrentCity.Population[personId]._intermediateSegment);
+            //GD.Print(PlayerInfo.CurrentCity.Population[personId]._intermediateSegment.Adress);
         }
+
         base._Process(delta);
     }
 }

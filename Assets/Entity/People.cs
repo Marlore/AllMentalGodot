@@ -172,7 +172,7 @@ namespace Entity.People
 
             StatusEnum = _status.messingAround;
             //Live = () => { this.TryMarry(); this.FindJob();this.Movement();this.Talk(); this.Aged(); };
-            Live += /*this.TryMarry;*//*Live += this.FindJob;*/Live += this.MovementСalculation; Live += this.Movement;/*Live += this.WalkTimer;   Live += this.Talk;*/ Live += this.Aged; 
+            Live += /*this.TryMarry;*//*Live += this.FindJob;*/Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer;/*  Live += this.Talk;*/ Live += this.Aged; 
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
@@ -354,7 +354,7 @@ namespace Entity.People
                 if (this.CurrentLocation.LocatedOn is Apartments)
                 {
                     Apartments locatedApartPoint = this.CurrentLocation.LocatedOn as Apartments;
-                    if (Destination.LocatedOn is Apartments)
+                    if (this.Destination.LocatedOn is Apartments)
                     {
                         Apartments apartTarget = Destination.LocatedOn as Apartments;
                         if(locatedApartPoint == apartTarget)
@@ -375,7 +375,7 @@ namespace Entity.People
                             CreateTimer();
                         }
                     }
-                    else if (Destination.LocatedOn is Houses)
+                    else if (this.Destination.LocatedOn is Houses)
                     {
                         Houses houseTarget = Destination.LocatedOn as Houses;
                         if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
@@ -839,12 +839,12 @@ namespace Entity.People
                                 }
                                 if (targetIndex > currentIndex)
                                 {
-                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
                                     CreateTimer();
                                 }
                                 else if (targetIndex < currentIndex)
                                 {
-                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
                                     CreateTimer();
                                 }
                                 //Перейти на другую улицу
@@ -891,12 +891,12 @@ namespace Entity.People
                                 }
                                 if (targetIndex > currentIndex)
                                 {
-                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
                                     CreateTimer();
                                 }
                                 else if (targetIndex < currentIndex)
                                 { 
-                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
                                     CreateTimer();
                                 }
                                 //Перейти на другую улицу
@@ -942,12 +942,12 @@ namespace Entity.People
                                 }
                                 if (targetIndex > currentIndex)
                                 {
-                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
                                     CreateTimer();
                                 }
                                 else if (targetIndex < currentIndex) 
                                 {
-                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
                                     CreateTimer();
                                 }
                                 //Перейти на другую улицу
@@ -982,12 +982,12 @@ namespace Entity.People
                                 }
                                 if (targetIndex > currentIndex) 
                                 { 
-                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
                                     CreateTimer();
                                 }
                                 else if (targetIndex < currentIndex)
                                 {
-                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
                                     CreateTimer();
                                 }
                                 //Перейти на другую улицу
@@ -1009,9 +1009,7 @@ namespace Entity.People
             }
 
         }
-        public DateTime _walking;
-        public int counter;
-        //public string _walking;
+       
         private void CreateTimer()
         {
             TimeToWalk = new DateTime(PlayerInfo.CurrentCity.CityTime.AddMinutes(CurrentLocation.Lenght).Ticks);

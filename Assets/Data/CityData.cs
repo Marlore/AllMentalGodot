@@ -71,7 +71,7 @@ namespace Data.CityData
 				for (int i= 0; i<Population.Keys.Count; i++)
 				{
 					var id = Population.Keys.ElementAt(i);
-					Population.Values.ElementAt(i).Live?.Invoke();
+					Population[id].Live?.Invoke();
 				}
 				this.CityTime = this.CityTime.AddMinutes(1); 
 				Thread.Sleep(50);

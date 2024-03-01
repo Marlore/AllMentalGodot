@@ -102,7 +102,7 @@ namespace Data.SectionData
     public class ClassRoom : Segment
     {
         public override string Purpose => "ClassRoom "+ Letter;
-        public List<Person> Students;
+        public List<Person> Students = new List<Person>();
         public string Letter;
         public override int Lenght => 3;
         public ClassRoom(ILocations location) : base(location) { }
