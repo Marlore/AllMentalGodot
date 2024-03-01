@@ -7,7 +7,7 @@ public partial class ProfileShort : VBoxContainer
     public override void _Ready()
     {
         PlayerInfo.Init();
-       // PlayerInfo.CityLive.Start();
+        PlayerInfo.CityLive.Start();
         var personGo = (PackedScene)ResourceLoader.Load("res://obj/Presets/Person.tscn");
         foreach (var person in PlayerInfo.CurrentCity.Population)
         {

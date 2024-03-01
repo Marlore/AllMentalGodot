@@ -18,10 +18,8 @@ namespace Engine.PlayerEngine
             CurrentCity = new City();
             CurrentCity.BuildCity();
             var s = CurrentCity.CityApartments.ElementAt(0).Segments.Find(x => x is LivingRoom);
-            GD.Print(s.Adress);
             CurrentCity.PopulateTheCity(10);
-            CurrentCity.CityLife();
-            //CityLive = new Thread(CurrentCity.CityLife);
+            CityLive = new Thread(CurrentCity.CityLife);
         }
     }
 }

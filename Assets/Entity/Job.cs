@@ -67,7 +67,7 @@ namespace Entity.Job
         { }
         public SelfEmployed(Person person)
         {
-            WorkingSegment = PlayerInfo.CurrentCity.Population[person.Id].Apartment.Segments.Find(x => x is LivingRoom);
+            WorkingSegment = person.Apartment.Segments.Find(x => x is LivingRoom);
             WorkingCompany = PlayerInfo.CurrentCity.CityLaborExchange;
         }
 
@@ -306,7 +306,7 @@ namespace Entity.Job
         public Retiree(Person person)
         {
             WorkingCompany = PlayerInfo.CurrentCity.CityAministration;
-            WorkingSegment = PlayerInfo.CurrentCity.Population[person.Id].Apartment.Segments.Find(x => x is LivingRoom);
+            WorkingSegment = person.Apartment.Segments.Find(x => x is LivingRoom);
         }
         ~Retiree()
         {

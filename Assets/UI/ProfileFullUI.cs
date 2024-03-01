@@ -1,4 +1,7 @@
+using Data.Appartment;
 using Engine.PlayerEngine;
+using Entity.Company;
+using Entity.People;
 using Godot;
 using System;
 
@@ -7,16 +10,22 @@ public partial class ProfileFullUI : Window
 	Label PersonName;
 	Label PersonAge;
 	Label Location;
+	Label Work;
+
 	ItemList Contacts;
 	ItemList Events;
+
 	Guid personId;
 	public override void _Ready()
 	{
 		Location = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer2/Location");
         PersonName = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer/Name");
 		PersonAge = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer/Age");
+		Work = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer2/Work");
+
         Contacts = (ItemList)this.GetNode("Control/HBoxContainer/VBoxContainer/Control/ItemList");
         Events = (ItemList)this.GetNode("Control/HBoxContainer/VBoxContainer2/EventControl/Events");
+		
         this.Hide(); 
 		
     }
@@ -25,10 +34,7 @@ public partial class ProfileFullUI : Window
 	public void Open(string id)
 	{
 		int indexContacts= 0;
-        for (int i = 0; i < 0; i++)
-        {
-            GD.Print("First");
-        }
+       
         this.Show();
 		Guid guid = Guid.Parse(id);
         personId = guid;
@@ -41,6 +47,9 @@ public partial class ProfileFullUI : Window
 		Events.Clear();
         foreach (var plan in person.Plans)
             Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)} {plan.Key}", null, true);
+		Work.Text = person.Job.Name;
+		
+        
     }
 	private void _on_close_requested()
 	{
@@ -48,10 +57,10 @@ public partial class ProfileFullUI : Window
 	}
     public override void _Process(double delta)
     {
-		GD.Print(PlayerInfo.CurrentCity.CityTime.DayOfWeek+" "+ PlayerInfo.CurrentCity.CityTime);
 		if (personId != default(Guid)){
             Location.Text = PlayerInfo.CurrentCity.Population[personId].CurrentLocation.Adress;
 
+            GD.Print(PlayerInfo.CurrentCity.Population[personId]._intermediateSegment);
         }
         base._Process(delta);
     }

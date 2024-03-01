@@ -118,13 +118,16 @@ namespace Entity.People
         public Body body = new Body();
 
         public Apartments Apartment;
+
         public Segment CurrentLocation;
-        private Segment Destination;
+        public Segment Destination;
+        public Segment _intermediateSegment;
+
         public Guid HobbyPlace;
         public DateTime Bithday;
         public Action Live;
 
-        private DateTime Walking;
+        private DateTime TimeToWalk;
        
         private int HomeTime { get {
                 int time = 0;
@@ -161,11 +164,17 @@ namespace Entity.People
 
             this.FindHome();
             this.FindJob();
-           //Live = () => { this.TryMarry(); this.FindJob();this.Movement();this.Talk(); this.Aged(); };
-            Live += /*this.TryMarry;*/Live += this.FindJob;Live += this.Movement; Live += this.MovementСalculation;/*  Live += this.Talk;*/ Live += this.Aged; 
+
+            CurrentLocation = this.Apartment.Segments.Find(x => x is LivingRoom);
+            Destination = CurrentLocation;
+            CurrentLocation.PeopleInside.Add(this.Id);
+            _intermediateSegment = CurrentLocation;
+
+            StatusEnum = _status.messingAround;
+            //Live = () => { this.TryMarry(); this.FindJob();this.Movement();this.Talk(); this.Aged(); };
+            Live += /*this.TryMarry;*//*Live += this.FindJob;*/Live += this.MovementСalculation; Live += this.Movement;/*Live += this.WalkTimer;   Live += this.Talk;*/ Live += this.Aged; 
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
-            CurrentLocation = this.Apartment.Segments.Find(x=>x is LivingRoom);
         }
         public Person(Person mother, Person father)
         {
@@ -189,10 +198,13 @@ namespace Entity.People
 
             Bithday = PlayerInfo.CurrentCity.CityTime;
 
+            StatusEnum = _status.messingAround;
+
             HobbyEnum = FindHobby();
             HobbyPlace = FindHobbyPlace();
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
             CurrentLocation = Mother.CurrentLocation;
+            Destination = CurrentLocation;
             Live += /*this.TryMarry; */ Live += this.FindJob; Live += this.Movement; Live += this.MovementСalculation; /* Live += this.Talk;*/ Live += this.Aged;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
@@ -310,6 +322,7 @@ namespace Entity.People
             //}
             else if (PlayerInfo.CurrentCity.CityTime.Hour == Job.EndHour)
                 Destination = Apartment.Segments.Find(x => x is BedRoom);
+            
             //if (StatusEnum == _status.work)
             //{
             //    if (!this.Job.WorkingFromHome)
@@ -337,27 +350,29 @@ namespace Entity.People
         private void Movement()
         {
             if(StatusEnum!= _status.walk && CurrentLocation!= Destination)
-            { 
+            {
                 if (this.CurrentLocation.LocatedOn is Apartments)
                 {
-                    GD.Print("Here");
                     Apartments locatedApartPoint = this.CurrentLocation.LocatedOn as Apartments;
                     if (Destination.LocatedOn is Apartments)
                     {
                         Apartments apartTarget = Destination.LocatedOn as Apartments;
                         if(locatedApartPoint == apartTarget)
                         {
-                            WalkTimer(Destination);
+                            _intermediateSegment= Destination;
+                            CreateTimer();
                         }
                         else if (locatedApartPoint != apartTarget && this.CurrentLocation != locatedApartPoint.EntryExitPoint)
                         {
-                            WalkTimer(locatedApartPoint.EntryExitPoint);
+                            _intermediateSegment = locatedApartPoint.EntryExitPoint;
+                            CreateTimer();
 
                         }
                         else if (locatedApartPoint != apartTarget && this.CurrentLocation == locatedApartPoint.EntryExitPoint)
                         {
                             var seg = locatedApartPoint.InHouse.Segments.Find(x => x is Hallway && x.level == locatedApartPoint.Floor);
-                            WalkTimer(seg);
+                            _intermediateSegment = seg;
+                            CreateTimer();
                         }
                     }
                     else if (Destination.LocatedOn is Houses)
@@ -365,42 +380,48 @@ namespace Entity.People
                         Houses houseTarget = Destination.LocatedOn as Houses;
                         if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
                         {
-                            WalkTimer(locatedApartPoint.EntryExitPoint);
+                            _intermediateSegment = locatedApartPoint.EntryExitPoint;
+                            CreateTimer();
                         }
                         else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
                         {
                             var seg = locatedApartPoint.InHouse.Segments.Find(x => x is Hallway && x.level == locatedApartPoint.Floor);
-                            WalkTimer(seg);
+                            _intermediateSegment = seg;
+                            CreateTimer();
                         }
                     }
-                    else if (Destination.LocatedOn is Business)
+                    else if (typeof(Business).IsAssignableFrom(Destination.LocatedOn.GetType()))
                     {
-                        Houses businessTarget = Destination.LocatedOn as Houses;
+                        Business businessTarget = Destination.LocatedOn as Business;
                         if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
                         {
-                            WalkTimer(locatedApartPoint.EntryExitPoint);
+                            _intermediateSegment = locatedApartPoint.EntryExitPoint;
+                            CreateTimer();
                         }
                         else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
                         {
                             var seg = locatedApartPoint.InHouse.Segments.Find(x => x is Hallway && x.level == locatedApartPoint.Floor);
-                            WalkTimer(seg);
+                            _intermediateSegment = seg;
+                            CreateTimer();
                         }
                     }
                     else if (Destination.LocatedOn is Streets)
                     {
                         if (this.CurrentLocation != locatedApartPoint.EntryExitPoint)
                         {
-                            WalkTimer(locatedApartPoint.EntryExitPoint);
+                            _intermediateSegment = locatedApartPoint.EntryExitPoint;
+                            CreateTimer();
                         }
                         else if (this.CurrentLocation == locatedApartPoint.EntryExitPoint)
                         {
                             var seg = locatedApartPoint.InHouse.Segments.Find(x => x is Hallway && x.level == locatedApartPoint.Floor);
-                            WalkTimer(seg);
+                            _intermediateSegment = seg;
+                            CreateTimer();
                         }
                     }
 
                 }
-                else if (this.CurrentLocation.LocatedOn is Business)
+                else if (typeof(Business).IsAssignableFrom(this.CurrentLocation.LocatedOn.GetType()))
                 {
                     Business LocatedBussinessPoint = this.CurrentLocation.LocatedOn as Business;
                     if (Destination.LocatedOn is Apartments)
@@ -408,11 +429,13 @@ namespace Entity.People
                         Apartments apartTarget = Destination.LocatedOn as Apartments;
                         if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
                         {
-                            WalkTimer(LocatedBussinessPoint.EntryExitPoint);
+                            _intermediateSegment = LocatedBussinessPoint.EntryExitPoint;
+                            CreateTimer();
                         }
                         else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
                         {
-                            WalkTimer(LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint);
+                            _intermediateSegment = LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint;
+                            CreateTimer();
                         }
                     }
                     else if (Destination.LocatedOn is Houses)
@@ -420,38 +443,45 @@ namespace Entity.People
                         Houses apartTarget = Destination.LocatedOn as Houses;
                         if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
                         {
-                            WalkTimer(LocatedBussinessPoint.EntryExitPoint);
+                            _intermediateSegment = LocatedBussinessPoint.EntryExitPoint;
+                            CreateTimer();
                         }
                         else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
                         {
-                            WalkTimer(LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint);
+                            _intermediateSegment = LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint;
+                            CreateTimer();
                         }
                     }
-                    else if (Destination.LocatedOn is Business)
+                    else if (typeof(Business).IsAssignableFrom(Destination.LocatedOn.GetType()))
                     {
                         Business businessTarget = Destination.LocatedOn as Business;
                         if (businessTarget == LocatedBussinessPoint)
                         {
-                            WalkTimer(Destination);
+                            _intermediateSegment = Destination;
+                            CreateTimer();
                         }
                         else if (businessTarget != LocatedBussinessPoint && this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
                         {
-                            WalkTimer(LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint);
+                            _intermediateSegment = LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint;
+                            CreateTimer();
                         }
                         else if (businessTarget != LocatedBussinessPoint && this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
                         {
-                            WalkTimer(LocatedBussinessPoint.EntryExitPoint);
+                            _intermediateSegment = LocatedBussinessPoint.EntryExitPoint;
+                            CreateTimer();
                         }
                     }
                     else if (Destination.LocatedOn is Streets)
                     {
                         if (this.CurrentLocation != LocatedBussinessPoint.EntryExitPoint)
                         {
-                            WalkTimer(LocatedBussinessPoint.EntryExitPoint);
+                            _intermediateSegment = LocatedBussinessPoint.EntryExitPoint;
+                            CreateTimer();
                         }
                         else if (this.CurrentLocation == LocatedBussinessPoint.EntryExitPoint)
                         {
-                            WalkTimer(LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint);
+                            _intermediateSegment = LocatedBussinessPoint.InHouse.OnStreet.EntryExitPoint;
+                            CreateTimer();
                         }
                     }
                 }
@@ -468,19 +498,22 @@ namespace Entity.People
                                 Hallway HallwayCurrent = this.CurrentLocation as Hallway;
                                 if (HallwayCurrent.level == apartTarget.Floor)
                                 {
-                                    WalkTimer(apartTarget.EntryExitPoint);
+                                    _intermediateSegment = apartTarget.EntryExitPoint;
+                                    CreateTimer();
                                 }
                                 else if (HallwayCurrent.level > apartTarget.Floor)
                                 {
                                     var currSeg = this.CurrentLocation as Hallway;
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level);
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                 }
                                 else if (HallwayCurrent.level > apartTarget.Floor)
                                 {
                                     var currSeg = this.CurrentLocation as Hallway;
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                 }
                             }
                             else if(this.CurrentLocation is Stairwell)
@@ -489,19 +522,22 @@ namespace Entity.People
                                 if(StairwellCurrent.level == apartTarget.Floor+1 || StairwellCurrent.level == apartTarget.Floor)
                                 {
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Hallway && x.level == apartTarget.Floor);
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                     // перейти в хол
                                 }
                                 else if (StairwellCurrent.level > apartTarget.Floor+1 && StairwellCurrent.level > apartTarget.Floor)
                                 {
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level + 1);
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                     //Перейти лестничный пролет на этаж выше
                                 }
                                 else if (StairwellCurrent.level < apartTarget.Floor + 1 && StairwellCurrent.level < apartTarget.Floor )
                                 {
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level - 1);
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                     //Перейти лестничный пролет на этаж ниже
                                 }
                             }
@@ -513,14 +549,16 @@ namespace Entity.People
                             
                                 if (LocatedHousePoint.EntryExitPoint == this.CurrentLocation)
                                 {
-                                    WalkTimer(LocatedHousePoint.OnStreet.EntryExitPoint);
+                                    _intermediateSegment = LocatedHousePoint.OnStreet.EntryExitPoint;
+                                    CreateTimer();
                                     // выйти из дома
                                 }
                                 else
                                 {
                                     var currSeg = this.CurrentLocation as Hallway;
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                     // Перейти на лестницу
                                 }
                             }
@@ -529,13 +567,15 @@ namespace Entity.People
                                 Stairwell StairwellCurrent = CurrentLocation as Stairwell;
                                 if (StairwellCurrent.level == 0)
                                 {
-                                    WalkTimer(LocatedHousePoint.EntryExitPoint);
+                                    _intermediateSegment = LocatedHousePoint.EntryExitPoint;
+                                    CreateTimer();
                                     //перейти в холл
                                 }
                                 else
                                 {
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level - 1);
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                     //спуститься
                                 }
 
@@ -556,13 +596,15 @@ namespace Entity.People
                                    if (HallwayCurrent.level > HallwayTarget.level)
                                    {
                                         var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == HallwayTarget.level);
-                                        WalkTimer(seg);
+                                        _intermediateSegment = seg;
+                                        CreateTimer();
                                         //Перейти на лестничный пролет на этом этаже
-                                   }
+                                    }
                                    else if (HallwayCurrent.level < HallwayTarget.level)
                                    {
                                         var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == HallwayTarget.level-1);
-                                        WalkTimer(seg);
+                                        _intermediateSegment = seg;
+                                        CreateTimer();
                                         //Перейти на лестничный пролет этажом ниже
                                     }
                                 }
@@ -572,19 +614,22 @@ namespace Entity.People
                                     if (HallwayCurrent.level+1 < StairwellTarget.level && HallwayCurrent.level  < StairwellTarget.level)
                                     {
                                         var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellTarget.level - 1);
-                                        WalkTimer(seg);
+                                        _intermediateSegment = seg;
+                                        CreateTimer();
                                         //Перейти на лестничный пролет на этом этаже
                                     }
                                     else if (HallwayCurrent.level + 1 > StairwellTarget.level && HallwayCurrent.level > StairwellTarget.level)
                                     {
                                         var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellTarget.level + 1);
-                                        WalkTimer(seg);
+                                        _intermediateSegment = seg;
+                                        CreateTimer();
                                         //Перейти на лестничный пролет этажом ниже
                                     }
                                     else if(HallwayCurrent.level + 1 == StairwellTarget.level|| HallwayCurrent.level == StairwellTarget.level)
                                     {
                                         var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellTarget.level);
-                                        WalkTimer(seg);
+                                        _intermediateSegment = seg;
+                                        CreateTimer();
                                         //перейти на нужный лестничный пролет
                                     }
                                 }
@@ -598,18 +643,21 @@ namespace Entity.People
                                     if (HallwayTarget.level > StairwellCurrent.level && HallwayTarget.level > StairwellCurrent.level+1)
                                     {
                                         var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level+1);
-                                        WalkTimer(seg);
+                                        _intermediateSegment = seg;
+                                        CreateTimer();
                                         //Перейти на лестничный пролет на этом этаже
                                     }
                                     else if (HallwayTarget.level < StairwellCurrent.level && HallwayTarget.level < StairwellCurrent.level+1 )
                                     {
                                         var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level - 1);
-                                        WalkTimer(seg);
+                                        _intermediateSegment = seg;
+                                        CreateTimer();
                                         //Перейти на лестничный пролет этажом ниже
                                     }
                                     else if(HallwayTarget.level == StairwellCurrent.level || HallwayTarget.level == StairwellCurrent.level + 1)
                                     {
-                                        WalkTimer(HallwayTarget);
+                                        _intermediateSegment = HallwayTarget;
+                                        CreateTimer();
                                     }
                                 }
                                 else if (Destination is Stairwell)
@@ -618,33 +666,37 @@ namespace Entity.People
                                     if (StairwellTarget.level > StairwellCurrent.level)
                                     {
                                         var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level + 1);
-                                        WalkTimer(seg);
+                                        _intermediateSegment = seg;
+                                        CreateTimer();
                                         //Перейти на лестничный пролет на этом этаже
                                     }
                                     else if (StairwellTarget.level < StairwellCurrent.level)
                                     {
                                         var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level - 1);
-                                        WalkTimer(seg);
+                                        _intermediateSegment = seg;
+                                        CreateTimer();
                                         //Перейти на лестничный пролет этажом ниже
                                     }
                                 }
                             }
                         }
-                        else if (LocatedHousePoint != houseTarget)
+                        else if (LocatedHousePoint != houseTarget)  
                         {
                             if(CurrentLocation is Hallway)
                             {
                                 if(LocatedHousePoint.EntryExitPoint == this.CurrentLocation)
                                 {
                                     var seg = LocatedHousePoint.OnStreet.EntryExitPoint;
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                     // выйти из дома
                                 }
                                 else
                                 {
                                     var currSeg = CurrentLocation as Hallway;
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Hallway && x.level == currSeg.level - 1);
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                     // Перейти на лестницу
                                 }
                             }
@@ -653,36 +705,40 @@ namespace Entity.People
                                 Stairwell StairwellCurrent = CurrentLocation as Stairwell;
                                 if (StairwellCurrent.level == 0)
                                 {
-                                    WalkTimer(LocatedHousePoint.EntryExitPoint);
+                                    _intermediateSegment = LocatedHousePoint.EntryExitPoint;
+                                    CreateTimer();
                                     //перейти в холл
                                 }
                                 else
                                 {
                                     var currSeg = CurrentLocation as Stairwell;
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
-                                    WalkTimer(seg);
+                                    _intermediateSegment = seg;
+                                    CreateTimer();
                                     //спуститься
                                 }
 
                             }
                         }
                     }
-                    else if (Destination.LocatedOn is Business)
+                    else if (typeof(Business).IsAssignableFrom(Destination.LocatedOn.GetType()))
                     {
-                        Houses businessTarget = Destination.LocatedOn as Houses;
+                        Business businessTarget = Destination.LocatedOn as Business;
                         if (CurrentLocation is Hallway)
                         {
                             if (LocatedHousePoint.EntryExitPoint == this.CurrentLocation)
                             {
                                 var seg = LocatedHousePoint.OnStreet.EntryExitPoint;
-                                WalkTimer(seg);
+                                _intermediateSegment = seg;
+                                CreateTimer();
                                 // выйти из дома
                             }
                             else
                             {
                                 var currSeg = CurrentLocation as Hallway;
                                 var seg = LocatedHousePoint.Segments.Find(x => x is Hallway && x.level == currSeg.level - 1);
-                                WalkTimer(seg);
+                                _intermediateSegment = seg;
+                                CreateTimer();
                                 // Перейти на лестницу
                             }
                         }
@@ -691,14 +747,16 @@ namespace Entity.People
                             Stairwell StairwellCurrent = CurrentLocation as Stairwell;
                             if (StairwellCurrent.level == 0)
                             {
-                                WalkTimer(LocatedHousePoint.EntryExitPoint);
+                                _intermediateSegment = LocatedHousePoint.EntryExitPoint;
+                                CreateTimer();
                                 //перейти в холл
                             }
                             else
                             {
                                 var currSeg = CurrentLocation as Stairwell;
                                 var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
-                                WalkTimer(seg);
+                                _intermediateSegment = seg;
+                                CreateTimer();
                                 //спуститься
                             }
 
@@ -711,14 +769,16 @@ namespace Entity.People
                             if (LocatedHousePoint.EntryExitPoint == this.CurrentLocation)
                             {
                                 var seg = LocatedHousePoint.OnStreet.EntryExitPoint;
-                                WalkTimer(seg);
+                                _intermediateSegment = seg;
+                                CreateTimer();
                                 // выйти из дома
                             }
                             else
                             {
                                 var currSeg = CurrentLocation as Hallway;
                                 var seg = LocatedHousePoint.Segments.Find(x => x is Hallway && x.level == currSeg.level - 1);
-                                WalkTimer(seg);
+                                _intermediateSegment = seg;
+                                CreateTimer();
                                 // Перейти на лестницу
                             }
                         }
@@ -727,14 +787,16 @@ namespace Entity.People
                             Stairwell StairwellCurrent = CurrentLocation as Stairwell;
                             if (StairwellCurrent.level == 0)
                             {
-                                WalkTimer(LocatedHousePoint.EntryExitPoint);
+                                _intermediateSegment = LocatedHousePoint.EntryExitPoint;
+                                CreateTimer();
                                 //перейти в холл
                             }
                             else
                             {
                                 var currSeg = CurrentLocation as Stairwell;
                                 var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
-                                WalkTimer(seg);
+                                _intermediateSegment = seg;
+                                CreateTimer();
                                 //спуститься
                             }
 
@@ -752,11 +814,13 @@ namespace Entity.People
                             if(this.CurrentLocation== LocatedStreetPoint.EntryExitPoint)
                             {
                                 var seg = apartTarget.InHouse.EntryExitPoint;
-                                WalkTimer(seg);
+                                _intermediateSegment = seg;
+                                CreateTimer();
                             }
                             else
                             {
-                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                _intermediateSegment = LocatedStreetPoint.EntryExitPoint;
+                                CreateTimer();
                                 // перейти на точку перехода
                             }
                         }
@@ -773,15 +837,22 @@ namespace Entity.People
                                     if(LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         currentIndex = i;
                                 }
-                                if(targetIndex> currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint);
-                                else if(targetIndex < currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint);
+                                if (targetIndex > currentIndex)
+                                {
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
+                                    CreateTimer();
+                                }
+                                else if (targetIndex < currentIndex)
+                                {
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
+                                    CreateTimer();
+                                }
                                 //Перейти на другую улицу
                             }
                             else
                             {
-                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                _intermediateSegment = LocatedStreetPoint.EntryExitPoint;
+                                CreateTimer();
                                 // перейти на точку перехода
                             }
                         }
@@ -794,12 +865,14 @@ namespace Entity.People
                             if (this.CurrentLocation == LocatedStreetPoint.EntryExitPoint)
                             {
                                 var seg = houseTarget.EntryExitPoint;
-                                WalkTimer(seg);
+                                _intermediateSegment = seg;
+                                CreateTimer();
                                 //Зайти в дом
                             }
                             else
                             {
-                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                _intermediateSegment = LocatedStreetPoint.EntryExitPoint;
+                                CreateTimer();
                                 // перейти на точку перехода
                             }
                         }
@@ -817,19 +890,25 @@ namespace Entity.People
                                         currentIndex = i;
                                 }
                                 if (targetIndex > currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint);
+                                {
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
+                                    CreateTimer();
+                                }
                                 else if (targetIndex < currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint);
+                                { 
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
+                                    CreateTimer();
+                                }
                                 //Перейти на другую улицу
                             }
                             else
                             {
-                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                _intermediateSegment = LocatedStreetPoint.EntryExitPoint;
                                 // перейти на точку перехода
                             }
                         }
                     }
-                    else if (Destination.LocatedOn is Business)
+                    else if (typeof(Business).IsAssignableFrom(Destination.LocatedOn.GetType()))
                     {
                         Business businessTarget = Destination.LocatedOn as Business;
                         if (LocatedStreetPoint == businessTarget.InHouse.OnStreet)
@@ -837,12 +916,14 @@ namespace Entity.People
                             if (this.CurrentLocation == LocatedStreetPoint.EntryExitPoint)
                             {
                                 var seg = businessTarget.EntryExitPoint;
-                                WalkTimer(seg);
+                                _intermediateSegment = seg;
+                                CreateTimer();
                                 //Зайти в бизнесс
                             }
                             else
                             {
-                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                _intermediateSegment = LocatedStreetPoint.EntryExitPoint;
+                                CreateTimer();
                                 // перейти на точку перехода
                             }
                         }
@@ -860,14 +941,20 @@ namespace Entity.People
                                         currentIndex = i;
                                 }
                                 if (targetIndex > currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint);
-                                else if (targetIndex < currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint);
+                                {
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
+                                    CreateTimer();
+                                }
+                                else if (targetIndex < currentIndex) 
+                                {
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
+                                    CreateTimer();
+                                }
                                 //Перейти на другую улицу
                             }
                             else
                             {
-                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                _intermediateSegment = LocatedStreetPoint.EntryExitPoint;
                                 // перейти на точку перехода
                             }
                         }
@@ -877,7 +964,7 @@ namespace Entity.People
                         Streets StreetTarget = Destination.LocatedOn as Streets;
                         if (LocatedStreetPoint == StreetTarget)
                         {
-                            WalkTimer(Destination);
+                            _intermediateSegment = Destination;
                             //Перейти в другой сектор
                         }
                         else if(LocatedStreetPoint != StreetTarget)
@@ -893,15 +980,22 @@ namespace Entity.People
                                     if (LocatedStreetPoint == PlayerInfo.CurrentCity.CityStreets.ElementAt(i))
                                         currentIndex = i;
                                 }
-                                if (targetIndex > currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint);
+                                if (targetIndex > currentIndex) 
+                                { 
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex - 1).EntryExitPoint;
+                                    CreateTimer();
+                                }
                                 else if (targetIndex < currentIndex)
-                                    WalkTimer(PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint);
+                                {
+                                    _intermediateSegment = PlayerInfo.CurrentCity.CityStreets.ElementAt(currentIndex + 1).EntryExitPoint;
+                                    CreateTimer();
+                                }
                                 //Перейти на другую улицу
                             }
                             else
                             {
-                                WalkTimer(LocatedStreetPoint.EntryExitPoint);
+                                _intermediateSegment = LocatedStreetPoint.EntryExitPoint;
+                                CreateTimer();
                                 // перейти на точку перехода
                             }
                         }
@@ -915,23 +1009,23 @@ namespace Entity.People
             }
 
         }
-        private void WalkTimer(Segment seg)
+        public DateTime _walking;
+        public int counter;
+        //public string _walking;
+        private void CreateTimer()
         {
-            
-            Walking = new DateTime(PlayerInfo.CurrentCity.CityTime.AddMinutes(CurrentLocation.Lenght).Ticks);
-            do
-            {
-                StatusEnum = _status.walk;
-            } 
-            while (PlayerInfo.CurrentCity.CityTime < Walking || this.Alive);
-            if (this.Alive)
+            TimeToWalk = new DateTime(PlayerInfo.CurrentCity.CityTime.AddMinutes(CurrentLocation.Lenght).Ticks);
+            StatusEnum = _status.walk;
+        }
+        private void WalkTimer()
+        {
+            if (PlayerInfo.CurrentCity.CityTime >= TimeToWalk && this.Alive && CurrentLocation != _intermediateSegment)
             {
                 CurrentLocation.PeopleInside.Remove(this.Id);
-                seg.PeopleInside.Add(this.Id);
-                CurrentLocation = seg;
-                StatusEnum = _status.messingAround;
+                _intermediateSegment.PeopleInside.Add(this.Id);
+                CurrentLocation = _intermediateSegment;
+                StatusEnum = _status.messingAround;                
             }
-
         }
         private System.Random randomtalk = new System.Random();
         public void Talk()
@@ -997,7 +1091,6 @@ namespace Entity.People
                 while (plan == null && digitWeek != 8);
                 if (plan != null)
                 {
-                    GD.Print($"{this.FirstName} {this.SecondName} {plan.PlannedDate} {person.FirstName} {person.SecondName} ");
                     this.Plans.Add(plan.Id,plan);
                     person.Plans.Add(plan.Id, plan);
                 }

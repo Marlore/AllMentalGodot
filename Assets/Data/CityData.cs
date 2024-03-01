@@ -61,7 +61,7 @@ namespace Data.CityData
 
 		public City()
 		{
-			CityTime = new DateTime(2018, 12, 11, 8, 0, 0);
+			CityTime = new DateTime(2018, 12, 11, 7, 0, 0);
 		}
 		public void CityLife()
 		{
@@ -146,7 +146,6 @@ namespace Data.CityData
 					infostructer[key]--;
 					if (infostructer[key] <= 0)
 						infostructer.Remove(key);
-					GD.Print(rand);
 
                 }
 				foreach(var house in street.HouseList)
@@ -155,7 +154,6 @@ namespace Data.CityData
 						if (house.HouseBusiness.Count < 4 && business.Any())
 						{
 							int rand = random.Next(0, business.Count);
-                            GD.Print(rand);
                             var creator = new AbstractFactory();
 							var key = business.ElementAt(rand).Key;
 							var company = creator.CompanyCreator(key, house.Adress, house.HouseBusiness.Count + 1, house);
