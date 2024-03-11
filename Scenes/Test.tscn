@@ -20,7 +20,7 @@ process_thread_group_order = 0
 process_thread_messages = 0
 mode = 4
 position = Vector2i(600, 36)
-size = Vector2i(400, 500)
+size = Vector2i(800, 500)
 script = ExtResource("2_em4lh")
 
 [node name="Control" type="Control" parent="ProfileFull"]

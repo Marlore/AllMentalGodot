@@ -49,7 +49,7 @@ namespace Entity.Company
             var store = new StoreRoom(this);
             EntryExitPoint = _entryExit;
             Segments = new List<Segment>() { _entryExit, new Toilet(this), store };
-            base.Adress = $"{room} {adress}";
+            base.Adress = $"{adress} Central Park";
             Name = CityGenerator.GenerateName(CityGenerator.ParkNamesList);
             Vacancy.Add(new JanitorFirstShift(this, store));
             Vacancy.Add(new JanitorSecondShift(this, store));

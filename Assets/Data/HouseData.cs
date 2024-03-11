@@ -41,13 +41,14 @@ namespace Data.HouseData
             PlayerInfo.CurrentCity.Locations.Add(Id, this);
             
             Segments = new List<Segment> ();
-            for(int i =0; i< NumberOfFloors; i++)
+            for(int i =0; i<=NumberOfFloors; i++)
             {
                 var hall = new Hallway(this, i);
                 if(i==0)
                     EntryExitPoint = hall;
                 Segments.Add(hall);
-                Segments.Add(new Stairwell(this, i));
+                if(i!=NumberOfFloors)
+                    Segments.Add(new Stairwell(this, i));
             }
 
         }

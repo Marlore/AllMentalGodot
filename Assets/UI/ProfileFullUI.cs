@@ -46,7 +46,7 @@ public partial class ProfileFullUI : Window
 			Contacts.AddItem($"Relationships with {contact.Key.FirstName} {contact.Key.SecondName} is {contact.Value}", null, true);
 		Events.Clear();
         foreach (var plan in person.Plans)
-            Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)} {plan.Key}", null, true);
+            Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)}", null, true);
 		Work.Text = person.Job.Name;
 
     }

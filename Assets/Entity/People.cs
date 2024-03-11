@@ -123,7 +123,7 @@ namespace Entity.People
         public Segment Destination;
         public Segment _intermediateSegment;
 
-        public Guid HobbyPlace;
+        public Segment HobbyPlace;
         public DateTime Bithday;
         public Action Live;
 
@@ -172,7 +172,7 @@ namespace Entity.People
 
             StatusEnum = _status.messingAround;
             //Live = () => { this.TryMarry(); this.FindJob();this.Movement();this.Talk(); this.Aged(); };
-            Live += /*this.TryMarry;*//*Live += this.FindJob;*/Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer;/*  Live += this.Talk;*/ Live += this.Aged; 
+            Live += /*this.TryMarry;*/Live += this.FindJob;Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer; Live += this.Talk; Live += this.Aged; 
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
@@ -205,7 +205,7 @@ namespace Entity.People
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
             CurrentLocation = Mother.CurrentLocation;
             Destination = CurrentLocation;
-            Live += /*this.TryMarry; */ Live += this.FindJob; Live += this.Movement; Live += this.MovementСalculation; /* Live += this.Talk;*/ Live += this.Aged;
+            Live += /*this.TryMarry; */ Live += this.FindJob; Live += this.Movement; Live += this.MovementСalculation; Live += this.Talk; Live += this.Aged;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
@@ -282,19 +282,19 @@ namespace Entity.People
             int hobby = rand.Next(0, 3);
             return (_hobby)hobby;
         }
-        public Guid FindHobbyPlace()
+        public Segment FindHobbyPlace()
         {
             var rand = new System.Random();
             switch (HobbyEnum)
             {
                 case _hobby.park:
-                    return PlayerInfo.CurrentCity.ParkList.ElementAt(0).Key;
+                    return PlayerInfo.CurrentCity.ParkList.ElementAt(0).Value.Segments.Find(x => x is Outdoors);
                 case _hobby.bar:
-                    return PlayerInfo.CurrentCity.BarList.ElementAt(rand.Next(0, PlayerInfo.CurrentCity.BarList.Count)).Key;
+                    return PlayerInfo.CurrentCity.BarList.ElementAt(rand.Next(0, PlayerInfo.CurrentCity.BarList.Count)).Value.Segments.Find(x => x is DiningRoom);
                 case _hobby.gym:
-                    return PlayerInfo.CurrentCity.GymList.ElementAt(rand.Next(0, PlayerInfo.CurrentCity.GymList.Count)).Key;
+                    return PlayerInfo.CurrentCity.GymList.ElementAt(rand.Next(0, PlayerInfo.CurrentCity.GymList.Count)).Value.Segments.Find(x => x is TrainingRoom);
                 default:
-                    return PlayerInfo.CurrentCity.ParkList.ElementAt(0).Key;
+                    return null;
 
             }
         }
@@ -309,20 +309,23 @@ namespace Entity.People
         {
             if (PlayerInfo.CurrentCity.CityTime.Hour == Job.StartHour && Job.WorkingWeek.Contains(PlayerInfo.CurrentCity.CityTime.DayOfWeek))
                 Destination = Job.WorkingSegment;
-            //else if (Plans.Count > 0)
-            //{
-            //    if (Plans.ElementAt(0).Value.PlannedDate >= PlayerInfo.CurrentCity.CityTime && Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) <= PlayerInfo.CurrentCity.CityTime)
-            //        Destination = Plans.ElementAt(0).Value.PlannedPlace
-            //    else if (Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) > PlayerInfo.CurrentCity.CityTime)
-            //    {
-            //        Plans.Remove(Plans.ElementAt(0).Key);
-            //        StatusEnum = _status.messingAround;
-            //    }
-
-            //}
             else if (PlayerInfo.CurrentCity.CityTime.Hour == Job.EndHour)
                 Destination = Apartment.Segments.Find(x => x is BedRoom);
-            
+            if (Plans.Count > 0)
+            {
+                if (PlayerInfo.CurrentCity.CityTime == Plans.ElementAt(0).Value.PlannedDate && PlayerInfo.CurrentCity.CityTime  <= Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration))
+                {
+                    Destination = Plans.ElementAt(0).Value.PlannedPlace;
+                    StatusEnum = _status.onDate;
+                }
+                else if (Plans.ElementAt(0).Value.PlannedDate.AddMinutes(Plans.ElementAt(0).Value.Duration) < PlayerInfo.CurrentCity.CityTime)
+                {
+                    Plans.Remove(Plans.ElementAt(0).Key);
+                    StatusEnum = _status.messingAround;
+                }
+            }
+           
+
             //if (StatusEnum == _status.work)
             //{
             //    if (!this.Job.WorkingFromHome)
@@ -504,14 +507,14 @@ namespace Entity.People
                                 else if (HallwayCurrent.level > apartTarget.Floor)
                                 {
                                     var currSeg = this.CurrentLocation as Hallway;
-                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level);
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level-1);
                                     _intermediateSegment = seg;
                                     CreateTimer();
                                 }
-                                else if (HallwayCurrent.level > apartTarget.Floor)
+                                else if (HallwayCurrent.level < apartTarget.Floor)
                                 {
                                     var currSeg = this.CurrentLocation as Hallway;
-                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level - 1);
+                                    var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == currSeg.level);
                                     _intermediateSegment = seg;
                                     CreateTimer();
                                 }
@@ -526,14 +529,14 @@ namespace Entity.People
                                     CreateTimer();
                                     // перейти в хол
                                 }
-                                else if (StairwellCurrent.level > apartTarget.Floor+1 && StairwellCurrent.level > apartTarget.Floor)
+                                else if (StairwellCurrent.level < apartTarget.Floor+1 && StairwellCurrent.level < apartTarget.Floor)
                                 {
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level + 1);
                                     _intermediateSegment = seg;
                                     CreateTimer();
                                     //Перейти лестничный пролет на этаж выше
                                 }
-                                else if (StairwellCurrent.level < apartTarget.Floor + 1 && StairwellCurrent.level < apartTarget.Floor )
+                                else if (StairwellCurrent.level > apartTarget.Floor + 1 && StairwellCurrent.level > apartTarget.Floor )
                                 {
                                     var seg = LocatedHousePoint.Segments.Find(x => x is Stairwell && x.level == StairwellCurrent.level - 1);
                                     _intermediateSegment = seg;
@@ -1017,7 +1020,7 @@ namespace Entity.People
         }
         private void WalkTimer()
         {
-            if (PlayerInfo.CurrentCity.CityTime >= TimeToWalk && this.Alive && CurrentLocation != _intermediateSegment)
+            if (PlayerInfo.CurrentCity.CityTime >= TimeToWalk && this.Alive && CurrentLocation != _intermediateSegment && _intermediateSegment!=null)
             {
                 CurrentLocation.PeopleInside.Remove(this.Id);
                 _intermediateSegment.PeopleInside.Add(this.Id);
@@ -1157,7 +1160,7 @@ namespace Entity.People
                 else if(person.Plans.Count == 0 && this.Plans.Count == 0)
                 {
                     TimesPlan = new DateTime(DateOfPlans.Year, DateOfPlans.Month, DateOfPlans.Day, i, 0, 0);
-                    return new Plan(HobbyPlace, TimesPlan,Math.Max( 30 * (int)(this.Social / 2),30), Guid.NewGuid());
+                    return new Plan(HobbyPlace, TimesPlan, Math.Max(30 * (int)(this.Social / 2), 30), Guid.NewGuid(),new List<Person> { person, this });
                 }
                 if(!_isBusy)
                 {
@@ -1176,7 +1179,7 @@ namespace Entity.People
             }
             else
             {
-                return new Plan(HobbyPlace, TimesPlan,Math.Max( 30 * (int)(this.Social / 2),30), Guid.NewGuid());
+                return new Plan(HobbyPlace, TimesPlan,Math.Max( 30 * (int)(this.Social / 2),30), Guid.NewGuid(), new List<Person> { person, this });
             }
                 
         }

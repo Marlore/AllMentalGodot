@@ -94,7 +94,7 @@ namespace Data.SectionData
     }
     public class Hallway : Segment
     {
-        public override string Purpose => "Hall";
+        public override string Purpose => $"Hall floor";
         public override int Lenght => 1;
         public Hallway(ILocations location) : base(location) =>level = 0;
         public Hallway(ILocations location, int _level) : base(location) =>level = _level;
