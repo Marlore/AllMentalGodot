@@ -1,10 +1,24 @@
-[gd_scene load_steps=4 format=3 uid="uid://b0ihfebe5gqy8"]
+[gd_scene load_steps=8 format=3 uid="uid://b0ihfebe5gqy8"]
 
+[ext_resource type="Script" path="res://Assets/Engine/RunTimeScriptEngine.cs" id="1_5nnoj"]
 [ext_resource type="Script" path="res://Assets/UI/ProfileFullUI.cs" id="2_em4lh"]
 [ext_resource type="Script" path="res://Assets/UI/ProfileShort.cs" id="2_vc5ds"]
 [ext_resource type="Script" path="res://Scenes/WordTime.cs" id="3_78l3y"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kyrmb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wo05"]
+bg_color = Color(0.65098, 0.65098, 0.65098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qwvhx"]
+bg_color = Color(0.341176, 0.380392, 0.490196, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [node name="MainDesk" type="Node2D"]
+script = ExtResource("1_5nnoj")
 metadata/_edit_vertical_guides_ = []
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -14,13 +28,28 @@ position = Vector2(576, 324)
 energy = 5.04
 height = 1.0
 
+[node name="ProfileShort" type="Window" parent="."]
+mode = 3
+position = Vector2i(50, 36)
+size = Vector2i(500, 500)
+visible = false
+
+[node name="Control" type="Control" parent="ProfileShort"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="ProfileFull" type="Window" parent="."]
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0
 mode = 4
-position = Vector2i(600, 36)
+position = Vector2i(237, 36)
 size = Vector2i(800, 500)
+visible = false
 script = ExtResource("2_em4lh")
 
 [node name="Control" type="Control" parent="ProfileFull"]
@@ -108,46 +137,108 @@ grow_horizontal = 2
 grow_vertical = 2
 text_overrun_behavior = 1
 
-[node name="ProfileShort" type="Window" parent="."]
-mode = 3
-position = Vector2i(50, 36)
-size = Vector2i(500, 500)
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Control" type="Control" parent="ProfileShort"]
-layout_mode = 3
+[node name="WordTime" type="Label" parent="CanvasLayer"]
+modulate = Color(0, 0, 0, 1)
+visibility_layer = 7
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -161.0
+offset_top = -33.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "asdqwqeweqasda"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("3_78l3y")
+
+[node name="Panel" type="Panel" parent="CanvasLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_kyrmb")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="ProfileShort/Control"]
-process_thread_group = 1
-process_thread_group_order = 0
-process_thread_messages = 0
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-horizontal_scroll_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ProfileShort/Control/ScrollContainer"]
+[node name="Interface" type="BoxContainer" parent="CanvasLayer/Panel"]
+visibility_layer = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Panel/Interface"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CoreTree" type="VBoxContainer" parent="CanvasLayer/Panel/Interface/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="Person" type="Button" parent="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.309804, 0.309804, 0.309804, 1)
+theme_override_colors/icon_normal_color = Color(0.894118, 0.894118, 0.894118, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_0wo05")
+text = "People library"
+text_direction = 1
+
+[node name="Streets" type="Button" parent="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.309804, 0.309804, 0.309804, 1)
+theme_override_colors/icon_normal_color = Color(0.894118, 0.894118, 0.894118, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_0wo05")
+text = "Streets"
+text_direction = 1
+
+[node name="PersonList" type="VBoxContainer" parent="CanvasLayer/Panel/Interface/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_vc5ds")
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Panel/Interface/HBoxContainer/PersonList"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.06
+theme_override_colors/font_color = Color(0.784314, 0.784314, 0.784314, 1)
+theme_override_colors/font_placeholder_color = Color(0.631373, 0.631373, 0.631373, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_qwvhx")
+placeholder_text = "     Input Name"
+expand_to_text_length = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Panel/Interface/HBoxContainer/PersonList"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PeopleContainer" type="VBoxContainer" parent="CanvasLayer/Panel/Interface/HBoxContainer/PersonList/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2_vc5ds")
-
-[node name="WordTime" type="Label" parent="."]
-offset_left = 987.0
-offset_top = 612.0
-offset_right = 1148.0
-offset_bottom = 645.0
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-script = ExtResource("3_78l3y")
 
 [connection signal="tree_exited" from="." to="." method="_on_tree_exited"]
 [connection signal="close_requested" from="ProfileFull" to="ProfileFull" method="_on_close_requested"]
+[connection signal="text_changed" from="CanvasLayer/Panel/Interface/HBoxContainer/PersonList/LineEdit" to="CanvasLayer/Panel/Interface/HBoxContainer/PersonList" method="OnSearching"]

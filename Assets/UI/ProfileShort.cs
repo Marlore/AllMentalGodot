@@ -1,29 +1,42 @@
 using Engine.PlayerEngine;
+using Entity.People;
 using Godot;
+using System;
+using System.Collections.Generic;
 
 public partial class ProfileShort : VBoxContainer
 {
-    // Called when the node enters the scene tree for the first time.
+    VBoxContainer PeopleContainer;
+    List<Button> PeopleInfoButtons = new List<Button>();
+    PackedScene Preset;
     public override void _Ready()
     {
-        PlayerInfo.Init();
-        PlayerInfo.CityLive.Start();
-        var personGo = (PackedScene)ResourceLoader.Load("res://obj/Presets/Person.tscn");
+        PeopleContainer = (VBoxContainer)this.GetNode("ScrollContainer/PeopleContainer");
+        Preset = (PackedScene)ResourceLoader.Load("res://obj/Presets/Person.tscn");
         foreach (var person in PlayerInfo.CurrentCity.Population)
         {
-            Button but = (Button)personGo.Instantiate();
-            but.Text = person.Value.FirstName + " " + person.Value.SecondName;
-            but.Call("UpdateId", person.Key.ToString());
-            this.AddChild(but);
+            CreateButton(person);
         }
     }
-    private void _on_tree_exited()
+    public void CreateButton(KeyValuePair<Guid, Person> person)
     {
-        PlayerInfo.CityLive.Abort();
+        Button but = (Button)Preset.Instantiate();
+        PeopleInfoButtons.Add(but);
+        PeopleContainer.AddChild(but);
+        but.Text = person.Value.FirstName + " " + person.Value.SecondName;
+        but.Call("UpdateId", person.Key.ToString());
     }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
+    public void OnSearching(string str)
     {
+        var NotEnableList = PeopleInfoButtons.FindAll(x => !(x.Text.IndexOf(str, StringComparison.OrdinalIgnoreCase) >= 0));
+        var EnableList = PeopleInfoButtons.FindAll(x => x.Text.IndexOf(str, StringComparison.OrdinalIgnoreCase) >= 0);
+        foreach (var button in NotEnableList)
+        {
+            button.Visible = false;
+        }
+        foreach (var button in EnableList)
+        {
+            button.Visible = true;
+        }
     }
 }
