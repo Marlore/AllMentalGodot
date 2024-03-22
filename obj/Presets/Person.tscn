@@ -3,6 +3,14 @@
 [ext_resource type="Script" path="res://Assets/UI/PersonButton.cs" id="1_najgt"]
 
 [node name="Person" type="Button"]
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -18.0
+offset_right = 18.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "asd
 sad
 "
