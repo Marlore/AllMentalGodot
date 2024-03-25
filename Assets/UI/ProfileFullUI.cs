@@ -5,7 +5,7 @@ using Entity.People;
 using Godot;
 using System;
 
-public partial class ProfileFullUI : Window
+public partial class ProfileFullUI : VBoxContainer
 {
 	Label PersonName;
 	Label PersonAge;
@@ -18,13 +18,13 @@ public partial class ProfileFullUI : Window
 	Guid personId;
 	public override void _Ready()
 	{
-		Location = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer2/Location");
-        PersonName = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer/Name");
-		PersonAge = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer/Age");
-		Work = (Label)this.GetNode("Control/HBoxContainer/VBoxContainer2/Work");
+		Location = (Label)this.GetNode("HBoxContainer/VBoxContainer2/Location");
+        PersonName = (Label)this.GetNode("HBoxContainer/VBoxContainer/Name");
+		PersonAge = (Label)this.GetNode("HBoxContainer/VBoxContainer/Age");
+		Work = (Label)this.GetNode("HBoxContainer/VBoxContainer2/Work");
 
-        Contacts = (ItemList)this.GetNode("Control/HBoxContainer/VBoxContainer/Control/ItemList");
-        Events = (ItemList)this.GetNode("Control/HBoxContainer/VBoxContainer2/EventControl/Events");
+        Contacts = (ItemList)this.GetNode("HBoxContainer/VBoxContainer/Control/ItemList");
+        Events = (ItemList)this.GetNode("HBoxContainer/VBoxContainer2/EventControl/Events");
 		
         this.Hide();
         

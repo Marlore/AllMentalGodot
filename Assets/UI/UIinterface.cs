@@ -3,14 +3,20 @@ using System;
 
 public partial class UIinterface : BoxContainer
 {
-	VBoxContainer PersonLibrary;
+    HBoxContainer PersonLibrary;
 	VBoxContainer StreetLibrary;
-	public override void _Ready()
+    Tween tween;
+
+    public override void _Ready()
 	{
-		PersonLibrary = (VBoxContainer)this.GetNode("HBoxContainer/BoxContainer/PersonList");
-        StreetLibrary = (VBoxContainer)this.GetNode("HBoxContainer/BoxContainer/StreetsList");
+		PersonLibrary = (HBoxContainer)this.GetNode("HBoxContainer/SecondTree/PersonList");
+        StreetLibrary = (VBoxContainer)this.GetNode("HBoxContainer/SecondTree/StreetsList");
         PersonLibrary.Visible = false;
         StreetLibrary.Visible = false;
+		PersonLibrary.Scale = Vector2.Zero;
+        StreetLibrary.Scale = Vector2.Zero;
+        tween = GetTree().CreateTween();
+        
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -19,12 +25,20 @@ public partial class UIinterface : BoxContainer
 	}
 	public void PersonLibraryOpen()
 	{
-        PersonLibrary.Visible = true;
-		StreetLibrary.Visible = false;
+        if (PersonLibrary.Visible != true) 
+        { 
+            tween.TweenProperty(PersonLibrary, "scale", new Vector2(1, 1), 0.2f);
+            PersonLibrary.Visible = true;
+	        StreetLibrary.Visible = false;
+        }
     }
 	public void StreetsLibraryOpen()
 	{
-        PersonLibrary.Visible = false;
-        StreetLibrary.Visible = true;
+        if (StreetLibrary.Visible != true)
+        {
+            tween.TweenProperty(StreetLibrary, "scale", new Vector2(1, 1), 0.2f);
+            PersonLibrary.Visible = false;
+            StreetLibrary.Visible = true;
+        }
     }
 }
