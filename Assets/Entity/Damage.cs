@@ -1,14 +1,15 @@
-﻿using System;
+﻿using Entity.ItemLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AllMentalGodot.Assets.Entity
+namespace Entity.DamageLibrary
 {
     public enum DamageType
     {
-        flat, sharp, slicing, temp, poison
+        flat, sharp, slicing, temp, poison, gunshot
     }
     public abstract class Damage
     {
@@ -17,20 +18,11 @@ namespace AllMentalGodot.Assets.Entity
     }
     public class DamageFactory
     {
-        public Damage Create(DamageType damageType, int seriousness)
+        public Damage Create(Items item)
         {
-            switch (damageType)
+            switch (item.TypeOfDamage)
             {
-                case DamageType.flat:
-                    return FlatDamageResult(seriousness);                    
-                case DamageType.sharp:
-                    return SharpDamageResult(seriousness);
-                case DamageType.slicing:
-                    return SlicingDamageResult(seriousness);
-                case DamageType.temp:
-                    return TempDamageResult(seriousness);
-                default:
-                    return null;
+               
 
             }
         }
