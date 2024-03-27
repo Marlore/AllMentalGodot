@@ -71,5 +71,12 @@ namespace Entity.ItemLibrary
         public override int NoiseRate => 1;
         public override int Severity => 1;
     }
+    public class Syringe : Items
+    {
+        public override string Name => "Syringe of poison";
+        public override List<DamageType> TypeOfDamage => new List<DamageType>() { DamageType.poison };
+        public override int NoiseRate => 0;
+        public override int Severity => 1;
+    }
 
 }

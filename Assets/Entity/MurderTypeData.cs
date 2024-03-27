@@ -21,8 +21,53 @@ namespace Entity.Murder
         public abstract Items Weapon { get; }
         public string ReasonToString;
         public abstract ReasonType Reason { get; }
-        public abstract _sex HuntedSex { get; }
-        public abstract (int from,int to) HuntedAge {  get; }
+        public Person HuntTarget;
     }
+    public class Maniac : MurderTypeData
+    {
+        public override Items Weapon => ChooseWeapon();
+        public override ReasonType Reason => ReasonType.pleasure;
+        public _sex SexHunt;
+        public (int from, int to) AgeHunt;
+
+        public Items ChooseWeapon()
+        {
+            Random rand = new Random();
+            int weaponIndex = rand.Next(0,3);
+            switch (weaponIndex)
+            {
+                case 0:
+                    return new Bat();
+                case 1:
+                    return new Knife();
+                case 2:
+                    return new Syringe();
+                default: return null;
+
+            }
+        }
+    }
+    public class Killer : MurderTypeData
+    {
+        public override Items Weapon => new SilentPistol();
+        public override ReasonType Reason => ReasonType.hiring;
+    }
+    public class Lover : MurderTypeData
+    {
+        public override Items Weapon => new SilentPistol();
+        public override ReasonType Reason => ReasonType.jealousy;
+    }
+    public class Envious : MurderTypeData
+    {
+        public override Items Weapon => new SilentPistol();
+        public override ReasonType Reason => ReasonType.envies;
+    }
+    public class Hater : MurderTypeData
+    {
+        public override Items Weapon => new SilentPistol();
+        public override ReasonType Reason => ReasonType.hatred;
+    }
+
+
 
 }

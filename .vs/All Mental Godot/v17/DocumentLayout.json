@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "D:\\GitHub\\AllMentalGodot\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\entity\\murdertypedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\entity\\murdertypedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\entity\\itemsinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\entity\\itemsinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\entity\\murdertypedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\entity\\murdertypedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\entity\\damage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\entity\\damage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\ui\\profilefullui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -21,10 +25,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\ui\\uiinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\ui\\uiinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\entity\\damage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\entity\\damage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\entity\\plans.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -42,50 +42,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "MurderTypeData.cs",
-              "DocumentMoniker": "D:\\GITHUB\\ALLMENTALGODOT\\Assets\\Entity\\MurderTypeData.cs",
+              "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Entity\\MurderTypeData.cs",
               "RelativeDocumentMoniker": "Assets\\Entity\\MurderTypeData.cs",
-              "ToolTip": "D:\\GITHUB\\ALLMENTALGODOT\\Assets\\Entity\\MurderTypeData.cs",
+              "ToolTip": "D:\\GitHub\\AllMentalGodot\\Assets\\Entity\\MurderTypeData.cs",
               "RelativeToolTip": "Assets\\Entity\\MurderTypeData.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABoAAAAAAAAA",
+              "ViewState": "AQIAABUAAAAAAAAAAAAowEMAAAA+AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-27T11:12:07.992Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ItemsInterface.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Entity\\ItemsInterface.cs",
               "RelativeDocumentMoniker": "Assets\\Entity\\ItemsInterface.cs",
               "ToolTip": "D:\\GitHub\\AllMentalGodot\\Assets\\Entity\\ItemsInterface.cs",
               "RelativeToolTip": "Assets\\Entity\\ItemsInterface.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAfAAAA",
+              "ViewState": "AQIAAC8AAAAAAAAAAAA3wEsAAAA5AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-26T09:27:53.652Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
               "Title": "Damage.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Entity\\Damage.cs",
               "RelativeDocumentMoniker": "Assets\\Entity\\Damage.cs",
               "ToolTip": "D:\\GitHub\\AllMentalGodot\\Assets\\Entity\\Damage.cs",
               "RelativeToolTip": "Assets\\Entity\\Damage.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAABEAAAAFAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-25T13:56:19.145Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "UIinterface.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\UI\\UIinterface.cs",
               "RelativeDocumentMoniker": "Assets\\UI\\UIinterface.cs",
@@ -93,8 +93,7 @@
               "RelativeToolTip": "Assets\\UI\\UIinterface.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T13:56:19.143Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-25T13:56:19.143Z"
             },
             {
               "$type": "Document",
@@ -106,12 +105,11 @@
               "RelativeToolTip": "Assets\\Data\\HouseData.cs",
               "ViewState": "AQIAAB4AAAAAAAAAAAAowEMAAABCAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T13:56:19.146Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-25T13:56:19.146Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "PersonButton.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\UI\\PersonButton.cs",
               "RelativeDocumentMoniker": "Assets\\UI\\PersonButton.cs",
@@ -119,8 +117,7 @@
               "RelativeToolTip": "Assets\\UI\\PersonButton.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAADwvxMAAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T13:56:18.593Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-25T13:56:18.593Z"
             },
             {
               "$type": "Document",
@@ -132,12 +129,11 @@
               "RelativeToolTip": "Assets\\Entity\\Plans.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAqwAoAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T13:56:19.145Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-25T13:56:19.145Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "ProfileFullUI.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\UI\\ProfileFullUI.cs",
               "RelativeDocumentMoniker": "Assets\\UI\\ProfileFullUI.cs",
@@ -145,8 +141,7 @@
               "RelativeToolTip": "Assets\\UI\\ProfileFullUI.cs",
               "ViewState": "AQIAAA4AAAAAAAAAAAAQwCAAAAACAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-25T13:56:19.144Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-25T13:56:19.144Z"
             }
           ]
         }
