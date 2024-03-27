@@ -16,9 +16,6 @@ public partial class PersonButton : Button
     }
     private void _on_pressed()
 	{
-        Tween tween = GetTree().CreateTween();
-        tween.TweenProperty(PeopleShortPanel, "scale", new Vector2(0,1), 0.2f);
-        tween.TweenProperty(FullProfiler, "scale", new Vector2(1, 1), 0.2f);
         FullProfiler.SizeFlagsStretchRatio = 1;
         FullProfiler.Call("Open", PersonId);
 	}

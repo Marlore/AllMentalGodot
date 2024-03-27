@@ -18,16 +18,21 @@ namespace Entity.DamageLibrary
     }
     public class DamageFactory
     {
-        public Damage Create(Items item)
-        {
-            switch (item.TypeOfDamage)
-            {
+        //public Damage Create(Items item)
+        //{
+        //    switch (item.TypeOfDamage)
+        //    {
                
 
-            }
-        }
+        //    }
+        //}
         public Damage FlatDamageResult(int seriousness)
         {
+            switch (seriousness)
+            {
+
+
+            }
             return new Bruise();
         }
         public Damage SharpDamageResult(int seriousness)

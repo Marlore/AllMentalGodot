@@ -190,20 +190,24 @@ size_flags_horizontal = 3
 
 [node name="Name" type="Label" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Name And Second Name"
 
 [node name="Age" type="Label" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Age "
 vertical_alignment = 1
 
 [node name="DateOfBith" type="Label" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "DateOfBith"
 vertical_alignment = 1
 
 [node name="Contact" type="Label" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Contacts"
 vertical_alignment = 1
 
@@ -218,6 +222,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text_overrun_behavior = 1
 item_count = 2
 item_0/text = "123"
@@ -229,14 +234,17 @@ size_flags_horizontal = 3
 
 [node name="Alive" type="Label" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Alive"
 
 [node name="Location" type="Label" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Location"
 
 [node name="Work" type="Label" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Location"
 
 [node name="EventControl" type="Control" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer2"]
@@ -250,6 +258,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text_overrun_behavior = 1
 
 [node name="StreetsList" type="VBoxContainer" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree"]

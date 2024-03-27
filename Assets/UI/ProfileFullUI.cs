@@ -24,18 +24,15 @@ public partial class ProfileFullUI : VBoxContainer
 		Work = (Label)this.GetNode("HBoxContainer/VBoxContainer2/Work");
 
         Contacts = (ItemList)this.GetNode("HBoxContainer/VBoxContainer/Control/ItemList");
-        Events = (ItemList)this.GetNode("HBoxContainer/VBoxContainer2/EventControl/Events");
-		
-        this.Hide();
-        
+		Events = (ItemList)this.GetNode("HBoxContainer/VBoxContainer2/EventControl/Events");
+		this.Hide();
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public void Open(string id)
 	{
-		int indexContacts= 0;
-       
         this.Show();
+        GD.Print(id);
 		Guid guid = Guid.Parse(id);
         personId = guid;
         var person = PlayerInfo.CurrentCity.Population[guid];
@@ -50,18 +47,15 @@ public partial class ProfileFullUI : VBoxContainer
 		Work.Text = person.Job.Name;
 
     }
-	private void _on_close_requested()
-	{
-		this.Hide();
-	}
+	
     public override void _Process(double delta)
     {
-		if (personId != default(Guid)){
+        base._Process(delta);
+        if (personId != default(Guid)){
             Location.Text = PlayerInfo.CurrentCity.Population[personId].CurrentLocation.Adress;
             //GD.Print(PlayerInfo.CurrentCity.Population[personId]._intermediateSegment.Adress);
         }
 
-        base._Process(delta);
     }
 }
 

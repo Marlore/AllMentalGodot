@@ -5,7 +5,6 @@ public partial class UIinterface : BoxContainer
 {
     HBoxContainer PersonLibrary;
 	VBoxContainer StreetLibrary;
-    Tween tween;
 
     public override void _Ready()
 	{
@@ -13,9 +12,6 @@ public partial class UIinterface : BoxContainer
         StreetLibrary = (VBoxContainer)this.GetNode("HBoxContainer/SecondTree/StreetsList");
         PersonLibrary.Visible = false;
         StreetLibrary.Visible = false;
-		PersonLibrary.Scale = Vector2.Zero;
-        StreetLibrary.Scale = Vector2.Zero;
-        tween = GetTree().CreateTween();
         
     }
 
@@ -27,7 +23,6 @@ public partial class UIinterface : BoxContainer
 	{
         if (PersonLibrary.Visible != true) 
         { 
-            tween.TweenProperty(PersonLibrary, "scale", new Vector2(1, 1), 0.2f);
             PersonLibrary.Visible = true;
 	        StreetLibrary.Visible = false;
         }
@@ -36,7 +31,6 @@ public partial class UIinterface : BoxContainer
 	{
         if (StreetLibrary.Visible != true)
         {
-            tween.TweenProperty(StreetLibrary, "scale", new Vector2(1, 1), 0.2f);
             PersonLibrary.Visible = false;
             StreetLibrary.Visible = true;
         }

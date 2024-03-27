@@ -36,6 +36,20 @@ namespace Entity.ItemLibrary
         public override int NoiseRate => 4;
         public override int Severity => 1;
     }
+    public class SilentPistol : Items
+    {
+        public override string Name => "Silent pistol";
+        public override List<DamageType> TypeOfDamage => new List<DamageType>() { DamageType.gunshot };
+        public override int NoiseRate => 1;
+        public override int Severity => 1;
+    }
+    public class Bat : Items
+    {
+        public override string Name => "Bat";
+        public override List<DamageType> TypeOfDamage => new List<DamageType>() { DamageType.flat};
+        public override int NoiseRate => 1;
+        public override int Severity => 2;
+    }
     public class ShotGun : Items
     {
         public override string Name => "ShotGun";
