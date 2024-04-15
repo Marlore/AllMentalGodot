@@ -15,6 +15,7 @@ using System.Threading;
 using Godot;
 using System.Text.RegularExpressions;
 using Data.SectionData;
+using Entity.MurderEntity;
 
 namespace Data.CityData
 {
@@ -57,7 +58,10 @@ namespace Data.CityData
 
 		public Dictionary<Guid,ILocations> Locations = new Dictionary<Guid, ILocations>();
 
-		public List<Necrolog> NecroLog = new List<Necrolog>();
+		public List<MurderOrder> BlackMarketOrders = new List<MurderOrder>();
+
+
+        public List<Necrolog> NecroLog = new List<Necrolog>();
 
 		public City()
 		{

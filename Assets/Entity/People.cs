@@ -6,6 +6,7 @@ using Data.StreetData;
 using Engine.Generator;
 using Engine.PlayerEngine;
 using Entity.Company;
+using Entity.ItemLibrary;
 using Entity.Job;
 using Entity.Plans;
 using Godot;
@@ -108,6 +109,7 @@ namespace Entity.People
             }
         }
         public Work Job;
+
         public Person Mother;
         public Person Father;
         public Person Partner;
@@ -126,6 +128,8 @@ namespace Entity.People
         public Segment HobbyPlace;
         public DateTime Bithday;
         public Action Live;
+
+        public List<Items> Inventory = new List<Items>();
 
         private DateTime TimeToWalk;
        
