@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://oofcn4ted6sv"]
 
-[ext_resource type="Script" path="res://Assets/UI/StreetsButton.cs" id="1_x3176"]
+[ext_resource type="Script" path="res://Assets/Scripts/UI/StreetsButton.cs" id="1_x3176"]
 
 [node name="Street" type="Button"]
 anchors_preset = 13

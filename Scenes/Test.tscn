@@ -1,11 +1,11 @@
 [gd_scene load_steps=10 format=3 uid="uid://b0ihfebe5gqy8"]
 
-[ext_resource type="Script" path="res://Assets/Engine/RunTimeScriptEngine.cs" id="1_5nnoj"]
-[ext_resource type="Script" path="res://Assets/UI/ProfileFullUI.cs" id="2_em4lh"]
-[ext_resource type="Script" path="res://Assets/UI/ProfileShort.cs" id="2_vc5ds"]
+[ext_resource type="Script" path="res://Assets/Scripts/Engine/RunTimeScriptEngine.cs" id="1_5nnoj"]
+[ext_resource type="Script" path="res://Assets/Scripts/UI/ProfileFullUI.cs" id="2_em4lh"]
+[ext_resource type="Script" path="res://Assets/Scripts/UI/ProfileShort.cs" id="2_vc5ds"]
 [ext_resource type="Script" path="res://Scenes/WordTime.cs" id="3_78l3y"]
-[ext_resource type="Script" path="res://Assets/UI/UIinterface.cs" id="3_p48gp"]
-[ext_resource type="Script" path="res://Assets/UI/StreetsList.cs" id="6_2u08n"]
+[ext_resource type="Script" path="res://Assets/Scripts/UI/UIinterface.cs" id="3_p48gp"]
+[ext_resource type="Script" path="res://Assets/Scripts/UI/StreetsList.cs" id="6_2u08n"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kyrmb"]
 
@@ -29,20 +29,6 @@ position = Vector2(576, 324)
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 energy = 5.04
 height = 1.0
-
-[node name="ProfileShort" type="Window" parent="."]
-mode = 3
-position = Vector2i(50, 36)
-size = Vector2i(500, 500)
-visible = false
-
-[node name="Control" type="Control" parent="ProfileShort"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -266,6 +252,10 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("6_2u08n")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 1275.0
+offset_bottom = 650.0
 
 [connection signal="tree_exited" from="." to="." method="_on_tree_exited"]
 [connection signal="pressed" from="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Person" to="CanvasLayer/Panel/Interface" method="PersonLibraryOpen"]
