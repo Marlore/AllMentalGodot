@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://b0ihfebe5gqy8"]
+[gd_scene load_steps=11 format=3 uid="uid://b0ihfebe5gqy8"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/Engine/RunTimeScriptEngine.cs" id="1_5nnoj"]
 [ext_resource type="Script" path="res://Assets/Scripts/UI/ProfileFullUI.cs" id="2_em4lh"]
 [ext_resource type="Script" path="res://Assets/Scripts/UI/ProfileShort.cs" id="2_vc5ds"]
 [ext_resource type="Script" path="res://Scenes/WordTime.cs" id="3_78l3y"]
 [ext_resource type="Script" path="res://Assets/Scripts/UI/UIinterface.cs" id="3_p48gp"]
+[ext_resource type="Script" path="res://Assets/Scripts/UI/TimeConroller.cs" id="4_ecc1q"]
 [ext_resource type="Script" path="res://Assets/Scripts/UI/StreetsList.cs" id="6_2u08n"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kyrmb"]
@@ -100,6 +101,38 @@ text = "asdqwqeweqasda"
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("3_78l3y")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+script = ExtResource("4_ecc1q")
+
+[node name="FirstSpeed" type="Button" parent="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "1"
+
+[node name="SecondSpeed" type="Button" parent="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2"
+
+[node name="ThirdSpeed" type="Button" parent="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "3"
+
+[node name="Pause" type="Button" parent="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Pause"
 
 [node name="Person" type="Button" parent="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree"]
 layout_mode = 2
@@ -258,6 +291,10 @@ offset_right = 1275.0
 offset_bottom = 650.0
 
 [connection signal="tree_exited" from="." to="." method="_on_tree_exited"]
+[connection signal="pressed" from="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer/FirstSpeed" to="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer" method="_on_first_speed_pressed"]
+[connection signal="pressed" from="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer/SecondSpeed" to="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer" method="_on_second_speed_pressed"]
+[connection signal="pressed" from="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer/ThirdSpeed" to="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer" method="_on_third_speed_pressed"]
+[connection signal="pressed" from="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer/Pause" to="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Time/HBoxContainer" method="_on_pause_pressed"]
 [connection signal="pressed" from="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Person" to="CanvasLayer/Panel/Interface" method="PersonLibraryOpen"]
 [connection signal="pressed" from="CanvasLayer/Panel/Interface/HBoxContainer/CoreTree/Streets" to="CanvasLayer/Panel/Interface" method="StreetsLibraryOpen"]
 [connection signal="text_changed" from="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonShort/LineEdit" to="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList" method="OnSearching"]

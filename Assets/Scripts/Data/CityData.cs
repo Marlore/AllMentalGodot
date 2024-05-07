@@ -20,13 +20,21 @@ using Entity.MurderEntity;
 namespace Data.CityData
 {
 	[Serializable]
+	public enum TimeScaleTick
+	{
+		first = 500,
+		second = 200,
+		third = 50
+	}
 	public class City
 	{
 		private static System.Random random = new System.Random();
 
 		public DateTime CityTime;
+		public (int timeScale, bool Paused) Time;
+		public ManualResetEvent TimeScaleEvent = new ManualResetEvent(true);
 
-		public Dictionary<Guid,Person> Population = new Dictionary<Guid, Person>();
+        public Dictionary<Guid,Person> Population = new Dictionary<Guid, Person>();
 
 		public List<Streets> CityStreets = new List<Streets>();
 		public List<Houses> CityHouses = new List<Houses>();
@@ -67,19 +75,21 @@ namespace Data.CityData
 		public City()
 		{
 			CityTime = new DateTime(2018, 12, 11, 7, 0, 0);
+			Time.timeScale = (int)TimeScaleTick.first;
 		}
 		public void CityLife()
 		{
 		   
 			while (true)
 			{
-				for (int i= 0; i<Population.Keys.Count; i++)
+				TimeScaleEvent.WaitOne();
+                for (int i= 0; i<Population.Keys.Count; i++)
 				{
 					var id = Population.Keys.ElementAt(i);
 					Population[id].Live?.Invoke();
 				}
 				this.CityTime = this.CityTime.AddMinutes(1); 
-				Thread.Sleep(50);
+				Thread.Sleep(Time.timeScale);
 			}
 
 		}

@@ -3,36 +3,40 @@
   "WorkspaceRootPath": "D:\\GitHub\\AllMentalGodot\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|D:\\GitHub\\AllMentalGodot\\assets\\scripts\\data\\citydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\data\\citydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\UI\\TimeConroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\UI\\TimeConroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\scripts\\engine\\runtimescriptengine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\engine\\runtimescriptengine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\scripts\\entity\\murdertypedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\entity\\murdertypedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\scripts\\ui\\profilefullui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\ui\\profilefullui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|D:\\GitHub\\AllMentalGodot\\assets\\scripts\\data\\apartmentdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\data\\apartmentdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\scripts\\entity\\people.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|D:\\GitHub\\AllMentalGodot\\assets\\scripts\\entity\\people.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\entity\\people.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\scripts\\ui\\personbutton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|D:\\GitHub\\AllMentalGodot\\assets\\scripts\\ui\\personbutton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\ui\\personbutton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\scripts\\entity\\itemsinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|D:\\GitHub\\AllMentalGodot\\assets\\scripts\\entity\\itemsinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\entity\\itemsinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\scripts\\data\\citydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\data\\citydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\scripts\\entity\\log.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|D:\\GitHub\\AllMentalGodot\\assets\\scripts\\entity\\log.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\entity\\log.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|d:\\github\\allmentalgodot\\assets\\scripts\\data\\apartmentdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C4020F01-F21B-4BA9-9DDD-E87371B2C5CF}|All Mental Godot.csproj|solutionrelative:assets\\scripts\\data\\apartmentdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,37 +46,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ProfileFullUI.cs",
-              "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\UI\\ProfileFullUI.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\ProfileFullUI.cs",
-              "ToolTip": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\UI\\ProfileFullUI.cs",
-              "RelativeToolTip": "Assets\\Scripts\\UI\\ProfileFullUI.cs",
-              "ViewState": "AQIAACAAAAAAAAAAAAAewDkAAABLAAAA",
+              "DocumentIndex": 2,
+              "Title": "RunTimeScriptEngine.cs",
+              "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Engine\\RunTimeScriptEngine.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Engine\\RunTimeScriptEngine.cs",
+              "ToolTip": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Engine\\RunTimeScriptEngine.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Engine\\RunTimeScriptEngine.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-06T12:55:39.794Z",
+              "WhenOpened": "2024-05-07T13:21:07.353Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
+              "Title": "TimeConroller.cs",
+              "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\UI\\TimeConroller.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\TimeConroller.cs",
+              "ToolTip": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\UI\\TimeConroller.cs",
+              "RelativeToolTip": "Assets\\Scripts\\UI\\TimeConroller.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABwAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-07T13:11:34.61Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "CityData.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Data\\CityData.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Data\\CityData.cs",
               "ToolTip": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Data\\CityData.cs",
               "RelativeToolTip": "Assets\\Scripts\\Data\\CityData.cs",
-              "ViewState": "AQIAAGoAAAAAAAAAAAAcwAAAAAAAAAAA",
+              "ViewState": "AQIAABIAAAAAAAAAAAAgwCIAAABEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-06T12:48:46.849Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "Log.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Entity\\Log.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Entity\\Log.cs",
@@ -80,12 +97,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Entity\\Log.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-06T12:48:40.834Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-06T12:48:40.834Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "People.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Entity\\People.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Entity\\People.cs",
@@ -93,12 +109,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Entity\\People.cs",
               "ViewState": "AQIAAFkBAAAAAAAAAAAiwNwAAAAsAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-06T12:05:39.312Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-06T12:05:39.312Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "PersonButton.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\UI\\PersonButton.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\PersonButton.cs",
@@ -106,25 +121,24 @@
               "RelativeToolTip": "Assets\\Scripts\\UI\\PersonButton.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAByAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-06T12:02:11.594Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-06T12:02:11.594Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "MurderTypeData.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Entity\\MurderTypeData.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Entity\\MurderTypeData.cs",
               "ToolTip": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Entity\\MurderTypeData.cs",
               "RelativeToolTip": "Assets\\Scripts\\Entity\\MurderTypeData.cs",
-              "ViewState": "AQIAACkAAAAAAAAAAAAuwFEAAAAmAAAA",
+              "ViewState": "AQIAAD4AAAAAAAAAAAAswFEAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-06T11:18:55.02Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "ItemsInterface.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Entity\\ItemsInterface.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Entity\\ItemsInterface.cs",
@@ -132,12 +146,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Entity\\ItemsInterface.cs",
               "ViewState": "AQIAAAMAAAAAAAAAAAAAABMAAAAgAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-06T11:21:09.256Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-06T11:21:09.256Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 4,
               "Title": "ApartmentData.cs",
               "DocumentMoniker": "D:\\GitHub\\AllMentalGodot\\Assets\\Scripts\\Data\\ApartmentData.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Data\\ApartmentData.cs",
