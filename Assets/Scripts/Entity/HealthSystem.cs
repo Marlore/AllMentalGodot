@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Entity.People;
+using Scripts.Entity.TraumaEntity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ExceptionServices;
@@ -12,20 +14,28 @@ namespace AllMentalGodot.Assets.Entity
         public abstract string Name { get; }
         public int ActualDuration { get; } 
         public abstract int MaxDuration { get; }
-        public Action Condition;
+        public List<Trauma> Condition = new List<Trauma>();
+        public List<Organ> organs= new List<Organ>();
         public BodyPath() 
         {
             ActualDuration = MaxDuration;
-        }   
+        }
+        
     }
     public abstract class Organ
     {
         public abstract string Name { get; }
-        public int ActualDuration { get; }
+        private int _actualduration;
+        public int ActualDuration { get { return _actualduration; } set {
+                if (value <= 0)
+                    _actualduration = 0;
+                else _actualduration = value;
+            } }
         public abstract int MaxDuration { get; }
         public abstract int DamageChance {get; }
         public Organ()
         {
+
             ActualDuration = MaxDuration;
         }
     }
@@ -76,7 +86,6 @@ namespace AllMentalGodot.Assets.Entity
     {
         public override string Name => "Head";
         public override int MaxDuration => 30;
-        public List<Organ> organs = new List<Organ>();
         public Head():
             base()
         {
@@ -87,7 +96,6 @@ namespace AllMentalGodot.Assets.Entity
     {
         public override string Name => "Neck";
         public override int MaxDuration =>15;
-        public List<Organ> organs = new List<Organ>();
         public Neck() :
             base()
         {
@@ -98,7 +106,6 @@ namespace AllMentalGodot.Assets.Entity
     {
         public override string Name => "Torso";
         public override int MaxDuration => 60;
-        public List<Organ> organs = new List<Organ>();
         public Torso() :
             base()
         {
@@ -132,6 +139,13 @@ namespace AllMentalGodot.Assets.Entity
     }
     public class Body
     {
+        public Person person;
+        public int NormalBloodDrain =100;
+        public int NormalBloodPressure =100;
+        public int NormalBreath = 100;
+        public int ActualBloodDrain;
+        public int ActualBloodPressure;
+        public int ActualBreath;
         public Head head = new Head();
         public Neck neck = new Neck();
         public Torso torso= new Torso();
@@ -140,8 +154,13 @@ namespace AllMentalGodot.Assets.Entity
         public RightLeg rightLeg = new RightLeg();
         public LeftLeg leftLeg = new LeftLeg();
         public List<BodyPath> BodyPathsList = new List<BodyPath>();
-        public Body()
+        public Body(Person _person)
         {
+            ActualBloodDrain =NormalBloodDrain;
+            ActualBloodPressure =NormalBloodPressure;
+            ActualBreath =NormalBreath;
+
+            person = _person;
             BodyPathsList.Add(head);
             BodyPathsList.Add(neck);
             BodyPathsList.Add(torso);
@@ -149,6 +168,16 @@ namespace AllMentalGodot.Assets.Entity
             BodyPathsList.Add(leftArm);
             BodyPathsList.Add(rightLeg);
             BodyPathsList.Add(leftLeg);
+        }
+        public void TemporaryHealthStatuses()
+        {
+            foreach (BodyPath path in BodyPathsList)
+                foreach(var trauma in path.Condition)
+                    trauma?.TemporaryExicutebleMethods();
+            foreach(BodyPath path in BodyPathsList)
+                foreach(Organ organ in path.organs)
+                    if(organ.ActualDuration == 0)
+                        person.Death();
         }
     }
 }

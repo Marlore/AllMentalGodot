@@ -46,7 +46,7 @@ namespace Entity.People
         public Dictionary<Person, int> Contacts = new Dictionary<Person, int>();
         public Dictionary<Guid, Plan> Plans = new Dictionary<Guid, Plan>();
 
-        public Body body = new Body();
+        public Body Health;
 
         public Apartments Apartment;
 
@@ -66,6 +66,7 @@ namespace Entity.People
         Random rand = new Random();
 
         public bool Alive;
+        public bool Conscious;
 
         public string FirstName;
         public string SecondName;
@@ -156,6 +157,7 @@ namespace Entity.People
 
             FirstName = PersonGenerator.GenerateFirstName(SexEnum);
             SecondName = PersonGenerator.GenerateLastName();
+            Health = new Body(this);
 
             Intellegence = rand.Next(1, 11);
             Mental = rand.Next(1, 11);
@@ -177,8 +179,7 @@ namespace Entity.People
             _intermediateSegment = CurrentLocation;
 
             StatusEnum = _status.messingAround;
-            //Live = () => { this.TryMarry(); this.FindJob();this.Movement();this.Talk(); this.Aged(); };
-            Live += /*this.TryMarry;*/Live += this.FindJob;Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer; Live += this.Talk; Live += this.Aged; Live += this.MentalHealth;
+            Live += this.FindJob;Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer; Live += this.Talk; Live += this.Aged; Live += this.MentalHealth; Live += Health.TemporaryHealthStatuses;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
@@ -190,6 +191,7 @@ namespace Entity.People
             SexEnum = PersonGenerator.GenerateSex();
 
             FirstName = PersonGenerator.GenerateFirstName(SexEnum);
+            Health = new Body(this);
 
             this.Mother = mother;
             this.Father = father;
@@ -211,7 +213,7 @@ namespace Entity.People
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
             CurrentLocation = Mother.CurrentLocation;
             Destination = CurrentLocation;
-            Live += /*this.TryMarry; */ Live += this.FindJob; Live += this.Movement; Live += this.MovementСalculation; Live += this.Talk; Live += this.Aged;Live += this.MentalHealth;
+            Live += this.FindJob; Live += this.MovementСalculation; Live += this.Movement; Live += this.WalkTimer; Live += this.Talk; Live += this.Aged;Live += this.MentalHealth; Live += Health.TemporaryHealthStatuses;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }
@@ -1043,13 +1045,14 @@ namespace Entity.People
             Person person = null;
             if (this.CurrentLocation.PeopleInside.Count > 1 && PlayerInfo.CurrentCity.CityTime.Minute == 30)
             {
-                do
+                var Guidlist = this.CurrentLocation.PeopleInside;
+                var PersonList = Guidlist.FindAll(x => PlayerInfo.CurrentCity.Population[x].Alive && x != this.Id);
+                if (PersonList.Count >= 1)
                 {
-                    int rand = randomtalk.Next(0, this.CurrentLocation.PeopleInside.Count);
-                    var id = this.CurrentLocation.PeopleInside[rand];
-                    person = PlayerInfo.CurrentCity.Population[id];
+                    int rand = randomtalk.Next(0, PersonList.Count);
+                    Guid personid = PersonList[rand];
+                    person = PlayerInfo.CurrentCity.Population[PersonList[rand]];
                 }
-                while (person == this);
             }
             if (person != null)
             {
@@ -1275,7 +1278,7 @@ namespace Entity.People
                 PlayerInfo.CurrentCity.Population.Add(child.Id,child);
             }
         }
-        public void Death(Person murder, string reason)
+        public void Death()
         {
             AgeOfDeath = new DateTime(PlayerInfo.CurrentCity.CityTime.Ticks- Bithday.Ticks);   
             //if (murder == null) 

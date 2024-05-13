@@ -27,7 +27,6 @@ namespace Entity.MurderEntity
         {
             Сustomer = сustomer;
             Victim = victim;
-
         }
         public void MakeOrder() => PlayerInfo.CurrentCity.BlackMarketOrders.Add(this);
 
