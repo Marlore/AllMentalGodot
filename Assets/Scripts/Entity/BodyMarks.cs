@@ -17,17 +17,30 @@ namespace Entity.BodyMarks
         public Trauma CurrentTrauma;
         
         public TraumaPattern(Body _body, BodyPath _bodyPath)
-        {}
+        {
+            body = _body;
+            bodyPath = _bodyPath;
+        }
     }
     public class StabWound: TraumaPattern
     {
         public override string Name => "Stab wound";
         public StabWound(Body _body, BodyPath _bodyPath):base(_body, _bodyPath)
         { 
-            body = _body;
-            bodyPath = _bodyPath;
             var trauma = new PenetratinWound(body, bodyPath);
             traumas.AddRange(trauma.ReturnTrauma());
+            bodyPath.Condition.AddRange(traumas);
         }
+    }
+    public class CuttingWound : TraumaPattern
+    {
+        public override string Name => "Cutting wound";
+        public CuttingWound(Body _body, BodyPath _bodyPath) : base(_body, _bodyPath)
+        {
+            var trauma = new PenetratinWound(body, bodyPath);
+            traumas.AddRange(trauma.ReturnTrauma());
+            bodyPath.Condition.AddRange(traumas);
+        }
+    }
     }
 }

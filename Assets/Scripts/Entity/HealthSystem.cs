@@ -1,4 +1,5 @@
-﻿using Entity.People;
+﻿using Entity.BodyMarks;
+using Entity.People;
 using Scripts.Entity.TraumaEntity;
 using System;
 using System.Collections.Generic;
@@ -9,34 +10,51 @@ using System.Threading.Tasks;
 
 namespace AllMentalGodot.Assets.Entity
 {
+    public enum OrgansEnum
+    {
+        heart, liver, guts, kidneys, lungs, throat, brain
+    }
     public abstract class BodyPath
     {
         public abstract string Name { get; }
         public int ActualDuration;
+        
         public abstract int MaxDuration { get; }
         public List<Trauma> Condition = new List<Trauma>();
+        public List<TraumaPattern> BodyMarks = new List<TraumaPattern>();
         public List<Organ> organs= new List<Organ>();
-        public BodyPath() 
+        public BodyPath(Person currentPerson) 
         {
             ActualDuration = MaxDuration;
         }
-        
+        public BodyPath()
+        {
+            ActualDuration = MaxDuration;
+        }
+
     }
     public abstract class Organ
     {
         public abstract string Name { get; }
         private int _actualduration;
+        public abstract OrgansEnum OrganType { get; }
+        public Person currentPerson;
         public int ActualDuration { get { return _actualduration; } set {
                 if (value <= 0)
+                {
                     _actualduration = 0;
+                }
+                    
                 else _actualduration = value;
             } }
+        // сетеры гетеры
         public abstract int MaxDuration { get; }
         public abstract int DamageChance {get; }
-        public Organ()
+        public Organ(Person currentPerson)
         {
 
             ActualDuration = MaxDuration;
+            this.currentPerson = currentPerson;
         }
     }
     public class Heart : Organ
@@ -44,76 +62,91 @@ namespace AllMentalGodot.Assets.Entity
         public override string Name => "Heart";
         public override int MaxDuration => 10;
         public override int DamageChance => 5;
+        public override OrgansEnum OrganType => OrgansEnum.heart;
+        public Heart(Person currentPerson):base(currentPerson) { }
     }
     public class Liver : Organ
     {
         public override string Name => "Liver";
         public override int MaxDuration => 50;
         public override int DamageChance => 20;
+        public override OrgansEnum OrganType => OrgansEnum.liver;
+        public Liver(Person currentPerson) : base(currentPerson) { }
     }
     public class Guts : Organ
     {
         public override string Name => "Guts";
         public override int MaxDuration => 60;
         public override int DamageChance => 30;
+        public override OrgansEnum OrganType => OrgansEnum.guts;
+        public Guts(Person currentPerson) : base(currentPerson) { }
     }
     public class Kidneys : Organ
     {
         public override string Name => "Kidneys";
         public override int MaxDuration => 40;
         public override int DamageChance => 10;
+        public override OrgansEnum OrganType => OrgansEnum.kidneys;
+        public Kidneys(Person currentPerson) : base(currentPerson) { }
     }
     public class Lungs : Organ
     {
         public override string Name => "Lungs";
         public override int MaxDuration => 30;
         public override int DamageChance => 25;
+        public override OrgansEnum OrganType => OrgansEnum.lungs;
+        public Lungs(Person currentPerson) : base(currentPerson) { }
     }
     public class Throat : Organ
     {
         public override string Name => "Throat";
         public override int MaxDuration => 15;
         public override int DamageChance => 15;
+        public override OrgansEnum OrganType => OrgansEnum.throat;
+        public Throat(Person currentPerson) : base(currentPerson) { }
     }
     public class Brain : Organ
     {
         public override string Name => "Brain";
         public override int MaxDuration => 45;
         public override int DamageChance => 90;
+        public override OrgansEnum OrganType => OrgansEnum.brain;
+        public Brain(Person currentPerson) : base(currentPerson) { }
+
     }
 
     public class Head: BodyPath 
     {
         public override string Name => "Head";
         public override int MaxDuration => 30;
-        public Head():
-            base()
+        public Head(Person currentPerson) :
+            base(currentPerson)
         {
-            organs.Add(new Brain());
+            organs.Add(new Brain(currentPerson));
         }
     }
     public class Neck: BodyPath
     {
         public override string Name => "Neck";
         public override int MaxDuration =>15;
-        public Neck() :
-            base()
+        public Neck(Person currentPerson) :
+            base(currentPerson)
         {
-            organs.Add(new Throat());
+            organs.Add(new Throat(currentPerson));
         }
     }
     public class Torso: BodyPath
     {
         public override string Name => "Torso";
         public override int MaxDuration => 60;
-        public Torso() :
-            base()
+        public Torso(Person currentPerson) :
+            base(currentPerson)
         {
-            organs.Add(new Heart());
-            organs.Add(new Liver());
-            organs.Add(new Guts());
-            organs.Add(new Kidneys());
-            organs.Add(new Lungs());
+            organs.Add(new Heart(currentPerson));
+            organs.Add(new Liver(currentPerson));
+            organs.Add(new Guts(currentPerson));
+            organs.Add(new Kidneys(currentPerson));
+            organs.Add(new Lungs(currentPerson));
         }
 
     }
@@ -146,9 +179,9 @@ namespace AllMentalGodot.Assets.Entity
         public int ActualBloodDrain;
         public int ActualBloodPressure;
         public int ActualBreath;
-        public Head head = new Head();
-        public Neck neck = new Neck();
-        public Torso torso= new Torso();
+        public Head head;
+        public Neck neck;
+        public Torso torso;
         public RightArm rightArm = new RightArm();
         public LeftArm leftArm = new LeftArm();
         public RightLeg rightLeg = new RightLeg();
@@ -161,6 +194,10 @@ namespace AllMentalGodot.Assets.Entity
             ActualBreath =NormalBreath;
 
             person = _person;
+
+            head = new Head(person);
+            neck = new Neck(person);
+            torso = new Torso(person);
             BodyPathsList.Add(head);
             BodyPathsList.Add(neck);
             BodyPathsList.Add(torso);

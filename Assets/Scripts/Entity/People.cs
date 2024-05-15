@@ -186,7 +186,7 @@ namespace Entity.People
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
             var trauma = new StabWound(Health,Health.torso);
-            Health.torso.Condition.AddRange(trauma.traumas);
+            Health.torso.BodyMarks.Add(trauma);
         }
         public Person(Person mother, Person father)
         {
