@@ -12,7 +12,7 @@ namespace AllMentalGodot.Assets.Entity
     public abstract class BodyPath
     {
         public abstract string Name { get; }
-        public int ActualDuration { get; } 
+        public int ActualDuration;
         public abstract int MaxDuration { get; }
         public List<Trauma> Condition = new List<Trauma>();
         public List<Organ> organs= new List<Organ>();
@@ -176,8 +176,11 @@ namespace AllMentalGodot.Assets.Entity
                     trauma?.TemporaryExicutebleMethods();
             foreach(BodyPath path in BodyPathsList)
                 foreach(Organ organ in path.organs)
-                    if(organ.ActualDuration == 0)
+                    if(organ.ActualDuration <= 0)
                         person.Death();
+            if (ActualBloodDrain <= 0)
+                person.Death();
         }
+        
     }
 }

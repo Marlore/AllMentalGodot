@@ -3,6 +3,7 @@ using Engine.PlayerEngine;
 using Entity.Company;
 using Entity.People;
 using Godot;
+using Scripts.Entity.TraumaEntity;
 using System;
 
 public partial class ProfileFullUI : VBoxContainer
@@ -35,7 +36,6 @@ public partial class ProfileFullUI : VBoxContainer
 	public void Open(string id)
 	{
         this.Show();
-        GD.Print(id);
 		Guid guid = Guid.Parse(id);
         personId = guid;
         var person = PlayerInfo.CurrentCity.Population[guid];
@@ -48,6 +48,9 @@ public partial class ProfileFullUI : VBoxContainer
         foreach (var plan in person.Plans)
             Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)}", null, true);
 		Work.Text = person.Job.Name;
+        GD.Print(person.Health.ActualBloodDrain);
+        //foreach (var trauma in person.Health.torso.Condition)
+			
 
     }
 	

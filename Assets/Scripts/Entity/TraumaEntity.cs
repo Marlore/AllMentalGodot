@@ -1,4 +1,5 @@
 ﻿using AllMentalGodot.Assets.Entity;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,91 +9,71 @@ using System.Threading.Tasks;
 namespace Scripts.Entity.TraumaEntity
 {
     public abstract class Trauma
-    {
+    { 
         public abstract string Name { get; }
-        public abstract int TickCount { get;}
-        private protected int Tick;
-        private protected BodyPath _bodyPath;
-        private protected Body _currentBody;
-
-        public Trauma(BodyPath bodypath, Body currentBody)
+        public abstract int Ticks { get; }
+        public int ActualTick;
+        public Body CurrentBody;
+        public BodyPath CurrentBodyPath;
+        private protected List<Trauma> RelatedInjuries= new List<Trauma>();
+        public Trauma(Body _currentBody, BodyPath _currentBodyPath) 
         {
-            _currentBody = currentBody;
-            _bodyPath = bodypath;
-            Tick = TickCount;
+            CurrentBody = _currentBody;
+            CurrentBodyPath = _currentBodyPath;
+            ActualTick = Ticks;
         }
+        public Trauma(Organ _organ) { }
         public void TemporaryExicutebleMethods()
         {
-            if(Tick>0)
-                Tick--;
-            if (Tick == 0)
+            if (ActualTick > 0)
+                ActualTick--;
+            if( ActualTick == 0)
             {
                 Exicute();
+                ActualTick = Ticks;
             }
         }
-        public  virtual void Exicute(){}
-    }
-    public class IncisedWound: Trauma 
-    {
-        public override string Name => "Incised wound";
-        public override int TickCount => 50;
-        public IncisedWound(BodyPath bodypath, Body currentBody) : base(bodypath, currentBody) 
+        public virtual void Exicute()
+        {}
+        public List<Trauma> ReturnTrauma()
         {
-            _currentBody.ActualBloodPressure += 5;
-        }
-        public override void Exicute()
-        {
-            base.Exicute();
-            _currentBody.ActualBloodDrain -= 2;
-            Tick= TickCount;
+            RelatedInjuries.Add(this);
+            return RelatedInjuries;
         }
     }
-    public class StabbingWound : Trauma
+    public class PenetratinWound : Trauma
     {
-        public override string Name => "Incised wound";
-        public override int TickCount => 50;
-        private Organ organ;
-        public StabbingWound(BodyPath bodypath, Body currentBody) : base(bodypath, currentBody) 
+        public override string Name => "Penetrating wound";
+        public override int Ticks => 10;
+        public PenetratinWound(Body _currentBody, BodyPath _currentBodyPath) :base(_currentBody, _currentBodyPath)
         {
             Random rand = new Random();
-            int random = rand.Next(0, 101);
-            organ = bodypath.organs.Find(x => random < x.DamageChance);
-            _currentBody.ActualBloodPressure += 5;
+            int randomorgan = rand.Next(0,101);
+            CurrentBody.ActualBloodPressure += 10;
+            CurrentBodyPath.ActualDuration -= 20;
+            var currentorgan =CurrentBodyPath.organs.Find(x => x.DamageChance >= randomorgan);
+            if (currentorgan != null)
+                RelatedInjuries.Add(new OrganDamage(currentorgan));
         }
         public override void Exicute()
         {
             base.Exicute();
-            _currentBody.ActualBloodDrain -= 2;            
-            Tick = TickCount;
-            if (organ != null)
-                organ.ActualDuration -= 10;
-        }
-    }
-    public class Poisoned : Trauma
-    {
-        public override string Name => "Injection mark";
-        public override int TickCount => 1000;
-        public Poisoned(BodyPath bodypath, Body currentBody) : base(bodypath, currentBody){}
-        public override void Exicute()
-        {
-            base.Exicute();
-            _currentBody.torso.Condition.Add(new HeartStop(_currentBody.torso, _currentBody));
-            Tick = -1;
+            CurrentBody.ActualBloodDrain--;
         }
     }
-    public class HeartStop:Trauma
+    public class OrganDamage : Trauma
     {
-        public override string Name => "Heart stop";
-        public override int TickCount => 5;
-        public HeartStop(BodyPath bodypath, Body currentBody) : base(bodypath, currentBody) { }
+        public override string Name => organ.Name + " damage";
+        public override int Ticks => 10;
+        public Organ organ;
+        public OrganDamage(Organ _organ) : base(_organ)
+        {
+            organ = _organ;
+        }
         public override void Exicute()
         {
             base.Exicute();
-            _currentBody.ActualBloodPressure = 0;
-            foreach (var organ in _currentBody.torso.organs)
-                organ.ActualDuration -= 5;
-            
-            Tick = TickCount;
+            organ.ActualDuration--;
         }
     }
 

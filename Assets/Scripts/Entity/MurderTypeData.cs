@@ -77,7 +77,7 @@ namespace Entity.MurderEntity
             {
                 Murder.Destination = HuntTarget.CurrentLocation;
                 if (Murder.CurrentLocation.PeopleInside.Count == 2 && Murder.CurrentLocation.PeopleInside.Contains(HuntTarget.Id)) {
-                    HuntTarget.Death(Murder, "Perma");
+                    HuntTarget.Death();
                     HuntTarget = null;
                 }
             }

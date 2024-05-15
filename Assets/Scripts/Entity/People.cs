@@ -5,16 +5,19 @@ using Data.SectionData;
 using Data.StreetData;
 using Engine.Generator;
 using Engine.PlayerEngine;
+using Entity.BodyMarks;
 using Entity.Company;
 using Entity.ItemLibrary;
 using Entity.Job;
 using Entity.MurderEntity;
 using Entity.Plans;
 using Godot;
+using Scripts.Entity.TraumaEntity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Entity.People
 {
@@ -182,6 +185,8 @@ namespace Entity.People
             Live += this.FindJob;Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer; Live += this.Talk; Live += this.Aged; Live += this.MentalHealth; Live += Health.TemporaryHealthStatuses;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
+            var trauma = new StabWound(Health,Health.torso);
+            Health.torso.Condition.AddRange(trauma.traumas);
         }
         public Person(Person mother, Person father)
         {
@@ -226,7 +231,7 @@ namespace Entity.People
         private void Aged()
         {
             if ((PlayerInfo.CurrentCity.CityTime - Bithday).Ticks >= AgeOfDeath.Ticks)
-                Death(null, "Old Age");
+                Death();
         }
         public void FindHome()
         {

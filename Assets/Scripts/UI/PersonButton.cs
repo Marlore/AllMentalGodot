@@ -20,11 +20,6 @@ public partial class PersonButton : Button
 	{
         FullProfiler.SizeFlagsStretchRatio = 1;
         FullProfiler.Call("Open", PersonId);
-        foreach(var murder in PlayerInfo.CurrentCity.CityMurders)
-        {
-            if (murder.HuntTarget != null)
-                GD.Print(murder.HuntTarget.FirstName + " " + murder.HuntTarget.SecondName+ " "+ murder.Weapon.Name);
-        }
 	}
 }
 
