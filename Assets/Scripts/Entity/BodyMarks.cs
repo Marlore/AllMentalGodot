@@ -8,39 +8,15 @@ using System.Threading.Tasks;
 
 namespace Entity.BodyMarks
 {
-    public abstract class TraumaPattern
+    public class TraumaPattern
     {
-        public abstract string Name { get; }
-        public List<Trauma> traumas = new List<Trauma>();
-        public Body body;
-        public BodyPath bodyPath;
-        public Trauma CurrentTrauma;
+        public string Name;
+
         
-        public TraumaPattern(Body _body, BodyPath _bodyPath)
+        public TraumaPattern(string name)
         {
-            body = _body;
-            bodyPath = _bodyPath;
+            Name = name;
         }
     }
-    public class StabWound: TraumaPattern
-    {
-        public override string Name => "Stab wound";
-        public StabWound(Body _body, BodyPath _bodyPath):base(_body, _bodyPath)
-        { 
-            var trauma = new PenetratinWound(body, bodyPath);
-            traumas.AddRange(trauma.ReturnTrauma());
-            bodyPath.Condition.AddRange(traumas);
-        }
-    }
-    public class CuttingWound : TraumaPattern
-    {
-        public override string Name => "Cutting wound";
-        public CuttingWound(Body _body, BodyPath _bodyPath) : base(_body, _bodyPath)
-        {
-            var trauma = new PenetratinWound(body, bodyPath);
-            traumas.AddRange(trauma.ReturnTrauma());
-            bodyPath.Condition.AddRange(traumas);
-        }
-    }
-    }
+ 
 }

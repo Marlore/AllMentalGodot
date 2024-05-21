@@ -49,7 +49,7 @@ namespace Entity.People
         public Dictionary<Person, int> Contacts = new Dictionary<Person, int>();
         public Dictionary<Guid, Plan> Plans = new Dictionary<Guid, Plan>();
 
-        public Body Health;
+        public Health Body;
 
         public Apartments Apartment;
 
@@ -160,7 +160,7 @@ namespace Entity.People
 
             FirstName = PersonGenerator.GenerateFirstName(SexEnum);
             SecondName = PersonGenerator.GenerateLastName();
-            Health = new Body(this);
+            Body = new Health();
 
             Intellegence = rand.Next(1, 11);
             Mental = rand.Next(1, 11);
@@ -182,11 +182,9 @@ namespace Entity.People
             _intermediateSegment = CurrentLocation;
 
             StatusEnum = _status.messingAround;
-            Live += this.FindJob;Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer; Live += this.Talk; Live += this.Aged; Live += this.MentalHealth; Live += Health.TemporaryHealthStatuses;
+            Live += this.FindJob;Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer; Live += this.Talk; Live += this.Aged; Live += this.MentalHealth; Live += Body.UpdateHealth;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
-            var trauma = new StabWound(Health,Health.torso);
-            Health.torso.BodyMarks.Add(trauma);
         }
         public Person(Person mother, Person father)
         {
@@ -196,7 +194,7 @@ namespace Entity.People
             SexEnum = PersonGenerator.GenerateSex();
 
             FirstName = PersonGenerator.GenerateFirstName(SexEnum);
-            Health = new Body(this);
+            Body = new Health();
 
             this.Mother = mother;
             this.Father = father;
@@ -218,7 +216,7 @@ namespace Entity.People
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
             CurrentLocation = Mother.CurrentLocation;
             Destination = CurrentLocation;
-            Live += this.FindJob; Live += this.MovementСalculation; Live += this.Movement; Live += this.WalkTimer; Live += this.Talk; Live += this.Aged;Live += this.MentalHealth; Live += Health.TemporaryHealthStatuses;
+            Live += this.FindJob; Live += this.MovementСalculation; Live += this.Movement; Live += this.WalkTimer; Live += this.Talk; Live += this.Aged;Live += this.MentalHealth; Live += Body.UpdateHealth;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
         }

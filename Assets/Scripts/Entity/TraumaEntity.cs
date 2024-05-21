@@ -4,174 +4,102 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Scripts.Entity.TraumaEntity
 {
     public abstract class Trauma
-    { 
+    {
         public abstract string Name { get; }
-        public abstract int Ticks { get; }
+        public abstract int MaxTick { get; }
         public int ActualTick;
-        public Body CurrentBody;
-        public BodyPath CurrentBodyPath;
-        private protected List<Trauma> RelatedInjuries= new List<Trauma>();
-        public Trauma(Body _currentBody, BodyPath _currentBodyPath) 
+        public IBody Path;
+        public Trauma(IBody path) 
         {
-            CurrentBody = _currentBody;
-            CurrentBodyPath = _currentBodyPath;
-            ActualTick = Ticks;
+            ActualTick = MaxTick;
+            this.Path = path;
         }
-        public Trauma(Organ _organ) { }
-        public Trauma(Person person){}
-        public virtual void TemporaryExicutebleMethods()
+        public void Counter()
         {
-            if (ActualTick > 0)
+            if (Path.ActualDuration <= 0)
+                Stop();
+            if(ActualTick>0)
                 ActualTick--;
-            if( ActualTick == 0)
+            else if(ActualTick==0)
             {
+                ActualTick = MaxTick; 
                 Exicute();
-                ActualTick = Ticks;
             }
         }
-        public virtual void Exicute()
-        {}
-        public List<Trauma> ReturnTrauma()
-        {
-            RelatedInjuries.Add(this);
-            return RelatedInjuries;
-        }
+        public void Stop() => ActualTick = -1;
+        public abstract void Exicute();
     }
-    public class PenetratinWound : Trauma
+    public class StabbingWound : Trauma
     {
-        public override string Name => "Penetrating wound";
-        public override int Ticks => 5;
-        public PenetratinWound(Body _currentBody, BodyPath _currentBodyPath) :base(_currentBody, _currentBodyPath)
+        public override string Name => Path.Name+ " stabbing wound";
+        public override int MaxTick => 4;
+        public Action ExicuteVariation;
+        public Organs organ;
+        public BodyPaths body;
+        public StabbingWound(IBody path) : base(path) 
         {
-            Random rand = new Random();
-            int randomorgan = rand.Next(0,101);
-            CurrentBody.ActualBloodPressure += 10;
-            CurrentBodyPath.ActualDuration -= 20;
-            var currentorgan =CurrentBodyPath.organs.Find(x => x.DamageChance >= randomorgan);
-            if (currentorgan != null)
-                RelatedInjuries.Add(new OrganDamage(currentorgan));
+            if (typeof(Organs).IsAssignableFrom(Path.GetType()))
+            {
+                ExicuteVariation += OrganWound;
+                organ = (Organs)Path;
+            }
+            else if (typeof(BodyPaths).IsAssignableFrom(Path.GetType()))
+            {
+                ExicuteVariation += BodyPathWound;
+                body = (BodyPaths)Path;
+                body.ActualDuration -= 10;
+                body.ActiveStatus.Add(new BloodLoss(body));
+            }
         }
         public override void Exicute()
         {
-            base.Exicute();
-            CurrentBody.ActualBloodDrain-=2;
+            ExicuteVariation?.Invoke();
         }
-    }
-    public class Laceration: Trauma
-    {
-        public override string Name => "Penetrating wound";
-        public override int Ticks => 5;
-        public Laceration(Body _currentBody, BodyPath _currentBodyPath) : base(_currentBody, _currentBodyPath)
+        public void OrganWound()
         {
-            CurrentBody.ActualBloodPressure += 10;
-            CurrentBodyPath.ActualDuration -= 20;
+            organ.ActualDuration--;
+        }
+        public void BodyPathWound()
+        {
+        }
+
+    }
+    public class BloodLoss : Trauma
+    {
+        public override string Name => "Blood loss from "+ body.Name;
+        public override int MaxTick => 2;
+        public BodyPaths body;
+        public BloodLoss(BodyPaths _body):base(_body)
+        {
+            this.body = _body;
         }
         public override void Exicute()
         {
-            base.Exicute();
-            CurrentBody.ActualBloodDrain -= 4;
+            if (body.InBody.ActualBloodAmount > 0)
+                body.InBody.ActualBloodAmount -= 2;
         }
     }
-    public class OrganDamage : Trauma
+    public class OrganFailure : Trauma
     {
-        public override string Name => organ.Name + " damage";
-        public override int Ticks => 5;
-        public Organ organ;
-        public OrganDamage(Organ _organ) : base(_organ)
+        public override string Name =>organ.Name + " failure";
+        public override int MaxTick => 2;
+        public Organs organ;
+        public OrganFailure(Organs _organ) : base(_organ)
         {
-            organ = _organ;
+            this.organ = _organ;
+            Path = organ;
         }
-        public override void Exicute()
+        public override void Exicute() 
         {
-            base.Exicute();
-            if(organ.ActualDuration>0)
-                organ.ActualDuration--;
-        }
-    }
-    public class BrainDead : Trauma
-    {
-        public override string Name => organ.Name + "Brain dead";
-        public override int Ticks => 0;
-        public Organ organ;
-        public BrainDead(Person person) : base(person) => person.Death();
-        public override void TemporaryExicutebleMethods()
-        {
-            if (ActualTick > 0)
-                ActualTick--;
-            if (ActualTick == 0)
-            {
-                Exicute();
-                ActualTick = -1;
-            }
-        }
-
-    }
-    public class HeartStop:Trauma
-    {
-        public override string Name => organ.Name + "Heart stop";
-        public override int Ticks => 0;
-        public Organ organ;
-        public HeartStop(Person person) : base(person) 
-        {
-            person.Health.ActualBloodPressure = 0;
-        }
-        public override void TemporaryExicutebleMethods()
-        {
-            if (ActualTick > 0)
-                ActualTick--;
-            if (ActualTick == 0)
-            {
-                Exicute();
-                ActualTick = -1;
-            }
+            organ.ActualDuration-=10;
         }
     }
-    public class InternalOrgansFailure: Trauma
-    {
-        public override string Name => organ.Name + "Multiple organ failure";
-        public override int Ticks => 1;
-        public Organ organ;
-        public InternalOrgansFailure(Person person) : base(person)
-        {
-            foreach (var organ in person.Health.torso.organs)
-                person.Health.torso.Condition.Add(new OrganDamage(organ));
-            foreach (var organ in person.Health.head.organs)
-                person.Health.head.Condition.Add(new OrganDamage(organ));
-        }
-    }
-
-
-    public class OrganDamageFactory
-    {
-        public Trauma GetOrganFailure(OrgansEnum organ, Person person)
-        {
-            switch (organ)
-            {
-                case OrgansEnum.brain:
-                    return new BrainDead(person);
-                case OrgansEnum.heart:
-                    return new HeartStop(person);
-                case OrgansEnum.liver:
-                    return new BrainDead(person);
-                case OrgansEnum.throat:
-                    return new BrainDead(person);
-                case OrgansEnum.guts:
-                    return new BrainDead(person);
-                case OrgansEnum.kidneys: 
-                    return new BrainDead(person);
-                case OrgansEnum.lungs: 
-                    return new BrainDead(person);
-                default:
-                    return null;
-            }
-        }
-    }
-    
 
 }

@@ -10,214 +10,274 @@ using System.Threading.Tasks;
 
 namespace AllMentalGodot.Assets.Entity
 {
-    public enum OrgansEnum
+   
+    public interface IBody
     {
-        heart, liver, guts, kidneys, lungs, throat, brain
+        public string Name { get; }
+        public int MaxDuration { get; }
+        public int ActualDuration { get; set; }
+        public int DamageChance { get; }
     }
-    public abstract class BodyPath
-    {
-        public abstract string Name { get; }
-        public int ActualDuration;
-        
-        public abstract int MaxDuration { get; }
-        public List<Trauma> Condition = new List<Trauma>();
-        public List<TraumaPattern> BodyMarks = new List<TraumaPattern>();
-        public List<Organ> organs= new List<Organ>();
-        public BodyPath(Person currentPerson) 
-        {
-            ActualDuration = MaxDuration;
-        }
-        public BodyPath()
-        {
-            ActualDuration = MaxDuration;
-        }
-
-    }
-    public abstract class Organ
+    public abstract class Organs : IBody
     {
         public abstract string Name { get; }
-        private int _actualduration;
-        public abstract OrgansEnum OrganType { get; }
-        public Person currentPerson;
-        public int ActualDuration { get { return _actualduration; } set {
-                if (value <= 0)
-                {
-                    _actualduration = 0;
-                }
-                    
-                else _actualduration = value;
-            } }
-        // сетеры гетеры
         public abstract int MaxDuration { get; }
-        public abstract int DamageChance {get; }
-        public Organ(Person currentPerson)
+        public abstract int ActualDuration { get; set; }
+        public abstract int DamageChance { get; }
+        public BodyPaths InPath;
+        public Organs(BodyPaths inPath)
         {
+            InPath = inPath;
+        }
 
-            ActualDuration = MaxDuration;
-            this.currentPerson = currentPerson;
+    }
+    public abstract class BodyPaths : IBody
+    {
+        public abstract string Name { get; }
+        public abstract int MaxDuration { get; }
+        public abstract int ActualDuration { get; set; }
+        public abstract int DamageChance { get; }
+        public List<Organs> PathOrgans = new List<Organs>();
+        public Health InBody;
+        public List<Trauma> ActiveStatus = new List<Trauma>();
+        public BodyPaths(Health inBody)
+        {
+            InBody = inBody;
         }
     }
-    public class Heart : Organ
-    {
-        public override string Name => "Heart";
-        public override int MaxDuration => 10;
-        public override int DamageChance => 5;
-        public override OrgansEnum OrganType => OrgansEnum.heart;
-        public Heart(Person currentPerson):base(currentPerson) { }
-    }
-    public class Liver : Organ
-    {
-        public override string Name => "Liver";
-        public override int MaxDuration => 50;
-        public override int DamageChance => 20;
-        public override OrgansEnum OrganType => OrgansEnum.liver;
-        public Liver(Person currentPerson) : base(currentPerson) { }
-    }
-    public class Guts : Organ
-    {
-        public override string Name => "Guts";
-        public override int MaxDuration => 60;
-        public override int DamageChance => 30;
-        public override OrgansEnum OrganType => OrgansEnum.guts;
-        public Guts(Person currentPerson) : base(currentPerson) { }
-    }
-    public class Kidneys : Organ
-    {
-        public override string Name => "Kidneys";
-        public override int MaxDuration => 40;
-        public override int DamageChance => 10;
-        public override OrgansEnum OrganType => OrgansEnum.kidneys;
-        public Kidneys(Person currentPerson) : base(currentPerson) { }
-    }
-    public class Lungs : Organ
-    {
-        public override string Name => "Lungs";
-        public override int MaxDuration => 30;
-        public override int DamageChance => 25;
-        public override OrgansEnum OrganType => OrgansEnum.lungs;
-        public Lungs(Person currentPerson) : base(currentPerson) { }
-    }
-    public class Throat : Organ
-    {
-        public override string Name => "Throat";
-        public override int MaxDuration => 15;
-        public override int DamageChance => 15;
-        public override OrgansEnum OrganType => OrgansEnum.throat;
-        public Throat(Person currentPerson) : base(currentPerson) { }
-    }
-    public class Brain : Organ
-    {
-        public override string Name => "Brain";
-        public override int MaxDuration => 45;
-        public override int DamageChance => 90;
-        public override OrgansEnum OrganType => OrgansEnum.brain;
-        public Brain(Person currentPerson) : base(currentPerson) { }
-
-    }
-
-    public class Head: BodyPath 
+    public class HeadPath : BodyPaths
     {
         public override string Name => "Head";
         public override int MaxDuration => 30;
-        public Head(Person currentPerson) :
-            base(currentPerson)
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 10;
+        public HeadPath(Health inBody):base(inBody)
         {
-            organs.Add(new Brain(currentPerson));
+            ActualDuration= MaxDuration;
         }
     }
-    public class Neck: BodyPath
-    {
-        public override string Name => "Neck";
-        public override int MaxDuration =>15;
-        public Neck(Person currentPerson) :
-            base(currentPerson)
-        {
-            organs.Add(new Throat(currentPerson));
-        }
-    }
-    public class Torso: BodyPath
+    public class TorsoPath:BodyPaths
     {
         public override string Name => "Torso";
-        public override int MaxDuration => 60;
-        public Torso(Person currentPerson) :
-            base(currentPerson)
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 20;
+        public TorsoPath(Health inBody) : base(inBody)
         {
-            organs.Add(new Heart(currentPerson));
-            organs.Add(new Liver(currentPerson));
-            organs.Add(new Guts(currentPerson));
-            organs.Add(new Kidneys(currentPerson));
-            organs.Add(new Lungs(currentPerson));
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class StomachPath : BodyPaths
+    {
+        public override string Name => "Stomach";
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 40;
+        public StomachPath(Health inBody) : base(inBody)
+        {
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class LegPath : BodyPaths
+    {
+        public override string Name => "Leg";
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 70;
+        public LegPath(Health inBody) : base(inBody)
+        {
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class ArmPath : BodyPaths
+    {
+        public override string Name => "Arm";
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 70;
+        public ArmPath(Health inBody) : base(inBody)
+        {
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class BrainOrgan : Organs
+    {
+        public override string Name => "Brain";
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 15;
+        public BrainOrgan(BodyPaths inPath):base(inPath)
+        {
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class HeartOrgan : Organs
+    {
+        public override string Name => "Heart";
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 15;
+        public HeartOrgan(BodyPaths inPath) : base(inPath)
+        {
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class LungsOrgan : Organs
+    {
+        public override string Name => "Lungs";
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 30;
+        public LungsOrgan(BodyPaths inPath) : base(inPath)
+        {
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class LiverOrgan : Organs
+    {
+        public override string Name => "Liver";
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 20;
+        public LiverOrgan(BodyPaths inPath) : base(inPath)
+        {
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class KidneysOrgan : Organs
+    {
+        public override string Name => "Kidneys";
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 30;
+        public KidneysOrgan(BodyPaths inPath) : base(inPath)
+        {
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class GutsOrgan : Organs
+    {
+        public override string Name => "Guts";
+        public override int MaxDuration => 40;
+        public override int ActualDuration { get; set; }
+        public override int DamageChance => 60;
+        public GutsOrgan(BodyPaths inPath) : base(inPath)
+        {
+            ActualDuration = MaxDuration;
+        }
+    }
+    public class Health
+    {
+        public int MaxBloodAmount= 100;
+        private int _actualBloodAmount;
+        public int ActualBloodAmount { get 
+            {
+                return _actualBloodAmount;
+            }
+            set
+            {
+                if (value > 0)
+                    _actualBloodAmount = value;
+                else if(value<=0)
+                {
+                    _actualBloodAmount = 0;
+                    CompleteBloodLoss();
+                }
+            }
         }
 
-    }
-    public class RightArm: BodyPath
-    {
-        public override string Name => "Right Arm";
-        public override int MaxDuration => 40;
-    }
-    public class LeftArm : BodyPath
-    {
-        public override string Name => "Left Arm";
-        public override int MaxDuration => 40;
-    }
-    public class RightLeg : BodyPath
-    {
-        public override string Name => "Right Leg";
-        public override int MaxDuration => 45;
-    }
-    public class LeftLeg : BodyPath
-    {
-        public override string Name => "Left Leg";
-        public override int MaxDuration => 45;
-    }
-    public class Body
-    {
-        public Person person;
-        public int NormalBloodDrain =100;
-        public int NormalBloodPressure =100;
-        public int NormalBreath = 100;
-        public int ActualBloodDrain;
+        public int MaxBloodPressure=100;
         public int ActualBloodPressure;
-        public int ActualBreath;
-        public Head head;
-        public Neck neck;
-        public Torso torso;
-        public RightArm rightArm = new RightArm();
-        public LeftArm leftArm = new LeftArm();
-        public RightLeg rightLeg = new RightLeg();
-        public LeftLeg leftLeg = new LeftLeg();
-        public List<BodyPath> BodyPathsList = new List<BodyPath>();
-        public Body(Person _person)
-        {
-            ActualBloodDrain =NormalBloodDrain;
-            ActualBloodPressure =NormalBloodPressure;
-            ActualBreath =NormalBreath;
+        public int MaxRespiratoryRate = 100;
+        public int ActualRespiratoryRate;
 
-            person = _person;
+        public Person CurrentPerson;
 
-            head = new Head(person);
-            neck = new Neck(person);
-            torso = new Torso(person);
-            BodyPathsList.Add(head);
-            BodyPathsList.Add(neck);
-            BodyPathsList.Add(torso);
-            BodyPathsList.Add(rightArm);
-            BodyPathsList.Add(leftArm);
-            BodyPathsList.Add(rightLeg);
-            BodyPathsList.Add(leftLeg);
-        }
-        public void TemporaryHealthStatuses()
+        public HeadPath Head;
+        public TorsoPath Torso;
+        public StomachPath Stomach;
+        public ArmPath LeftArm;
+        public ArmPath RightArm;
+        public LegPath LeftLeg;
+        public LegPath RightLeg;
+
+        public BrainOrgan Brain;
+        public HeartOrgan Heart;
+        public LungsOrgan Lungs;
+        public LiverOrgan Liver;
+        public KidneysOrgan Kidneys;
+        public GutsOrgan Guts;
+
+        public List<BodyPaths> BodyPathsList;
+        public Health()
         {
-            foreach (BodyPath path in BodyPathsList)
-                foreach(var trauma in path.Condition)
-                    trauma?.TemporaryExicutebleMethods();
-            foreach(BodyPath path in BodyPathsList)
-                foreach(Organ organ in path.organs)
-                    if(organ.ActualDuration <= 0)
-                        person.Death();
-            if (ActualBloodDrain <= 0)
-                person.Death();
+            ActualBloodAmount = MaxBloodAmount;
+            ActualBloodPressure = MaxBloodPressure;
+            ActualRespiratoryRate = MaxRespiratoryRate;
+
+            Head = new HeadPath(this);
+            Brain = new BrainOrgan(Head);
+            Head.PathOrgans.AddRange(new List<Organs>{Brain});
+
+            Torso = new TorsoPath(this);
+            Heart = new HeartOrgan(Torso);
+            Lungs = new LungsOrgan(Torso);
+            Torso.PathOrgans.AddRange(new List<Organs> { Heart,Lungs });
+
+            Stomach = new StomachPath(this);
+            Liver = new LiverOrgan(Stomach);
+            Kidneys =new KidneysOrgan(Stomach);
+            Guts = new GutsOrgan(Stomach);
+            Stomach.PathOrgans.AddRange(new List<Organs> { Liver, Kidneys, Guts });
+
+            LeftArm = new ArmPath(this);
+            RightArm = new ArmPath(this);
+
+            LeftLeg = new LegPath(this);
+            RightLeg = new LegPath(this);
+
+            BodyPathsList = new List<BodyPaths> { Head, Torso,Stomach,LeftArm,RightArm,LeftLeg,RightLeg };
         }
-        
+        public void UpdateHealth()
+        {
+
+            foreach (BodyPaths path in BodyPathsList)
+            {
+                var pathTraumas = path.ActiveStatus.ToList();
+                foreach (var trauma in pathTraumas)
+                    trauma.Counter();
+            }
+
+        }
+                
+        public void CompleteBloodLoss()
+        {
+            foreach (var organ in Torso.PathOrgans)
+                Torso.ActiveStatus.Add(new OrganFailure(organ));
+            foreach (var organ in Head.PathOrgans)
+                Head.ActiveStatus.Add(new OrganFailure(organ));
+            foreach (var organ in Stomach.PathOrgans)
+                Stomach.ActiveStatus.Add(new OrganFailure(organ));
+
+        }
+
+        public void GetStabbingWound()
+        {
+            Random HitChance = new Random();
+            var ListPaths = BodyPathsList.FindAll(x => x.DamageChance < HitChance.Next(1, 101));
+            if (ListPaths.Any())
+            {
+                var Path = ListPaths[HitChance.Next(0, ListPaths.Count())];
+                var organsList = Path.PathOrgans.FindAll(x => x.DamageChance < HitChance.Next(1, 101));
+                Path.ActiveStatus.Add(new StabbingWound(Path));
+                if (organsList.Any())
+                {
+                    var organ = organsList[HitChance.Next(0, organsList.Count())];
+                    Path.ActiveStatus.Add(new StabbingWound(organ));
+                }
+            }
+        }
+
     }
+
 }

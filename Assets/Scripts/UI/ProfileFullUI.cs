@@ -1,3 +1,4 @@
+using AllMentalGodot.Assets.Entity;
 using Data.Appartment;
 using Engine.PlayerEngine;
 using Entity.Company;
@@ -48,9 +49,10 @@ public partial class ProfileFullUI : VBoxContainer
         foreach (var plan in person.Plans)
             Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)}", null, true);
 		Work.Text = person.Job.Name;
-        GD.Print(person.Health.ActualBloodDrain);
-        //foreach (var trauma in person.Health.torso.Condition)
-			
+
+        person.Body.GetStabbingWound();
+	
+
 
     }
 	
@@ -60,7 +62,13 @@ public partial class ProfileFullUI : VBoxContainer
         if (personId != default(Guid)){
             DateOfDeath.Text = PlayerInfo.CurrentCity.Population[personId].DateOfDeath.ToString("f");
             Location.Text = PlayerInfo.CurrentCity.Population[personId].CurrentLocation.Adress;
+			var person = PlayerInfo.CurrentCity.Population[personId];
             //GD.Print(PlayerInfo.CurrentCity.Population[personId]._intermediateSegment.Adress);
+            foreach (var _person in person.Body.BodyPathsList)
+                foreach (var trauma in _person.ActiveStatus)
+				{
+                    GD.Print(person.Body.ActualBloodAmount + " " + trauma.Name+" "+ _person.ActiveStatus.Count);
+                }
         }
 
     }
