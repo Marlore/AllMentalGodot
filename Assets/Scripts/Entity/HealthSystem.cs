@@ -103,8 +103,25 @@ namespace AllMentalGodot.Assets.Entity
     public class BrainOrgan : Organs
     {
         public override string Name => "Brain";
-        public override int MaxDuration => 40;
-        public override int ActualDuration { get; set; }
+        public override int MaxDuration => 10;
+        private int _actualDuration;
+        public override int ActualDuration
+        {
+            get
+            {
+                return _actualDuration;
+            }
+            set
+            {
+                if (value > 0)
+                    _actualDuration = value;
+                else
+                {
+                    _actualDuration = 0;
+                    this.InPath.InBody.BrainDead();
+                }
+            }
+        }
         public override int DamageChance => 15;
         public BrainOrgan(BodyPaths inPath):base(inPath)
         {
@@ -114,8 +131,21 @@ namespace AllMentalGodot.Assets.Entity
     public class HeartOrgan : Organs
     {
         public override string Name => "Heart";
-        public override int MaxDuration => 40;
-        public override int ActualDuration { get; set; }
+        public override int MaxDuration => 15;
+        private int _actualDuration;
+        public override int ActualDuration { get 
+            { 
+                return _actualDuration;
+            } set 
+            {
+                if(value>0)
+                    _actualDuration = value;
+                else
+                {
+                    _actualDuration = 0;
+                    this.InPath.InBody.HeartStop();
+                }
+            } }
         public override int DamageChance => 15;
         public HeartOrgan(BodyPaths inPath) : base(inPath)
         {
@@ -187,7 +217,24 @@ namespace AllMentalGodot.Assets.Entity
         }
 
         public int MaxBloodPressure=100;
-        public int ActualBloodPressure;
+        private int _actualBloodPressure;
+        public int ActualBloodPressure
+        {
+            get
+            {
+                return _actualBloodPressure;
+            }
+            set
+            {
+                if (value > 0)
+                    _actualBloodPressure = value;
+                else if (value <= 0)
+                {
+                    _actualBloodPressure = 0;
+                    StopOfBloodCirculation();
+                }
+            }
+        }
         public int MaxRespiratoryRate = 100;
         public int ActualRespiratoryRate;
 
@@ -249,19 +296,36 @@ namespace AllMentalGodot.Assets.Entity
             }
 
         }
-                
+        
+        public void StopOfBloodCirculation()
+        {
+            ActualRespiratoryRate = 0;
+            if(!Torso.ActiveStatus.Contains(new HeartStop(this)))
+                Torso.ActiveStatus.Add(new HeartStop(this));
+            foreach (BodyPaths path in BodyPathsList)
+                foreach(var _organ in path.PathOrgans)
+                    if(!path.ActiveStatus.OfType<OrganFailure>().Any(x=>x.organ== _organ)) 
+                        path.ActiveStatus.Add(new OrganFailure(_organ));
+        }
         public void CompleteBloodLoss()
         {
-            foreach (var organ in Torso.PathOrgans)
-                Torso.ActiveStatus.Add(new OrganFailure(organ));
-            foreach (var organ in Head.PathOrgans)
-                Head.ActiveStatus.Add(new OrganFailure(organ));
-            foreach (var organ in Stomach.PathOrgans)
-                Stomach.ActiveStatus.Add(new OrganFailure(organ));
+            ActualBloodPressure = 0;
+            foreach (BodyPaths path in BodyPathsList)
+                foreach (var _organ in path.PathOrgans)
+                    if (!path.ActiveStatus.OfType<OrganFailure>().Any(x => x.organ == _organ))
+                        path.ActiveStatus.Add(new OrganFailure(_organ));
 
         }
+        public void HeartStop()
+        {
+            Torso.ActiveStatus.Add(new HeartStop(this));
+        }
+        public void BrainDead()
+        {
+            Head.ActiveStatus.Add(new BrainDead(this));          
+        }
 
-        public void GetStabbingWound()
+        public void KnifeHitWound()
         {
             Random HitChance = new Random();
             var ListPaths = BodyPathsList.FindAll(x => x.DamageChance < HitChance.Next(1, 101));
@@ -269,12 +333,21 @@ namespace AllMentalGodot.Assets.Entity
             {
                 var Path = ListPaths[HitChance.Next(0, ListPaths.Count())];
                 var organsList = Path.PathOrgans.FindAll(x => x.DamageChance < HitChance.Next(1, 101));
-                Path.ActiveStatus.Add(new StabbingWound(Path));
-                if (organsList.Any())
+                int Type = HitChance.Next(0, 2);
+                if(Type == 1)
                 {
-                    var organ = organsList[HitChance.Next(0, organsList.Count())];
-                    Path.ActiveStatus.Add(new StabbingWound(organ));
+                    Path.ActiveStatus.Add(new StabbingWound(Path));
+                    if (organsList.Any())
+                    {
+                        var organ = organsList[HitChance.Next(0, organsList.Count())];
+                        Path.ActiveStatus.Add(new StabbingWound(organ));
+                    }
                 }
+                else
+                {
+                    Path.ActiveStatus.Add(new CuttingWound(Path));
+                }
+                
             }
         }
 

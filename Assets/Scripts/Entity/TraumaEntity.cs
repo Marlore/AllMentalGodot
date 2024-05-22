@@ -21,7 +21,12 @@ namespace Scripts.Entity.TraumaEntity
             ActualTick = MaxTick;
             this.Path = path;
         }
-        public void Counter()
+        public Trauma(Health health)
+        {
+            ActualTick = MaxTick;
+        }
+
+        public virtual void Counter()
         {
             if (Path.ActualDuration <= 0)
                 Stop();
@@ -55,7 +60,7 @@ namespace Scripts.Entity.TraumaEntity
                 ExicuteVariation += BodyPathWound;
                 body = (BodyPaths)Path;
                 body.ActualDuration -= 10;
-                body.ActiveStatus.Add(new BloodLoss(body));
+                body.ActiveStatus.Add(new BloodLoss(body,5));
             }
         }
         public override void Exicute()
@@ -64,27 +69,98 @@ namespace Scripts.Entity.TraumaEntity
         }
         public void OrganWound()
         {
-            organ.ActualDuration--;
+            organ.ActualDuration-=5;
         }
         public void BodyPathWound()
         {
         }
 
     }
+    public class CuttingWound : Trauma
+    {
+        public override string Name => Path.Name + " stabbing wound";
+        public override int MaxTick => 4;
+        public BodyPaths body;
+        public CuttingWound(BodyPaths _body):base(_body)
+        {
+            this.body = _body;
+            body.ActualDuration -= 20;
+            body.ActiveStatus.Add(new BloodLoss(body, 2));
+        }
+        public override void Exicute()
+        {}
+    }
     public class BloodLoss : Trauma
     {
         public override string Name => "Blood loss from "+ body.Name;
         public override int MaxTick => 2;
         public BodyPaths body;
-        public BloodLoss(BodyPaths _body):base(_body)
+        public int Tight;
+        public BloodLoss(BodyPaths _body, int tight):base(_body)
         {
             this.body = _body;
+            Tight = tight;
         }
         public override void Exicute()
         {
             if (body.InBody.ActualBloodAmount > 0)
-                body.InBody.ActualBloodAmount -= 2;
+                body.InBody.ActualBloodAmount -= Tight;
         }
+    }
+    public class BrainDead : Trauma
+    {
+        public override string Name => "Brain dead";
+        public override int MaxTick => 1;
+        public Health health;
+        public BrainDead(Health _health) : base(_health)
+        {
+            health = _health;
+        }
+        public override void Counter()
+        {
+            if (ActualTick > 0)
+                ActualTick--;
+            else if (ActualTick == 0)
+            {
+                ActualTick = MaxTick;
+                Exicute();
+            }
+        }
+        public override void Exicute()
+        {
+            if (health.ActualBloodPressure > 0)
+                health.ActualBloodPressure = 0;
+            if (health.ActualRespiratoryRate != 0)
+                health.ActualRespiratoryRate = 0;
+            Stop();
+        }
+    }
+    public class HeartStop:Trauma
+    {
+        public override string Name => "Heart stop";
+        public override int MaxTick => 1;
+        public Health health;
+        public HeartStop(Health _health) : base(_health)
+        {
+            health = _health;
+        }
+        public override void Counter()
+        {
+            if (ActualTick > 0)
+                ActualTick--;
+            else if (ActualTick == 0)
+            {
+                ActualTick = MaxTick;
+                Exicute();
+            }
+        }
+        public override void Exicute()
+        {
+            if(health.ActualBloodPressure>0)
+                health.ActualBloodPressure = 0;
+            Stop();
+        }
+       
     }
     public class OrganFailure : Trauma
     {

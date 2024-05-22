@@ -247,6 +247,23 @@ item_count = 2
 item_0/text = "123"
 item_1/text = "1231"
 
+[node name="Health" type="Control" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemList" type="ItemList" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer/VBoxContainer/Health"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text_overrun_behavior = 1
+item_count = 2
+item_0/text = "123"
+item_1/text = "1231"
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Panel/Interface/HBoxContainer/SecondTree/PersonList/PersonFull/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3

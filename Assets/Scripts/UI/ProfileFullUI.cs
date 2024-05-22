@@ -17,6 +17,7 @@ public partial class ProfileFullUI : VBoxContainer
 
 	ItemList Contacts;
 	ItemList Events;
+	ItemList Health;
 
 	Guid personId;
 	public override void _Ready()
@@ -29,7 +30,7 @@ public partial class ProfileFullUI : VBoxContainer
 
         Contacts = (ItemList)this.GetNode("HBoxContainer/VBoxContainer/Control/ItemList");
 		Events = (ItemList)this.GetNode("HBoxContainer/VBoxContainer2/EventControl/Events");
-
+		Health = (ItemList)this.GetNode("HBoxContainer/VBoxContainer/Health/ItemList");
 		this.Hide();
     }
 
@@ -50,8 +51,8 @@ public partial class ProfileFullUI : VBoxContainer
             Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)}", null, true);
 		Work.Text = person.Job.Name;
 
-        person.Body.GetStabbingWound();
-	
+        person.Body.KnifeHitWound();
+     
 
 
     }
@@ -63,12 +64,17 @@ public partial class ProfileFullUI : VBoxContainer
             DateOfDeath.Text = PlayerInfo.CurrentCity.Population[personId].DateOfDeath.ToString("f");
             Location.Text = PlayerInfo.CurrentCity.Population[personId].CurrentLocation.Adress;
 			var person = PlayerInfo.CurrentCity.Population[personId];
-            //GD.Print(PlayerInfo.CurrentCity.Population[personId]._intermediateSegment.Adress);
+
+            Health.Clear();
+            Health.AddItem($"Blood amount: {(float)person.Body.ActualBloodAmount / (float)person.Body.MaxBloodAmount * 100} %");
+            Health.AddItem($"Blood pressure: {(float)person.Body.ActualBloodPressure / (float)person.Body.MaxBloodPressure * 100} %");
+            Health.AddItem($"Breathing rate: {(float)person.Body.ActualRespiratoryRate / (float)person.Body.MaxRespiratoryRate * 100} %");
             foreach (var _person in person.Body.BodyPathsList)
                 foreach (var trauma in _person.ActiveStatus)
-				{
-                    GD.Print(person.Body.ActualBloodAmount + " " + trauma.Name+" "+ _person.ActiveStatus.Count);
+                {
+                    Health.AddItem(trauma.Name);
                 }
+
         }
 
     }
