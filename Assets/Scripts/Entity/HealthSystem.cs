@@ -240,6 +240,23 @@ namespace AllMentalGodot.Assets.Entity
 
         public Person CurrentPerson;
 
+        private bool _conscious;
+        public bool Conscious
+        {
+            get
+            {
+                return _conscious;
+            }
+            set
+            {
+                if (!Dead) 
+                    _conscious = value;
+                else
+                    _conscious= false;
+            }
+        }
+        public bool Dead;
+
         public HeadPath Head;
         public TorsoPath Torso;
         public StomachPath Stomach;
@@ -258,6 +275,8 @@ namespace AllMentalGodot.Assets.Entity
         public List<BodyPaths> BodyPathsList;
         public Health()
         {
+            Conscious = true;
+            Dead = false;
             ActualBloodAmount = MaxBloodAmount;
             ActualBloodPressure = MaxBloodPressure;
             ActualRespiratoryRate = MaxRespiratoryRate;
@@ -296,12 +315,16 @@ namespace AllMentalGodot.Assets.Entity
             }
 
         }
-        
+        public void RespiratoryArrest()
+        {
+
+        }
+
         public void StopOfBloodCirculation()
         {
             ActualRespiratoryRate = 0;
-            if(!Torso.ActiveStatus.Contains(new HeartStop(this)))
-                Torso.ActiveStatus.Add(new HeartStop(this));
+            if(!Torso.ActiveStatus.Contains(new HeartStop(Torso)))
+                Torso.ActiveStatus.Add(new HeartStop(Torso));
             foreach (BodyPaths path in BodyPathsList)
                 foreach(var _organ in path.PathOrgans)
                     if(!path.ActiveStatus.OfType<OrganFailure>().Any(x=>x.organ== _organ)) 
@@ -318,11 +341,12 @@ namespace AllMentalGodot.Assets.Entity
         }
         public void HeartStop()
         {
-            Torso.ActiveStatus.Add(new HeartStop(this));
+            Torso.ActiveStatus.Add(new HeartStop(Torso));
+            Conscious = false;
         }
         public void BrainDead()
         {
-            Head.ActiveStatus.Add(new BrainDead(this));          
+            Head.ActiveStatus.Add(new BrainDead(Head));          
         }
 
         public void KnifeHitWound()

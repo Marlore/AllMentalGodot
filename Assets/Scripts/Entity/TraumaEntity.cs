@@ -112,9 +112,10 @@ namespace Scripts.Entity.TraumaEntity
         public override string Name => "Brain dead";
         public override int MaxTick => 1;
         public Health health;
-        public BrainDead(Health _health) : base(_health)
+        public BrainDead(BodyPaths _body) : base(_body)
         {
-            health = _health;
+            health.ActualRespiratoryRate = 0;
+            health = _body.InBody;
         }
         public override void Counter()
         {
@@ -140,9 +141,11 @@ namespace Scripts.Entity.TraumaEntity
         public override string Name => "Heart stop";
         public override int MaxTick => 1;
         public Health health;
-        public HeartStop(Health _health) : base(_health)
+        public HeartStop(BodyPaths _body) : base(_body)
         {
-            health = _health;
+            health = _body.InBody;
+            health.Conscious = true;
+            health.ActualRespiratoryRate += 20;
         }
         public override void Counter()
         {
@@ -157,8 +160,9 @@ namespace Scripts.Entity.TraumaEntity
         public override void Exicute()
         {
             if(health.ActualBloodPressure>0)
-                health.ActualBloodPressure = 0;
-            Stop();
+                health.ActualBloodPressure-=4;
+            else
+                Stop();
         }
        
     }

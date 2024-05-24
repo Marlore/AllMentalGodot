@@ -61,6 +61,7 @@ namespace Entity.People
         public Segment HobbyPlace;
         public DateTime Bithday;
         public Action Live;
+        private Action _live;
 
         public List<Items> Inventory = new List<Items>();
 
@@ -68,8 +69,47 @@ namespace Entity.People
 
         Random rand = new Random();
 
-        public bool Alive;
-        public bool Conscious;
+        private bool _dead;
+
+        public bool Dead {
+            get 
+            {
+                return _dead;
+            }
+            set
+            {
+                if (value || Body.Dead)
+                {
+                    Conscious = false;
+                    _dead = true; 
+                    Death();
+                }
+                else
+                {
+                    _dead = false;
+                }
+                    
+            }
+        }
+        private bool _conscious;
+        public bool Conscious { get 
+            {
+                return _conscious;
+            }
+            set
+            {
+                if(value && Body.Conscious && !Dead)
+                {
+                    Live =_live;
+                    _conscious = true;
+                }
+                else
+                {
+                    Live = null;
+                    _conscious = false;
+                }
+            }
+        }
 
         public string FirstName;
         public string SecondName;
@@ -82,7 +122,7 @@ namespace Entity.People
         public float Social;
         public float Age { 
             get {
-                if (Alive)
+                if (!Dead)
                     return (PlayerInfo.CurrentCity.CityTime - Bithday).Days / 365;
                 else
                     return AgeOfDeath.Year;
@@ -94,7 +134,6 @@ namespace Entity.People
         public _hobby HobbyEnum;
         public _sex SexEnum;
         public _status StatusEnum;
-
         public DateTime AgeOfDeath;
         public DateTime DateOfDeath{get{ return new DateTime(Bithday.Ticks+AgeOfDeath.Ticks); }}
         public string Orientation
@@ -153,7 +192,6 @@ namespace Entity.People
         }
         public Person() 
         {
-            Alive = true;
             Id = Guid.NewGuid();
             OrientationEnum = PersonGenerator.GenerateOrientation();
             SexEnum = PersonGenerator.GenerateSex();
@@ -182,13 +220,16 @@ namespace Entity.People
             _intermediateSegment = CurrentLocation;
 
             StatusEnum = _status.messingAround;
-            Live += this.FindJob;Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer; Live += this.Talk; Live += this.Aged; Live += this.MentalHealth; Live += Body.UpdateHealth;
+            Live += this.FindJob;Live += this.MovementСalculation; Live += this.Movement;Live += this.WalkTimer; Live += this.Aged; Live += this.Talk; Live += this.MentalHealth; Live += Body.UpdateHealth;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
+            _live = Live;
+
+            Dead = false;
+            Conscious = true;
         }
         public Person(Person mother, Person father)
         {
-            Alive = true;
             Id = Guid.NewGuid();
             OrientationEnum = PersonGenerator.GenerateOrientation();
             SexEnum = PersonGenerator.GenerateSex();
@@ -216,9 +257,13 @@ namespace Entity.People
             AgeOfDeath = PersonGenerator.GenerateAgeDeath();
             CurrentLocation = Mother.CurrentLocation;
             Destination = CurrentLocation;
-            Live += this.FindJob; Live += this.MovementСalculation; Live += this.Movement; Live += this.WalkTimer; Live += this.Talk; Live += this.Aged;Live += this.MentalHealth; Live += Body.UpdateHealth;
+            Live += this.FindJob; Live += this.MovementСalculation; Live += this.Movement; Live += this.WalkTimer; Live += this.Aged; Live += this.Talk; Live += this.MentalHealth; Live += Body.UpdateHealth;
             if (SexEnum == _sex.Female)
                 Live += this.GiveBorth;
+            _live = Live;
+
+            Dead = false;
+            Conscious = true;
         }
         private void MentalHealth()
         {
@@ -229,7 +274,7 @@ namespace Entity.People
         private void Aged()
         {
             if ((PlayerInfo.CurrentCity.CityTime - Bithday).Ticks >= AgeOfDeath.Ticks)
-                Death();
+                Dead = true;
         }
         public void FindHome()
         {
@@ -1034,7 +1079,7 @@ namespace Entity.People
         }
         private void WalkTimer()
         {
-            if (PlayerInfo.CurrentCity.CityTime >= TimeToWalk && this.Alive && CurrentLocation != _intermediateSegment && _intermediateSegment!=null)
+            if (PlayerInfo.CurrentCity.CityTime >= TimeToWalk && !this.Dead && CurrentLocation != _intermediateSegment && _intermediateSegment!=null)
             {
                 CurrentLocation.PeopleInside.Remove(this.Id);
                 _intermediateSegment.PeopleInside.Add(this.Id);
@@ -1049,7 +1094,7 @@ namespace Entity.People
             if (this.CurrentLocation.PeopleInside.Count > 1 && PlayerInfo.CurrentCity.CityTime.Minute == 30)
             {
                 var Guidlist = this.CurrentLocation.PeopleInside;
-                var PersonList = Guidlist.FindAll(x => PlayerInfo.CurrentCity.Population[x].Alive && x != this.Id);
+                var PersonList = Guidlist.FindAll(x => !PlayerInfo.CurrentCity.Population[x].Dead && x != this.Id);
                 if (PersonList.Count >= 1)
                 {
                     int rand = randomtalk.Next(0, PersonList.Count);
@@ -1283,7 +1328,6 @@ namespace Entity.People
         }
         public void Death()
         {
-            AgeOfDeath = new DateTime(PlayerInfo.CurrentCity.CityTime.Ticks- Bithday.Ticks);   
             //if (murder == null) 
             //    PlayerInfo.CurrentCity.NecroLog.Add(new Log.Necrolog(this, reason));
             //else
@@ -1297,7 +1341,6 @@ namespace Entity.People
             //    }
             if(Partner !=null)
                 Partner.Partner=null;
-            Alive = false;
             this.Live = null;
         }
 

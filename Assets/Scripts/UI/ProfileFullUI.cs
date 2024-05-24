@@ -50,7 +50,7 @@ public partial class ProfileFullUI : VBoxContainer
         foreach (var plan in person.Plans)
             Events.AddItem($" from {plan.Value.PlannedDate} to {plan.Value.PlannedDate.AddMinutes(plan.Value.Duration)}", null, true);
 		Work.Text = person.Job.Name;
-
+		GD.Print("Alive:"+!person.Dead + " Conscious:" + person.Conscious);
         person.Body.KnifeHitWound();
      
 
